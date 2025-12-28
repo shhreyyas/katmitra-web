@@ -2,7 +2,12 @@ import type { Config } from "tailwindcss";
 
 export default {
   darkMode: ["class"],
-  content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
+  content: [
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
+  ],
   prefix: "",
   theme: {
     container: {
@@ -119,6 +124,14 @@ export default {
           "0%, 100%": { boxShadow: "0 0 20px hsl(43, 96%, 56%, 0.3)" },
           "50%": { boxShadow: "0 0 40px hsl(43, 96%, 56%, 0.6)" },
         },
+        "pulse-slow": {
+          "0%, 100%": {
+            transform: "translateX(-100%)",
+          },
+          "50%": {
+            transform: "translateX(100%)",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -131,10 +144,12 @@ export default {
         "float-slow": "float-slow 8s ease-in-out infinite",
         shimmer: "shimmer 2s linear infinite",
         glow: "glow 3s ease-in-out infinite",
+        "pulse-slow": "pulse-slow 3s ease-in-out infinite",
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gold-shimmer": "linear-gradient(90deg, transparent, hsl(43, 96%, 56%, 0.3), transparent)",
+        "gold-shimmer":
+          "linear-gradient(90deg, transparent, hsl(43, 96%, 56%, 0.3), transparent)",
       },
     },
   },

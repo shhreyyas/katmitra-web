@@ -1,16 +1,31 @@
 import { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import chefMascot from "@/assets/chef-mascot.png";
+import {
+  Menu,
+  X,
+  Home,
+  Sparkles,
+  PlayCircle,
+  CreditCard,
+  Users,
+  Mail,
+} from "lucide-react";
+import mainLogo from "@/assets/main-logo.jpg";
+import { AnimeNavBar } from "@/components/ui/anime-navbar";
 
 const navItems = [
-  { label: "Home", href: "#home" },
-  { label: "Features", href: "#features" },
-  { label: "How It Works", href: "#how-it-works" },
-  { label: "Pricing", href: "#pricing" },
-  { label: "Clients", href: "#clients" },
-  { label: "Contact", href: "#contact" },
+  { label: "Home", href: "#home", icon: Home },
+  { label: "Features", href: "#features", icon: Sparkles },
+  { label: "How It Works", href: "#how-it-works", icon: PlayCircle },
+  { label: "Pricing", href: "#pricing", icon: CreditCard },
+  { label: "Clients", href: "#clients", icon: Users },
+  { label: "Contact", href: "#contact", icon: Mail },
 ];
+
+const animeNavItems = navItems.map((item) => ({
+  name: item.label,
+  url: item.href,
+  icon: item.icon,
+}));
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -31,14 +46,21 @@ const Header = () => {
           ? "bg-background/95 backdrop-blur-lg border-b border-border/50"
           : "bg-transparent"
       }`}
+      style={{ overflow: "visible", paddingTop: "1rem" }}
     >
-      <div className="container mx-auto px-4 lg:px-8">
-        <div className="flex items-center justify-between h-20">
+      <div
+        className="container mx-auto px-4 lg:px-8"
+        style={{ overflow: "visible" }}
+      >
+        <div
+          className="flex items-center justify-between h-20 relative"
+          style={{ overflow: "visible" }}
+        >
           {/* Logo */}
           <a href="#home" className="flex items-center gap-3 group">
             <img
-              src={chefMascot}
-              alt="KATMITRA Chef Mascot"
+              src={mainLogo}
+              alt="KATMITRA"
               className="w-12 h-12 object-contain transition-transform group-hover:scale-110"
             />
             <span className="font-display text-2xl font-bold">
@@ -47,24 +69,12 @@ const Header = () => {
             </span>
           </a>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-8">
-            {navItems.map((item) => (
-              <a
-                key={item.label}
-                href={item.href}
-                className="text-muted-foreground hover:text-primary transition-colors duration-300 font-medium text-sm tracking-wide"
-              >
-                {item.label}
-              </a>
-            ))}
-          </nav>
-
-          {/* CTA Button */}
-          <div className="hidden lg:block">
-            <Button className="bg-gradient-gold text-primary-foreground font-semibold px-6 py-2.5 rounded-lg hover:opacity-90 transition-all duration-300 glow-gold-sm hover:glow-gold">
-              Get Started
-            </Button>
+          {/* Desktop Navigation - Animated Navbar */}
+          <div
+            className="hidden lg:flex items-center relative z-10"
+            style={{ overflow: "visible" }}
+          >
+            <AnimeNavBar items={animeNavItems} defaultActive="Home" />
           </div>
 
           {/* Mobile Menu Button */}
@@ -90,9 +100,6 @@ const Header = () => {
                   {item.label}
                 </a>
               ))}
-              <Button className="bg-gradient-gold text-primary-foreground font-semibold w-full mt-2">
-                Get Started
-              </Button>
             </nav>
           </div>
         )}
