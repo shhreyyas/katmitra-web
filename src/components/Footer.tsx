@@ -12,23 +12,25 @@ import { FooterBackgroundGradient } from "@/components/ui/hover-footer";
 import { TextHoverEffect } from "@/components/ui/hover-footer";
 import { motion } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import mainLogo from "@/assets/main-logo.jpg";
 
 const footerLinks = [
   {
     title: "Quick Links",
     links: [
-      { label: "Home", href: "#home" },
-      { label: "Features", href: "#features" },
-      { label: "Pricing", href: "#pricing" },
-      { label: "Contact", href: "#contact" },
+      { label: "Home", href: "/home" },
+      { label: "Features", href: "/features" },
+      { label: "Pricing", href: "/pricing" },
+      { label: "Contact", href: "/contact" },
     ],
   },
   {
     title: "Helpful Links",
     links: [
-      { label: "FAQs", href: "#" },
-      { label: "Support", href: "#" },
-      { label: "Terms & Conditions", href: "#" },
+      { label: "FAQs", href: "/faqs" },
+      { label: "Support", href: "/support" },
+      { label: "Terms & Conditions", href: "/terms-and-conditions" },
     ],
   },
 ];
@@ -52,7 +54,7 @@ const contactInfo = [
 
 const socialLinks = [
   { icon: <Facebook size={20} />, label: "Facebook", href: "#" },
-  { icon: <Instagram size={20} />, label: "Instagram", href: "#" },
+  { icon: <Instagram size={20} />, label: "Instagram", href: "https://www.instagram.com/katmitra.official/" },
   { icon: <Twitter size={20} />, label: "Twitter", href: "#" },
   { icon: <Linkedin size={20} />, label: "LinkedIn", href: "#" },
   { icon: <Globe size={20} />, label: "Globe", href: "#" },
@@ -138,12 +140,15 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 md:gap-8 lg:gap-16 pb-12">
           {/* Brand section */}
           <div className="flex flex-col space-y-4">
-            <div className="flex items-center space-x-2">
-              <span className="text-primary text-3xl font-extrabold">
-                &hearts;
-              </span>
-              <span className="text-foreground text-3xl font-bold">
-                KatMitra
+            <div className="flex items-center space-x-3">
+              <img
+                src={mainLogo}
+                alt="KATMITRA"
+                className="w-12 h-12 object-contain"
+              />
+              <span className="font-display text-2xl font-bold">
+                <span className="text-primary">KAT</span>
+                <span className="text-foreground">MITRA</span>
               </span>
             </div>
             <p className="text-muted-foreground text-sm leading-relaxed">
@@ -162,12 +167,30 @@ const Footer = () => {
               <ul className="space-y-3">
                 {section.links.map((link) => (
                   <li key={link.label} className="relative">
-                    <a
-                      href={link.href}
-                      className="text-muted-foreground hover:text-primary transition-colors"
-                    >
-                      {link.label}
-                    </a>
+                    {link.href.startsWith("/") && (link.label === "FAQs" || link.label === "Support" || link.label === "Terms & Conditions") ? (
+                      <a
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-muted-foreground hover:text-primary transition-colors"
+                      >
+                        {link.label}
+                      </a>
+                    ) : link.href.startsWith("/") ? (
+                      <Link
+                        to={link.href}
+                        className="text-muted-foreground hover:text-primary transition-colors"
+                      >
+                        {link.label}
+                      </Link>
+                    ) : (
+                      <a
+                        href={link.href}
+                        className="text-muted-foreground hover:text-primary transition-colors"
+                      >
+                        {link.label}
+                      </a>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -213,6 +236,8 @@ const Footer = () => {
                 href={href}
                 aria-label={label}
                 className="hover:text-primary transition-colors"
+                target={href.startsWith("http") ? "_blank" : undefined}
+                rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
               >
                 {icon}
               </a>

@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { LucideIcon } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
 interface NavItem {
@@ -22,6 +23,8 @@ export function AnimeNavBar({
   className,
   defaultActive = "Home",
 }: NavBarProps) {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [mounted, setMounted] = useState(false);
   const [hoveredTab, setHoveredTab] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<string>(defaultActive);
@@ -41,11 +44,26 @@ export function AnimeNavBar({
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // Update active tab based on route
+  useEffect(() => {
+    const path = location.pathname;
+    const currentItem = items.find(item => {
+      if (path === "/" || path === "/home") {
+        return item.name === "Home";
+      }
+      return item.url === path;
+    });
+    if (currentItem) {
+      setActiveTab(currentItem.name);
+    }
+  }, [location, items]);
+
   // Update active tab based on scroll position
   useEffect(() => {
     const handleScroll = () => {
       const sections = items.map((item) => {
-        const element = document.querySelector(item.url);
+        const sectionId = item.url.replace("/", "") || "home";
+        const element = document.getElementById(sectionId);
         return { name: item.name, element, url: item.url };
       });
 
@@ -75,10 +93,7 @@ export function AnimeNavBar({
   ) => {
     e.preventDefault();
     setActiveTab(item.name);
-    const element = document.querySelector(item.url);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
+    navigate(item.url);
   };
 
   if (!mounted) return null;
@@ -105,9 +120,9 @@ export function AnimeNavBar({
           const isHovered = hoveredTab === item.name;
 
           return (
-            <a
+            <Link
               key={item.name}
-              href={item.url}
+              to={item.url}
               onClick={(e) => handleClick(e, item)}
               onMouseEnter={() => setHoveredTab(item.name)}
               onMouseLeave={() => setHoveredTab(null)}
@@ -167,7 +182,7 @@ export function AnimeNavBar({
                   />
                 )}
               </AnimatePresence>
-            </a>
+            </Link>
           );
         })}
       </motion.div>

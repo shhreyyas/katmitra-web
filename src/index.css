@@ -160,14 +160,20 @@
 
   .floating {
     animation: floating 6s ease-in-out infinite;
+    will-change: transform;
+    transform: translateZ(0);
   }
 
   .floating-delayed {
     animation: floating 6s ease-in-out 2s infinite;
+    will-change: transform;
+    transform: translateZ(0);
   }
 
   .floating-slow {
     animation: floating 8s ease-in-out infinite;
+    will-change: transform;
+    transform: translateZ(0);
   }
 
   .particle {
@@ -179,10 +185,10 @@
 @keyframes floating {
   0%,
   100% {
-    transform: translateY(0px);
+    transform: translateY(0px) translateZ(0);
   }
   50% {
-    transform: translateY(-20px);
+    transform: translateY(-15px) translateZ(0);
   }
 }
 

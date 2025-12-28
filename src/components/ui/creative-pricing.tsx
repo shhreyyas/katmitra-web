@@ -146,7 +146,7 @@ function CreativePricing({
                 ))}
               </div>
 
-              <Button
+              {/* <Button
                 className={cn(
                   "w-full h-12 font-display text-base relative",
                   "border-2 border-primary/50",
@@ -178,7 +178,7 @@ function CreativePricing({
                 }
               >
                 {tier.price === 0 ? "Start Free Trial" : "Get Started"}
-              </Button>
+              </Button> */}
             </div>
           </div>
         ))}
