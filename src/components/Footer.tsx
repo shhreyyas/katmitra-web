@@ -13,7 +13,6 @@ import { TextHoverEffect } from "@/components/ui/hover-footer";
 import { motion } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useTheme } from "@/contexts/ThemeContext";
 import mainLogo from "@/assets/main-logo.jpg";
 
 const footerLinks = [
@@ -62,7 +61,6 @@ const socialLinks = [
 ];
 
 const Footer = () => {
-  const { theme } = useTheme();
   const contentRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
@@ -137,11 +135,7 @@ const Footer = () => {
   }, []);
 
   return (
-    <footer className={`relative h-fit rounded-3xl overflow-hidden m-8 ${
-      theme === "dark" 
-        ? "bg-background/10" 
-        : "bg-card/80 backdrop-blur-sm border border-border/50"
-    }`}>
+    <footer className="bg-background/10 relative h-fit rounded-3xl overflow-hidden m-8">
       <div ref={contentRef} className="max-w-7xl mx-auto p-14 z-40 relative">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 md:gap-8 lg:gap-16 pb-12">
           {/* Brand section */}
@@ -230,11 +224,7 @@ const Footer = () => {
           </div>
         </div>
 
-        <hr className={`border-t my-8 ${
-          theme === "dark" 
-            ? "border-border/30" 
-            : "border-border/50"
-        }`} />
+        <hr className="border-t border-border/30 my-8" />
 
         {/* Footer bottom */}
         <div className="flex flex-col md:flex-row justify-between items-center text-sm space-y-4 md:space-y-0">
@@ -277,11 +267,11 @@ const Footer = () => {
         }}
       >
         <div className="w-full h-full">
-          <TextHoverEffect text="KatMitra" className="z-50" theme={theme} />
+          <TextHoverEffect text="KatMitra" className="z-50" />
         </div>
       </motion.div>
 
-      <FooterBackgroundGradient theme={theme} />
+      <FooterBackgroundGradient />
     </footer>
   );
 };

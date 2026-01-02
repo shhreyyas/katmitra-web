@@ -222,10 +222,10 @@ const TermsAndConditions = () => {
                 </div>
                 <h3 className="font-semibold text-foreground mb-2">Email</h3>
                 <a
-                  href="mailto:sales@myjucas.com"
+                  href="mailto:katmitra.official@gmail.com"
                   className="text-primary hover:underline text-sm"
                 >
-                  sales@myjucas.com
+                  katmitra.official@gmail.com
                 </a>
               </motion.div>
 
