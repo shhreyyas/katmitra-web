@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import hdLogo from "@/assets/HD-logo.png";
 import mainLogo from "@/assets/main-logo.jpg";
 import { SparklesCore } from "@/components/ui/sparkles";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const DeviceCard = ({
   children,
@@ -11,14 +12,21 @@ const DeviceCard = ({
   delay = 0,
   title,
   icon: Icon,
+  theme = "dark",
 }: {
   children: React.ReactNode;
   className?: string;
   delay?: number;
   title?: string;
   icon?: React.ElementType;
+  theme?: "light" | "dark";
 }) => {
   const shouldReduceMotion = useReducedMotion();
+  
+  // Theme-aware shadow color
+  const shadowColor = theme === "dark" 
+    ? "hsl(43, 96%, 56%, 0.2)" // Gold for dark mode
+    : "hsl(180, 70%, 40%, 0.2)"; // Teal/cyan for light mode
   
   return (
     <motion.div
@@ -31,8 +39,7 @@ const DeviceCard = ({
       }}
       className={`bg-gradient-to-br from-card/95 to-card/80 backdrop-blur-xl rounded-2xl border border-primary/30 p-5 shadow-2xl hover:border-primary/50 transition-all duration-200 ${className}`}
       style={{
-        boxShadow:
-          "0 8px 32px rgba(0, 0, 0, 0.3), 0 0 40px hsl(43, 96%, 56%, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
+        boxShadow: `0 8px 32px rgba(0, 0, 0, ${theme === "dark" ? "0.3" : "0.1"}), 0 0 40px ${shadowColor}, inset 0 1px 0 rgba(255, 255, 255, 0.1)`,
         willChange: "transform, opacity",
       }}
     >
@@ -173,6 +180,12 @@ const CARD_STACK_CONFIG = {
 const HeroSection = () => {
   const shouldReduceMotion = useReducedMotion();
   const [activeCardIndex, setActiveCardIndex] = useState(0);
+  const { theme } = useTheme();
+  
+  // Theme-aware sparkle color - darker and more saturated for light mode visibility
+  const sparkleColor = theme === "dark" 
+    ? "hsl(43, 96%, 56%)" // Gold for dark mode
+    : "hsl(180, 70%, 35%)"; // Darker teal/cyan for light mode visibility
   
   // Auto-loop through cards
   useEffect(() => {
@@ -208,12 +221,18 @@ const HeroSection = () => {
     // Shadow: active card has stronger shadow
     const shadowIntensity = isActive ? 0.4 : 0.2 - (distanceFromActive * 0.05);
     
+    // Theme-aware shadow color (RGB values)
+    const shadowColor = theme === "dark" 
+      ? "rgba(251, 191, 36" // Gold RGB (hsl(43, 96%, 56%))
+      : "rgba(59, 180, 184"; // Teal/cyan RGB (hsl(180, 70%, 40%))
+    
     return {
       zIndex,
       scale,
       opacity: Math.max(0.7, opacity),
       y: yOffset,
       shadowIntensity: Math.max(0.1, shadowIntensity),
+      shadowColor,
     };
   };
   
@@ -221,7 +240,11 @@ const HeroSection = () => {
     <section id="home" className="relative min-h-screen pt-20 overflow-hidden">
       {/* Background Effects */}
       <div className="absolute inset-0 bg-gradient-dark" />
-      <div className="absolute inset-0 bg-gradient-radial from-primary/10 via-transparent to-transparent" />
+      <div className={`absolute inset-0 bg-gradient-radial ${
+        theme === "dark" 
+          ? "from-primary/10 via-transparent to-transparent" 
+          : "from-primary/25 via-primary/10 to-transparent"
+      }`} />
 
       {/* Sparkles Particles Background */}
       <div
@@ -231,11 +254,11 @@ const HeroSection = () => {
         <SparklesCore
           id="hero-sparkles"
           background="transparent"
-          minSize={0.4}
-          maxSize={1.2}
-          particleDensity={shouldReduceMotion ? 30 : 60}
+          minSize={theme === "dark" ? 0.4 : 0.6}
+          maxSize={theme === "dark" ? 1.2 : 1.5}
+          particleDensity={shouldReduceMotion ? 30 : (theme === "dark" ? 60 : 80)}
           className="w-full h-full"
-          particleColor="hsl(43, 96%, 56%)"
+          particleColor={sparkleColor}
           speed={shouldReduceMotion ? 0.5 : 1.5}
         />
       </div>
@@ -258,9 +281,13 @@ const HeroSection = () => {
         style={{ animationDelay: "6s" }}
       />
 
-      {/* Gold lines decoration */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+      {/* Primary color lines decoration */}
+      <div className={`absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent ${
+        theme === "dark" ? "via-primary/30" : "via-primary/50"
+      } to-transparent`} />
+      <div className={`absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent ${
+        theme === "dark" ? "via-primary/30" : "via-primary/50"
+      } to-transparent`} />
 
       <div className="container mx-auto px-4 lg:px-8 py-12 lg:py-20">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center min-h-[80vh]">
@@ -341,7 +368,7 @@ const HeroSection = () => {
                 top: 0,
                 left: 0,
                 zIndex: getCardAnimationProps(0).zIndex,
-                filter: `drop-shadow(0 ${getCardAnimationProps(0).shadowIntensity * 20}px ${getCardAnimationProps(0).shadowIntensity * 30}px rgba(251, 191, 36, ${getCardAnimationProps(0).shadowIntensity}))`,
+                filter: `drop-shadow(0 ${getCardAnimationProps(0).shadowIntensity * 20}px ${getCardAnimationProps(0).shadowIntensity * 30}px ${getCardAnimationProps(0).shadowColor}, ${getCardAnimationProps(0).shadowIntensity}))`,
               }}
             >
               <DeviceCard
@@ -349,6 +376,7 @@ const HeroSection = () => {
                 icon={Users}
                 className="w-64 sm:w-72 md:w-80 lg:w-96"
                 delay={shouldReduceMotion ? 0 : 0.3}
+                theme={theme}
               >
               <div className="space-y-3">
                 {[
@@ -369,7 +397,13 @@ const HeroSection = () => {
                           {client.name}
                         </span>
                         <span className="text-xs text-muted-foreground flex items-center gap-1">
-                          <span className={`w-1.5 h-1.5 rounded-full ${client.status === "Active" ? "bg-green-500" : "bg-yellow-500"}`}></span>
+                          <span className={`w-1.5 h-1.5 rounded-full ${
+                            client.status === "Active" 
+                              ? "bg-green-500" 
+                              : theme === "dark" 
+                                ? "bg-primary" 
+                                : "bg-accent"
+                          }`}></span>
                           {client.status}
                         </span>
                       </div>
@@ -397,7 +431,7 @@ const HeroSection = () => {
                 top: '2rem',
                 right: 0,
                 zIndex: getCardAnimationProps(1).zIndex,
-                filter: `drop-shadow(0 ${getCardAnimationProps(1).shadowIntensity * 20}px ${getCardAnimationProps(1).shadowIntensity * 30}px rgba(251, 191, 36, ${getCardAnimationProps(1).shadowIntensity}))`,
+                filter: `drop-shadow(0 ${getCardAnimationProps(1).shadowIntensity * 20}px ${getCardAnimationProps(1).shadowIntensity * 30}px ${getCardAnimationProps(1).shadowColor}, ${getCardAnimationProps(1).shadowIntensity}))`,
               }}
             >
               <DeviceCard
@@ -405,6 +439,7 @@ const HeroSection = () => {
                 icon={Calendar}
                 className="w-60 sm:w-64 md:w-72 lg:w-80"
                 delay={shouldReduceMotion ? 0 : 0.4}
+                theme={theme}
               >
               <div className="space-y-4">
                 <div className="p-4 bg-gradient-to-br from-primary/20 to-primary/10 rounded-xl border border-primary/20">
@@ -455,7 +490,7 @@ const HeroSection = () => {
                 bottom: '2rem',
                 left: '1rem',
                 zIndex: getCardAnimationProps(2).zIndex,
-                filter: `drop-shadow(0 ${getCardAnimationProps(2).shadowIntensity * 20}px ${getCardAnimationProps(2).shadowIntensity * 30}px rgba(251, 191, 36, ${getCardAnimationProps(2).shadowIntensity}))`,
+                filter: `drop-shadow(0 ${getCardAnimationProps(2).shadowIntensity * 20}px ${getCardAnimationProps(2).shadowIntensity * 30}px ${getCardAnimationProps(2).shadowColor}, ${getCardAnimationProps(2).shadowIntensity}))`,
               }}
             >
               <DeviceCard
@@ -463,6 +498,7 @@ const HeroSection = () => {
                 icon={ClipboardList}
                 className="w-64 sm:w-72 md:w-80 lg:w-96"
                 delay={shouldReduceMotion ? 0 : 0.5}
+                theme={theme}
               >
               <div className="space-y-2.5">
                 {[
@@ -479,7 +515,9 @@ const HeroSection = () => {
                       <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold ${
                         item.status === "confirmed"
                           ? "bg-green-500/20 text-green-400"
-                          : "bg-yellow-500/20 text-yellow-400"
+                          : theme === "dark"
+                            ? "bg-primary/20 text-primary"
+                            : "bg-accent/20 text-accent"
                       }`}>
                         {item.icon}
                       </div>
@@ -490,7 +528,9 @@ const HeroSection = () => {
                     <div className={`px-2 py-1 rounded-md text-xs font-semibold ${
                       item.status === "confirmed"
                         ? "bg-green-500/20 text-green-400"
-                        : "bg-yellow-500/20 text-yellow-400"
+                        : theme === "dark"
+                          ? "bg-primary/20 text-primary"
+                          : "bg-accent/20 text-accent"
                     }`}>
                       {item.status}
                     </div>
@@ -513,14 +553,16 @@ const HeroSection = () => {
                 bottom: 0,
                 right: '2rem',
                 zIndex: getCardAnimationProps(3).zIndex,
-                filter: `drop-shadow(0 ${getCardAnimationProps(3).shadowIntensity * 20}px ${getCardAnimationProps(3).shadowIntensity * 30}px rgba(251, 191, 36, ${getCardAnimationProps(3).shadowIntensity}))`,
+                filter: `drop-shadow(0 ${getCardAnimationProps(3).shadowIntensity * 20}px ${getCardAnimationProps(3).shadowIntensity * 30}px ${getCardAnimationProps(3).shadowColor}, ${getCardAnimationProps(3).shadowIntensity}))`,
               }}
             >
               <CalendarCard shouldReduceMotion={shouldReduceMotion} />
             </motion.div>
 
             {/* Decorative glow behind devices */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
+            <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full blur-3xl ${
+              theme === "dark" ? "bg-primary/10" : "bg-primary/20"
+            }`} />
           </motion.div>
         </div>
       </div>

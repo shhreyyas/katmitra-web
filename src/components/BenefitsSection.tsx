@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Clock, FileText, Smile, Settings } from "lucide-react";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const benefits = [
   {
@@ -25,6 +26,8 @@ const benefits = [
 ];
 
 const BenefitsSection = () => {
+  const { theme } = useTheme();
+  
   return (
     <section className="relative py-24 bg-background overflow-hidden">
       {/* Background glow */}
@@ -56,7 +59,9 @@ const BenefitsSection = () => {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               className="group"
             >
-              <div className="glass-card-gold rounded-2xl p-6 h-full transition-all duration-300 hover:border-primary/60 hover:glow-gold-sm">
+              <div className={`glass-card-gold rounded-2xl p-6 h-full transition-all duration-300 hover:border-primary/60 hover:glow-gold-sm ${
+                theme === "light" ? "bg-card/80" : ""
+              }`}>
                 <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-5 group-hover:bg-primary/20 transition-colors">
                   <benefit.icon className="w-7 h-7 text-primary" />
                 </div>

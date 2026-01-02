@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const clientLogos = [
   "Royal Caterers",
@@ -10,8 +11,10 @@ const clientLogos = [
 ];
 
 const ClientsSection = () => {
+  const { theme } = useTheme();
+  
   return (
-    <section id="clients" className="relative py-24 bg-background overflow-hidden">
+    <section id="clients" className="relative py-12 sm:py-16 overflow-hidden">
       <div className="container mx-auto px-4 lg:px-8 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -30,13 +33,19 @@ const ClientsSection = () => {
 
         {/* Scrolling logos */}
         <div className="relative overflow-hidden">
-          <div className="flex animate-scroll gap-12 w-max">
+          <div className="flex animate-scroll gap-6 sm:gap-8 w-max">
             {[...clientLogos, ...clientLogos].map((name, index) => (
               <motion.div
                 key={`${name}-${index}`}
-                className="flex items-center justify-center px-8 py-6 glass-card rounded-xl min-w-[200px] group hover:border-primary/50 transition-all duration-300"
+                className={`flex items-center justify-center px-6 sm:px-8 py-4 sm:py-5 rounded-xl min-w-[180px] sm:min-w-[200px] group transition-all duration-300 ${
+                  theme === "dark"
+                    ? "bg-card/60 backdrop-blur-sm border border-border/30 hover:border-primary/50 hover:bg-card/80"
+                    : "bg-card border border-border/40 hover:border-primary/60 hover:shadow-lg"
+                }`}
               >
-                <span className="text-muted-foreground group-hover:text-primary transition-colors font-semibold text-lg">
+                <span className={`group-hover:text-primary transition-colors font-semibold text-base sm:text-lg ${
+                  theme === "dark" ? "text-foreground" : "text-foreground"
+                }`}>
                   {name}
                 </span>
               </motion.div>

@@ -1,5 +1,6 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { UserPlus, Settings, Banknote, CheckCircle2 } from "lucide-react";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const steps = [
   {
@@ -27,6 +28,12 @@ const steps = [
 
 const HowItWorksSection = () => {
   const shouldReduceMotion = useReducedMotion();
+  const { theme } = useTheme();
+  
+  // Theme-aware shadow color
+  const shadowColor = theme === "dark" 
+    ? "hsl(43, 96%, 56%, 0.1)" // Gold for dark mode
+    : "hsl(180, 70%, 40%, 0.1)"; // Teal/cyan for light mode
 
   return (
     <section id="how-it-works" className="relative py-20 sm:py-24 lg:py-32 bg-background overflow-hidden">
@@ -109,7 +116,7 @@ const HowItWorksSection = () => {
                   transition={{ duration: 0.3, ease: "easeOut" }}
                   className="bg-gradient-to-br from-card/95 to-card/80 backdrop-blur-xl rounded-2xl p-6 md:p-8 lg:p-10 text-center relative z-10 border border-primary/20 hover:border-primary/40 transition-all duration-300 shadow-xl hover:shadow-2xl min-h-[400px] md:min-h-[420px] lg:min-h-[450px] w-full flex flex-col"
                   style={{
-                    boxShadow: "0 8px 32px rgba(0, 0, 0, 0.2), 0 0 40px hsl(43, 96%, 56%, 0.1)",
+                    boxShadow: `0 8px 32px rgba(0, 0, 0, ${theme === "dark" ? "0.2" : "0.1"}), 0 0 40px ${shadowColor}`,
                   }}
                 >
                   {/* Step number badge */}

@@ -7,11 +7,13 @@ export const TextHoverEffect = ({
   text,
   duration,
   className,
+  theme = "dark",
 }: {
   text: string;
   duration?: number;
   automatic?: boolean;
   className?: string;
+  theme?: "light" | "dark";
 }) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const [cursor, setCursor] = useState({ x: 0, y: 0 });
@@ -52,11 +54,23 @@ export const TextHoverEffect = ({
         >
           {hovered && (
             <>
-              <stop offset="0%" stopColor="hsl(43, 96%, 56%)" />
-              <stop offset="25%" stopColor="hsl(43, 96%, 65%)" />
-              <stop offset="50%" stopColor="hsl(43, 96%, 56%)" />
-              <stop offset="75%" stopColor="hsl(38, 92%, 50%)" />
-              <stop offset="100%" stopColor="hsl(43, 96%, 56%)" />
+              {theme === "dark" ? (
+                <>
+                  <stop offset="0%" stopColor="hsl(43, 96%, 56%)" />
+                  <stop offset="25%" stopColor="hsl(43, 96%, 65%)" />
+                  <stop offset="50%" stopColor="hsl(43, 96%, 56%)" />
+                  <stop offset="75%" stopColor="hsl(38, 92%, 50%)" />
+                  <stop offset="100%" stopColor="hsl(43, 96%, 56%)" />
+                </>
+              ) : (
+                <>
+                  <stop offset="0%" stopColor="hsl(180, 70%, 40%)" />
+                  <stop offset="25%" stopColor="hsl(180, 70%, 50%)" />
+                  <stop offset="50%" stopColor="hsl(180, 70%, 40%)" />
+                  <stop offset="75%" stopColor="hsl(270, 60%, 48%)" />
+                  <stop offset="100%" stopColor="hsl(180, 70%, 40%)" />
+                </>
+              )}
             </>
           )}
         </linearGradient>
@@ -88,7 +102,11 @@ export const TextHoverEffect = ({
         textAnchor="middle"
         dominantBaseline="middle"
         strokeWidth="0.3"
-        className="fill-transparent stroke-neutral-200 font-[helvetica] text-7xl font-bold dark:stroke-neutral-800"
+        className={`fill-transparent font-[helvetica] text-7xl font-bold ${
+          theme === "dark" 
+            ? "stroke-neutral-800" 
+            : "stroke-neutral-300"
+        }`}
         style={{ opacity: hovered ? 0.7 : 0 }}
       >
         {text}
@@ -99,8 +117,12 @@ export const TextHoverEffect = ({
         textAnchor="middle"
         dominantBaseline="middle"
         strokeWidth="0.3"
-        className="fill-transparent stroke-[hsl(43,96%,56%)] font-[helvetica] text-7xl font-bold"
-        style={{ stroke: "hsl(43, 96%, 56%)" }}
+        className="fill-transparent font-[helvetica] text-7xl font-bold"
+        style={{ 
+          stroke: theme === "dark" 
+            ? "hsl(43, 96%, 56%)" 
+            : "hsl(180, 70%, 40%)" 
+        }}
         initial={{ strokeDashoffset: 1000, strokeDasharray: 1000 }}
         animate={{
           strokeDashoffset: 0,
@@ -129,13 +151,14 @@ export const TextHoverEffect = ({
   );
 };
 
-export const FooterBackgroundGradient = () => {
+export const FooterBackgroundGradient = ({ theme = "dark" }: { theme?: "light" | "dark" }) => {
   return (
     <div
       className="absolute inset-0 z-0"
       style={{
-        background:
-          "radial-gradient(125% 125% at 50% 10%, hsl(20, 10%, 4%) 50%, hsl(43, 96%, 56%, 0.2) 100%)",
+        background: theme === "dark"
+          ? "radial-gradient(125% 125% at 50% 10%, hsl(20, 10%, 4%) 50%, hsl(43, 96%, 56%, 0.2) 100%)"
+          : "radial-gradient(125% 125% at 50% 10%, hsl(0, 0%, 98%) 50%, hsl(180, 70%, 40%, 0.15) 100%)",
       }}
     />
   );
