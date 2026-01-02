@@ -7,6 +7,7 @@ import {
   Truck,
   FileText,
 } from "lucide-react";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const features = [
   {
@@ -42,6 +43,8 @@ const features = [
 ];
 
 const FeaturesSection = () => {
+  const { theme } = useTheme();
+  
   return (
     <section id="features" className="relative py-24 bg-card/30 overflow-hidden">
       {/* Decorative elements */}

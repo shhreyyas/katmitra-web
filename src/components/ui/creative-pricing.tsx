@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Check, Sparkles, Star, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useTheme } from "@/contexts/ThemeContext";
 
 export interface PricingTier {
   name: string;
@@ -23,6 +24,16 @@ function CreativePricing({
   description?: string;
   tiers: PricingTier[];
 }) {
+  const { theme } = useTheme();
+  
+  // Theme-aware shadow colors
+  const shadowColorLight = theme === "dark" 
+    ? "hsl(43, 96%, 56%, 0.5)" // Gold for dark mode
+    : "hsl(180, 70%, 40%, 0.5)"; // Teal/cyan for light mode
+  const shadowColorMedium = theme === "dark" 
+    ? "hsl(43, 96%, 56%, 0.3)" // Gold for dark mode
+    : "hsl(180, 70%, 40%, 0.3)"; // Teal/cyan for light mode
+  
   return (
     <div className="w-full max-w-6xl mx-auto px-4">
       <div className="text-center space-y-6 mb-16">
@@ -80,7 +91,7 @@ function CreativePricing({
                   className="absolute -top-2 -right-2 bg-primary text-primary-foreground 
                   font-display px-3 py-1 rounded-full rotate-12 text-sm border-2 border-primary-foreground/20"
                   style={{
-                    boxShadow: "0 0 20px hsl(43, 96%, 56%, 0.5)",
+                    boxShadow: `0 0 20px ${shadowColorLight}`,
                   }}
                 >
                   Popular!
@@ -97,7 +108,7 @@ function CreativePricing({
                     "text-primary"
                   )}
                   style={{
-                    boxShadow: "0 0 15px hsl(43, 96%, 56%, 0.3)",
+                    boxShadow: `0 0 15px ${shadowColorMedium}`,
                   }}
                 >
                   {tier.icon}
