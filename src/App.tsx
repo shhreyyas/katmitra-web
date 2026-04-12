@@ -119,7 +119,8 @@ const AppRoutes = () => (
   <>
     <FaviconUpdater />
     <Routes>
-      <Route path="/" element={<Index />} />
+      {/* PricingEntry: normal visit = Index; ?session_id= = app checkout (avoids /pricing 404 on hosts without SPA rewrites) */}
+      <Route path="/" element={<PricingEntry />} />
       <Route path="/home" element={<Index />} />
       <Route path="/features" element={<Index />} />
       <Route path="/how-it-works" element={<Index />} />
