@@ -4,9 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 
-const API_BASE =
-  import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, "") ||
-  "http://localhost:3000/api";
+/** Public https API (include `/api`). In production, VITE_API_BASE_URL must be set at build time (e.g. Vercel env). */
+const API_BASE = (() => {
+  const v = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, "");
+  if (v) return v;
+  if (import.meta.env.DEV) return "http://localhost:3000/api";
+  return "";
+})();
 
 type PlanRow = {
   plan_type: string;
@@ -76,6 +80,13 @@ export default function PricingCheckout() {
         setLoading(false);
         return;
       }
+      if (!API_BASE) {
+        setError(
+          "Checkout is not configured: set VITE_API_BASE_URL (your public API URL ending in /api) in the web app build environment, then redeploy.",
+        );
+        setLoading(false);
+        return;
+      }
       try {
         const res = await fetch(
           `${API_BASE}/billing/session/validate?session_id=${encodeURIComponent(sessionId)}`,
@@ -89,7 +100,13 @@ export default function PricingCheckout() {
         }
       } catch (e) {
         if (!cancelled) {
-          setError(e instanceof Error ? e.message : "Could not validate session");
+          const raw = e instanceof Error ? e.message : "Could not validate session";
+          const isNetwork = /load failed|failed to fetch|networkerror/i.test(raw);
+          setError(
+            isNetwork
+              ? "Could not reach the API. On the live site, VITE_API_BASE_URL must be your deployed backend (https://…/api), rebuilt after setting it in Vercel (or your host). Mixed http://localhost from an https page will always fail."
+              : raw,
+          );
         }
       } finally {
         if (!cancelled) setLoading(false);
@@ -144,7 +161,7 @@ export default function PricingCheckout() {
         },
         theme: { color: "#0f172a" },
         handler() {
-          window.location.href = "/pricing?paid=1";
+          window.location.href = "/?paid=1";
         },
       });
       rzp.open();
@@ -167,7 +184,7 @@ export default function PricingCheckout() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4 p-6 bg-background">
         <p className="text-center text-destructive max-w-md">{error}</p>
-        <Button variant="outline" onClick={() => window.location.assign("/pricing")}>
+        <Button variant="outline" onClick={() => window.location.assign("/")}>
           Back to pricing
         </Button>
       </div>
