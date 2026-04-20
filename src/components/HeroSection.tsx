@@ -1,10 +1,10 @@
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { Calendar, Users, CheckSquare, ClipboardList } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
-import hdLogo from "@/assets/HD-logo.png";
-import mainLogo from "@/assets/main-logo.jpg";
 import { SparklesCore } from "@/components/ui/sparkles";
 import { useTheme } from "@/contexts/ThemeContext";
+import { Floating3DShapes } from "@/components/motion/floating-3d-shapes";
+import { Tilt3D } from "@/components/motion/tilt-3d";
 
 const DeviceCard = ({
   children,
@@ -32,12 +32,17 @@ const DeviceCard = ({
     <motion.div
       initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
       animate={{ opacity: 1, y: 0 }}
+      whileHover={
+        shouldReduceMotion
+          ? undefined
+          : { scale: 1.02, transition: { type: "spring", stiffness: 420, damping: 22 } }
+      }
       transition={{ 
         duration: shouldReduceMotion ? 0 : 0.5, 
         delay: shouldReduceMotion ? 0 : delay,
         ease: "easeOut"
       }}
-      className={`bg-gradient-to-br from-card/95 to-card/80 backdrop-blur-xl rounded-2xl border border-primary/30 p-5 shadow-2xl hover:border-primary/50 transition-all duration-200 ${className}`}
+      className={`bg-gradient-to-br from-card/95 to-card/80 backdrop-blur-xl rounded-2xl border border-primary/30 p-5 shadow-2xl hover:border-primary/50 transition-colors duration-200 [transform-style:preserve-3d] ${className}`}
       style={{
         boxShadow: `0 8px 32px rgba(0, 0, 0, ${theme === "dark" ? "0.3" : "0.1"}), 0 0 40px ${shadowColor}, inset 0 1px 0 rgba(255, 255, 255, 0.1)`,
         willChange: "transform, opacity",
@@ -77,10 +82,11 @@ const CalendarCard = ({ shouldReduceMotion }: { shouldReduceMotion: boolean }) =
   }, [shouldReduceMotion, animationDuration]);
 
   return (
+    <Tilt3D className="absolute bottom-0 right-0 sm:right-8 w-64 sm:w-64 md:w-72 lg:w-80 floating-slow z-[8]" maxTilt={11}>
     <DeviceCard
       title="Calendar"
       icon={Calendar}
-      className="absolute bottom-0 right-0 sm:right-8 w-64 sm:w-64 md:w-72 lg:w-80 floating-slow z-[8]"
+      className="relative w-full z-[8]"
       delay={shouldReduceMotion ? 0 : 0.6}
     >
       <div className="grid grid-cols-7 gap-1 sm:gap-1.5 text-xs mb-2 sm:mb-3 px-0.5 sm:px-1">
@@ -167,6 +173,7 @@ const CalendarCard = ({ shouldReduceMotion }: { shouldReduceMotion: boolean }) =
         </div>
       </div>
     </DeviceCard>
+    </Tilt3D>
   );
 };
 
@@ -179,8 +186,24 @@ const CARD_STACK_CONFIG = {
 
 const HeroSection = () => {
   const shouldReduceMotion = useReducedMotion();
+  const heroRef = useRef<HTMLElement>(null);
   const [activeCardIndex, setActiveCardIndex] = useState(0);
   const { theme } = useTheme();
+
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
+  const parallaxY = useTransform(
+    scrollYProgress,
+    [0, 1],
+    [0, shouldReduceMotion ? 0 : 72],
+  );
+  const parallaxOpacity = useTransform(
+    scrollYProgress,
+    [0, 0.55, 1],
+    [1, 0.92, shouldReduceMotion ? 1 : 0.65],
+  );
   
   // Theme-aware sparkle color - darker and more saturated for light mode visibility
   const sparkleColor = theme === "dark" 
@@ -237,7 +260,11 @@ const HeroSection = () => {
   };
   
   return (
-    <section id="home" className="relative min-h-screen pt-20 overflow-hidden">
+    <section
+      ref={heroRef}
+      id="home"
+      className="relative min-h-screen pt-20 overflow-hidden"
+    >
       {/* Background Effects */}
       <div className="absolute inset-0 bg-gradient-dark" />
       <div className={`absolute inset-0 bg-gradient-radial ${
@@ -246,10 +273,10 @@ const HeroSection = () => {
           : "from-primary/25 via-primary/10 to-transparent"
       }`} />
 
-      {/* Sparkles Particles Background */}
-      <div
-        className="absolute inset-0 w-full h-full pointer-events-none"
-        style={{ zIndex: 1 }}
+      {/* Sparkles + radial drift subtly with scroll */}
+      <motion.div
+        className="absolute inset-0 w-full h-full pointer-events-none will-change-transform"
+        style={{ zIndex: 1, y: parallaxY, opacity: parallaxOpacity }}
       >
         <SparklesCore
           id="hero-sparkles"
@@ -261,7 +288,9 @@ const HeroSection = () => {
           particleColor={sparkleColor}
           speed={shouldReduceMotion ? 0.5 : 1.5}
         />
-      </div>
+      </motion.div>
+
+      <Floating3DShapes theme={theme} />
 
       {/* Decorative particles */}
       <div
@@ -301,7 +330,7 @@ const HeroSection = () => {
             }}
             className="relative z-10"
           >
-            <div className="flex flex-col items-center text-center gap-8 lg:gap-10">
+            <div className="flex flex-col items-center text-center gap-8 lg:gap-10 lg:items-start lg:text-left">
               {/* Large Logo with Glow */}
               {/* <div className="w-full flex flex-col items-center">
                 <div className="relative">
@@ -325,19 +354,136 @@ const HeroSection = () => {
                 </div>
               </div> */}
 
-              {/* Text Content - Below Logo */}
-              <div className="flex-1 max-w-4xl">
-                <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight mb-6">
-                  <span className="text-foreground block">All-in-One</span>
-                  <span className="text-foreground block">Catering</span>
-                  <span className="text-foreground block">Management</span>
-                  <span className="text-foreground block">Platform</span>
-                </h1>
+              {/* Hero copy */}
+              <div className="flex-1 max-w-3xl [perspective:900px]">
+                <motion.p
+                  initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 14 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    delay: shouldReduceMotion ? 0 : 0.08,
+                    duration: shouldReduceMotion ? 0 : 0.45,
+                    ease: "easeOut",
+                  }}
+                  className="inline-flex w-fit rounded-full border border-primary/30 bg-primary/10 px-4 py-2 text-xs sm:text-sm font-semibold text-primary mb-5"
+                >
+                  Built for Catering Business Owners
+                </motion.p>
+                <motion.h1
+                  className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.08] mb-6 text-foreground"
+                  initial="hidden"
+                  animate="visible"
+                  variants={{
+                    hidden: {},
+                    visible: {
+                      transition: {
+                        staggerChildren: shouldReduceMotion ? 0 : 0.055,
+                        delayChildren: shouldReduceMotion ? 0 : 0.12,
+                      },
+                    },
+                  }}
+                >
+                  <span className="block overflow-visible">
+                    {["Manage", "Your", "Entire", "Catering"].map((word) => (
+                      <motion.span
+                        key={word}
+                        className="inline-block mr-[0.28em] last:mr-0 origin-bottom"
+                        variants={{
+                          hidden: {
+                            opacity: 0,
+                            y: shouldReduceMotion ? 0 : 36,
+                            rotateX: shouldReduceMotion ? 0 : 52,
+                          },
+                          visible: {
+                            opacity: 1,
+                            y: 0,
+                            rotateX: 0,
+                            transition: shouldReduceMotion
+                              ? { duration: 0 }
+                              : {
+                                  type: "spring",
+                                  stiffness: 220,
+                                  damping: 20,
+                                  mass: 0.5,
+                                },
+                          },
+                        }}
+                      >
+                        {word}
+                      </motion.span>
+                    ))}
+                  </span>
+                  <span className="block mt-2 sm:mt-3 overflow-visible">
+                    {["Business", "in", "One", "App"].map((word) => (
+                      <motion.span
+                        key={word}
+                        className={`inline-block mr-[0.28em] last:mr-0 origin-bottom text-gradient-gold`}
+                        variants={{
+                          hidden: {
+                            opacity: 0,
+                            y: shouldReduceMotion ? 0 : 28,
+                            rotateX: shouldReduceMotion ? 0 : 45,
+                            scale: shouldReduceMotion ? 1 : 0.92,
+                          },
+                          visible: {
+                            opacity: 1,
+                            y: 0,
+                            rotateX: 0,
+                            scale: 1,
+                            transition: shouldReduceMotion
+                              ? { duration: 0 }
+                              : {
+                                  type: "spring",
+                                  stiffness: 200,
+                                  damping: 18,
+                                  mass: 0.55,
+                                },
+                          },
+                        }}
+                      >
+                        {word}
+                      </motion.span>
+                    ))}
+                  </span>
+                </motion.h1>
 
-                <p className="text-muted-foreground text-base sm:text-lg lg:text-xl mb-8 max-w-2xl mx-auto leading-relaxed">
-                  Streamline your catering business with our powerful,
-                  easy-to-use platform. Manage orders, schedules, clients, and
-                  more, all in one place.
+                <motion.p
+                  initial={{ opacity: 0, filter: shouldReduceMotion ? "none" : "blur(8px)" }}
+                  animate={{ opacity: 1, filter: "blur(0px)" }}
+                  transition={{
+                    delay: shouldReduceMotion ? 0 : 0.55,
+                    duration: shouldReduceMotion ? 0 : 0.65,
+                    ease: "easeOut",
+                  }}
+                  className="text-muted-foreground text-base sm:text-lg lg:text-xl mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed"
+                >
+                  From order booking to final invoice — manage events, payments,
+                  staff, utensils, and menus without Excel or paperwork.
+                </motion.p>
+                <motion.div
+                  initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    delay: shouldReduceMotion ? 0 : 0.65,
+                    duration: shouldReduceMotion ? 0 : 0.4,
+                    ease: "easeOut",
+                  }}
+                  className="flex flex-col sm:flex-row gap-3 mb-5"
+                >
+                  <a
+                    href="#pricing"
+                    className="inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 text-sm sm:text-base font-semibold text-primary-foreground shadow-lg shadow-primary/25 hover:brightness-110 transition-all"
+                  >
+                    Start Free Trial
+                  </a>
+                  <a
+                    href="#contact"
+                    className="inline-flex items-center justify-center rounded-xl border border-primary/40 bg-card/60 px-6 py-3 text-sm sm:text-base font-semibold text-foreground hover:bg-card/80 transition-all"
+                  >
+                    Book Demo
+                  </a>
+                </motion.div>
+                <p className="text-xs sm:text-sm text-muted-foreground">
+                  No credit card required • Setup in minutes
                 </p>
               </div>
             </div>
@@ -352,7 +498,7 @@ const HeroSection = () => {
               delay: shouldReduceMotion ? 0 : 0.2,
               ease: "easeOut"
             }}
-            className="relative h-[500px] sm:h-[600px] lg:h-[700px] overflow-visible"
+            className="relative h-[500px] sm:h-[600px] lg:h-[700px] overflow-visible [perspective:1400px]"
             style={{ willChange: "transform, opacity" }}
           >
             {/* Clients Screen - Top Left (Tablet) */}
@@ -371,10 +517,11 @@ const HeroSection = () => {
                 filter: `drop-shadow(0 ${getCardAnimationProps(0).shadowIntensity * 20}px ${getCardAnimationProps(0).shadowIntensity * 30}px ${getCardAnimationProps(0).shadowColor}, ${getCardAnimationProps(0).shadowIntensity}))`,
               }}
             >
+              <Tilt3D className="w-64 sm:w-72 md:w-80 lg:w-96" maxTilt={10}>
               <DeviceCard
                 title="Clients"
                 icon={Users}
-                className="w-64 sm:w-72 md:w-80 lg:w-96"
+                className="w-full"
                 delay={shouldReduceMotion ? 0 : 0.3}
                 theme={theme}
               >
@@ -416,9 +563,10 @@ const HeroSection = () => {
                 </button>
               </div>
               </DeviceCard>
+              </Tilt3D>
             </motion.div>
 
-            {/* Upcoming Events Screen - Top Right (Tablet) */}
+            {/* Order Management Screen - Top Right (Tablet) */}
             <motion.div
               animate={shouldReduceMotion ? {} : {
                 scale: getCardAnimationProps(1).scale,
@@ -434,27 +582,28 @@ const HeroSection = () => {
                 filter: `drop-shadow(0 ${getCardAnimationProps(1).shadowIntensity * 20}px ${getCardAnimationProps(1).shadowIntensity * 30}px ${getCardAnimationProps(1).shadowColor}, ${getCardAnimationProps(1).shadowIntensity}))`,
               }}
             >
+              <Tilt3D className="w-60 sm:w-64 md:w-72 lg:w-80" maxTilt={10}>
               <DeviceCard
-                title="Upcoming Events"
-                icon={Calendar}
-                className="w-60 sm:w-64 md:w-72 lg:w-80"
+                title="Order Management"
+                icon={ClipboardList}
+                className="w-full"
                 delay={shouldReduceMotion ? 0 : 0.4}
                 theme={theme}
               >
               <div className="space-y-4">
                 <div className="p-4 bg-gradient-to-br from-primary/20 to-primary/10 rounded-xl border border-primary/20">
                   <div className="text-xs text-muted-foreground mb-1.5 font-medium uppercase tracking-wide">
-                    Next Event
+                    Priority Order
                   </div>
                   <div className="text-base text-foreground font-bold flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-primary" />
-                    Dec 15, 2024
+                    <ClipboardList className="w-4 h-4 text-primary" />
+                    O-218 / 450 Guests
                   </div>
                 </div>
                 <div className="space-y-2.5">
                   {[
-                    { name: "Wedding Reception", time: "6:00 PM", type: "primary" },
-                    { name: "Corporate Lunch", time: "12:00 PM", type: "secondary" },
+                    { name: "Wedding Reception", time: "Menu Locked", type: "primary" },
+                    { name: "Corporate Lunch", time: "Awaiting Approval", type: "secondary" },
                   ].map((event, i) => (
                     <div
                       key={i}
@@ -475,9 +624,10 @@ const HeroSection = () => {
                 </div>
               </div>
               </DeviceCard>
+              </Tilt3D>
             </motion.div>
 
-            {/* Booking Details Screen - Bottom Left (Tablet) */}
+            {/* Payment Tracking Screen - Bottom Left (Tablet) */}
             <motion.div
               animate={shouldReduceMotion ? {} : {
                 scale: getCardAnimationProps(2).scale,
@@ -493,19 +643,20 @@ const HeroSection = () => {
                 filter: `drop-shadow(0 ${getCardAnimationProps(2).shadowIntensity * 20}px ${getCardAnimationProps(2).shadowIntensity * 30}px ${getCardAnimationProps(2).shadowColor}, ${getCardAnimationProps(2).shadowIntensity}))`,
               }}
             >
+              <Tilt3D className="w-64 sm:w-72 md:w-80 lg:w-96" maxTilt={10}>
               <DeviceCard
-                title="Booking Details"
-                icon={ClipboardList}
-                className="w-64 sm:w-72 md:w-80 lg:w-96"
+                title="Payment Tracking"
+                icon={CheckSquare}
+                className="w-full"
                 delay={shouldReduceMotion ? 0 : 0.5}
                 theme={theme}
               >
               <div className="space-y-2.5">
                 {[
-                  { label: "Food Catering", status: "confirmed", icon: "✓" },
-                  { label: "Booking Management", status: "pending", icon: "⏱" },
-                  { label: "Cook Hiring", status: "confirmed", icon: "✓" },
-                  { label: "Event Monitoring", status: "confirmed", icon: "✓" },
+                  { label: "Advance Received", status: "paid", icon: "INR" },
+                  { label: "Vendor Settlement", status: "pending", icon: "INR" },
+                  { label: "Final Invoice", status: "paid", icon: "INR" },
+                  { label: "Balance Due", status: "pending", icon: "INR" },
                 ].map((item, i) => (
                   <div
                     key={i}
@@ -513,7 +664,7 @@ const HeroSection = () => {
                   >
                     <div className="flex items-center gap-3">
                       <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold ${
-                        item.status === "confirmed"
+                        item.status === "paid"
                           ? "bg-green-500/20 text-green-400"
                           : theme === "dark"
                             ? "bg-primary/20 text-primary"
@@ -526,7 +677,7 @@ const HeroSection = () => {
                       </span>
                     </div>
                     <div className={`px-2 py-1 rounded-md text-xs font-semibold ${
-                      item.status === "confirmed"
+                      item.status === "paid"
                         ? "bg-green-500/20 text-green-400"
                         : theme === "dark"
                           ? "bg-primary/20 text-primary"
@@ -538,6 +689,7 @@ const HeroSection = () => {
                 ))}
               </div>
               </DeviceCard>
+              </Tilt3D>
             </motion.div>
 
             {/* Calendar Screen - Bottom Right (Small Tablet/Phone) */}

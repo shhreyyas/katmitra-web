@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import {
   Menu,
   X,
@@ -32,23 +33,53 @@ const animeNavItems = navItems.map((item) => ({
 }));
 
 const Header = () => {
-  const location = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
+  const [headerVisible, setHeaderVisible] = useState(true);
+  const [isDesktop, setIsDesktop] = useState(
+    typeof window !== "undefined" ? window.matchMedia("(min-width: 1024px)").matches : false,
+  );
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const onMq = () => setIsDesktop(mq.matches);
+    onMq();
+    mq.addEventListener("change", onMq);
+    return () => mq.removeEventListener("change", onMq);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      const y = window.scrollY;
+      setIsScrolled(y > 48);
+      if (y < 64) {
+        setHeaderVisible(true);
+      } else {
+        setHeaderVisible(y < lastScrollY.current);
+      }
+      lastScrollY.current = y;
     };
-    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const hideHeaderBar =
+    isDesktop && headerVisible === false && !isMobileMenuOpen;
+
   return (
-    <header
-      className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-lg border-b border-border/50 transition-all duration-300"
+    <motion.header
+      className={`fixed top-0 left-0 right-0 z-50 border-b transition-colors duration-300 ${
+        isScrolled
+          ? "bg-background/95 backdrop-blur-xl border-border/55 shadow-sm"
+          : "bg-background/80 backdrop-blur-md border-border/40"
+      }`}
       style={{ overflow: "visible", paddingTop: "1rem" }}
+      initial={false}
+      animate={{ y: hideHeaderBar ? -120 : 0 }}
+      transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
     >
       <div
         className="container mx-auto px-4 lg:px-8"
@@ -221,7 +252,7 @@ const Header = () => {
 
       {/* Gold accent line */}
       <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
-    </header>
+    </motion.header>
   );
 };
 

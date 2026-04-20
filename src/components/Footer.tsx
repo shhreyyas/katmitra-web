@@ -1,277 +1,111 @@
-import {
-  Mail,
-  Phone,
-  MapPin,
-  Facebook,
-  Instagram,
-  Twitter,
-  Linkedin,
-  Globe,
-} from "lucide-react";
-import { FooterBackgroundGradient } from "@/components/ui/hover-footer";
-import { TextHoverEffect } from "@/components/ui/hover-footer";
-import { motion } from "framer-motion";
-import { useRef, useEffect, useState } from "react";
+import { Mail, MessageCircle, Instagram, Youtube } from "lucide-react";
 import { Link } from "react-router-dom";
 import mainLogo from "@/assets/main-logo.jpg";
 
-const footerLinks = [
-  {
-    title: "Quick Links",
-    links: [
-      { label: "Home", href: "/home" },
-      { label: "Features", href: "/features" },
-      { label: "Pricing", href: "/pricing" },
-      { label: "Contact", href: "/contact" },
-    ],
-  },
-  {
-    title: "Helpful Links",
-    links: [
-      { label: "FAQs", href: "/faqs" },
-      { label: "Support", href: "/support" },
-      { label: "Terms & Conditions", href: "/terms-and-conditions" },
-    ],
-  },
-];
-
-const contactInfo = [
-  {
-    icon: <Mail size={18} className="text-primary" />,
-    text: "sales@myjucas.com",
-    href: "mailto:sales@myjucas.com",
-  },
-  {
-    icon: <Phone size={18} className="text-primary" />,
-    text: "+91 93273 01738",
-    href: "tel:+919327301738",
-  },
-  {
-    icon: <MapPin size={18} className="text-primary" />,
-    text: "353, Maruti Plaza, Vijay Park Society, Krishnanagar, Ahmedabad, Gujarat 382345",
-  },
-];
-
-const socialLinks = [
-  { icon: <Facebook size={20} />, label: "Facebook", href: "#" },
-  { icon: <Instagram size={20} />, label: "Instagram", href: "https://www.instagram.com/katmitra.official/" },
-  { icon: <Twitter size={20} />, label: "Twitter", href: "#" },
-  { icon: <Linkedin size={20} />, label: "LinkedIn", href: "#" },
-  { icon: <Globe size={20} />, label: "Globe", href: "#" },
-];
-
 const Footer = () => {
-  const contentRef = useRef<HTMLDivElement>(null);
-  const textRef = useRef<HTMLDivElement>(null);
-  const [scale, setScale] = useState(1);
-  const [opacity, setOpacity] = useState(1);
-
-  useEffect(() => {
-    let animationFrameId: number;
-
-    const checkOverlap = () => {
-      if (!contentRef.current || !textRef.current) return;
-
-      const contentRect = contentRef.current.getBoundingClientRect();
-      const textRect = textRef.current.getBoundingClientRect();
-
-      // Check if text overlaps with content vertically
-      const textCenterY = textRect.top + textRect.height / 2;
-      const contentTop = contentRect.top;
-      const contentBottom = contentRect.bottom;
-
-      // Calculate how much the text center is within the content area
-      let overlapPercentage = 0;
-      if (textCenterY >= contentTop && textCenterY <= contentBottom) {
-        // Text center is within content area
-        const contentCenterY = contentTop + contentRect.height / 2;
-        const distanceFromCenter = Math.abs(textCenterY - contentCenterY);
-        const maxDistance = contentRect.height / 2;
-        overlapPercentage = 1 - distanceFromCenter / maxDistance;
-      } else if (textCenterY < contentTop) {
-        // Text is above content - check proximity
-        const distance = contentTop - textCenterY;
-        const threshold = textRect.height * 0.5;
-        if (distance < threshold) {
-          overlapPercentage = 1 - distance / threshold;
-        }
-      } else {
-        // Text is below content - check proximity
-        const distance = textCenterY - contentBottom;
-        const threshold = textRect.height * 0.5;
-        if (distance < threshold) {
-          overlapPercentage = 1 - distance / threshold;
-        }
-      }
-
-      // Clamp overlap percentage
-      overlapPercentage = Math.max(0, Math.min(1, overlapPercentage));
-
-      // Scale and opacity based on overlap (more overlap = smaller scale)
-      const newScale = Math.max(0.4, 1 - overlapPercentage * 0.6);
-      const newOpacity = Math.max(0.4, 1 - overlapPercentage * 0.4);
-
-      setScale(newScale);
-      setOpacity(newOpacity);
-    };
-
-    const update = () => {
-      checkOverlap();
-      animationFrameId = requestAnimationFrame(update);
-    };
-
-    // Start animation loop
-    update();
-
-    // Also check on scroll and resize
-    window.addEventListener("scroll", checkOverlap, { passive: true });
-    window.addEventListener("resize", checkOverlap);
-
-    return () => {
-      cancelAnimationFrame(animationFrameId);
-      window.removeEventListener("scroll", checkOverlap);
-      window.removeEventListener("resize", checkOverlap);
-    };
-  }, []);
-
   return (
-    <footer className="bg-background/10 relative h-fit rounded-3xl overflow-hidden m-8">
-      <div ref={contentRef} className="max-w-7xl mx-auto p-14 z-40 relative">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 md:gap-8 lg:gap-16 pb-12">
-          {/* Brand section */}
-          <div className="flex flex-col space-y-4">
-            <div className="flex items-center space-x-3">
-              <img
-                src={mainLogo}
-                alt="KATMITRA"
-                className="w-12 h-12 object-contain"
-              />
-              <span className="font-display text-2xl font-bold">
-                <span className="text-primary">KAT</span>
-                <span className="text-foreground">MITRA</span>
-              </span>
-            </div>
-            <p className="text-muted-foreground text-sm leading-relaxed">
-              Streamline your catering business with our powerful, easy-to-use
-              platform. Manage orders, schedules, clients, and more — all in one
-              place.
+    <footer className="bg-background text-foreground mt-16 border-t border-border/50">
+      <div className="container mx-auto px-4 lg:px-8 py-14 lg:py-16">
+        <div className="rounded-2xl border border-border bg-card px-6 py-6 sm:px-8 sm:py-7 mb-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-sm">
+          <div>
+            <h3 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-1">
+              Start Managing Your Catering Business Today
+            </h3>
+            <p className="text-muted-foreground">
+              Simple, powerful, and built for catering owners.
             </p>
           </div>
+          <a
+            href="#pricing"
+            className="inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground hover:brightness-95 transition-all"
+          >
+            Start Free Now
+          </a>
+        </div>
 
-          {/* Footer link sections */}
-          {footerLinks.map((section) => (
-            <div key={section.title}>
-              <h4 className="text-foreground text-lg font-semibold mb-6">
-                {section.title}
-              </h4>
-              <ul className="space-y-3">
-                {section.links.map((link) => (
-                  <li key={link.label} className="relative">
-                    {link.href.startsWith("/") && (link.label === "FAQs" || link.label === "Support" || link.label === "Terms & Conditions") ? (
-                      <a
-                        href={link.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-muted-foreground hover:text-primary transition-colors"
-                      >
-                        {link.label}
-                      </a>
-                    ) : link.href.startsWith("/") ? (
-                      <Link
-                        to={link.href}
-                        className="text-muted-foreground hover:text-primary transition-colors"
-                      >
-                        {link.label}
-                      </Link>
-                    ) : (
-                      <a
-                        href={link.href}
-                        className="text-muted-foreground hover:text-primary transition-colors"
-                      >
-                        {link.label}
-                      </a>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-
-          {/* Contact section */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 pb-10">
           <div>
-            <h4 className="text-foreground text-lg font-semibold mb-6">
-              Contact Us
-            </h4>
-            <ul className="space-y-4">
-              {contactInfo.map((item, i) => (
-                <li key={i} className="flex items-start space-x-3">
-                  {item.icon}
-                  {item.href ? (
-                    <a
-                      href={item.href}
-                      className="text-muted-foreground hover:text-primary transition-colors text-sm"
-                    >
-                      {item.text}
-                    </a>
-                  ) : (
-                    <span className="text-muted-foreground hover:text-primary transition-colors text-sm">
-                      {item.text}
-                    </span>
-                  )}
-                </li>
-              ))}
+            <div className="flex items-center space-x-3 mb-4">
+              <img src={mainLogo} alt="KATMITRA" className="w-11 h-11 object-contain" />
+              <span className="font-display text-2xl font-bold text-foreground">Katmitra</span>
+            </div>
+            <p className="text-sm leading-relaxed mb-3 text-muted-foreground">
+              All-in-one catering management software to manage orders, events,
+              payments, staff, and operations.
+            </p>
+            <p className="text-sm text-muted-foreground">Built for catering business owners</p>
+          </div>
+
+          <div>
+            <h4 className="text-foreground font-semibold mb-4">Product</h4>
+            <ul className="space-y-2.5 text-sm text-muted-foreground">
+              <li><Link to="/features" className="hover:text-primary transition-colors">Features</Link></li>
+              <li><Link to="/pricing" className="hover:text-primary transition-colors">Pricing</Link></li>
+              <li><Link to="/how-it-works" className="hover:text-primary transition-colors">How It Works</Link></li>
+              <li><Link to="/faqs" className="hover:text-primary transition-colors">FAQ</Link></li>
             </ul>
           </div>
-        </div>
 
-        <hr className="border-t border-border/30 my-8" />
-
-        {/* Footer bottom */}
-        <div className="flex flex-col md:flex-row justify-between items-center text-sm space-y-4 md:space-y-0">
-          {/* Social icons */}
-          <div className="flex space-x-6 text-muted-foreground">
-            {socialLinks.map(({ icon, label, href }) => (
-              <a
-                key={label}
-                href={href}
-                aria-label={label}
-                className="hover:text-primary transition-colors"
-                target={href.startsWith("http") ? "_blank" : undefined}
-                rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
-              >
-                {icon}
-              </a>
-            ))}
+          <div>
+            <h4 className="text-foreground font-semibold mb-4">Company</h4>
+            <ul className="space-y-2.5 text-sm text-muted-foreground">
+              <li><Link to="/home" className="hover:text-primary transition-colors">About Us</Link></li>
+              <li><Link to="/contact" className="hover:text-primary transition-colors">Contact</Link></li>
+              <li><Link to="/terms-and-conditions" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
+              <li><Link to="/terms-and-conditions" className="hover:text-primary transition-colors">Terms & Conditions</Link></li>
+            </ul>
           </div>
 
-          {/* Copyright */}
-          <p className="text-muted-foreground text-center md:text-left">
-            &copy; {new Date().getFullYear()} KatMitra. All rights reserved.
-          </p>
+          <div>
+            <h4 className="text-foreground font-semibold mb-4">Support</h4>
+            <ul className="space-y-2.5 text-sm mb-5 text-muted-foreground">
+              <li><Link to="/support" className="hover:text-primary transition-colors">Help / Support</Link></li>
+              <li>
+                <a href="mailto:support@katmitra.com" className="hover:text-primary transition-colors inline-flex items-center gap-2">
+                  <Mail className="w-4 h-4" />
+                  support@katmitra.com
+                </a>
+              </li>
+            </ul>
+
+            <div className="flex items-center gap-4">
+              <a
+                href="https://wa.me/919265755484"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="WhatsApp"
+                className="hover:text-primary transition-colors"
+              >
+                <MessageCircle className="w-5 h-5" />
+              </a>
+              <a
+                href="https://www.instagram.com/katmitra.official/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                className="hover:text-primary transition-colors"
+              >
+                <Instagram className="w-5 h-5" />
+              </a>
+              <a href="#" aria-label="YouTube" className="hover:text-primary transition-colors">
+                <Youtube className="w-5 h-5" />
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div className="border-t border-border/60 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-muted-foreground">
+          <p>© 2026 Katmitra. All rights reserved.</p>
+          <div className="flex items-center gap-5">
+            <Link to="/terms-and-conditions" className="hover:text-primary transition-colors">
+              Privacy Policy
+            </Link>
+            <Link to="/terms-and-conditions" className="hover:text-primary transition-colors">
+              Terms
+            </Link>
+          </div>
         </div>
       </div>
-
-      {/* Text hover effect with animated scaling */}
-      <motion.div
-        ref={textRef}
-        className="lg:flex hidden h-[30rem] -mt-52 -mb-36 absolute inset-0 pointer-events-none"
-        animate={{
-          scale,
-          opacity,
-        }}
-        transition={{
-          type: "spring",
-          stiffness: 100,
-          damping: 20,
-          mass: 0.5,
-        }}
-      >
-        <div className="w-full h-full">
-          <TextHoverEffect text="KatMitra" className="z-50" />
-        </div>
-      </motion.div>
-
-      <FooterBackgroundGradient />
     </footer>
   );
 };

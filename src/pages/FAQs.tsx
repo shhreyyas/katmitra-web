@@ -6,64 +6,54 @@ import Footer from "@/components/Footer";
 
 const faqs = [
   {
-    question: "What is KatMitra?",
+    question: "Is Katmitra only for catering owners?",
     answer:
-      "KatMitra is an all-in-one catering management platform that helps caterers manage orders, clients, menus, invoices, staff, and event schedules from one dashboard.",
+      "Yes, Katmitra is specially designed for catering business owners to manage orders, events, staff, and operations.",
   },
   {
-    question: "Do I need a credit card for the free trial?",
+    question: "Do I need technical knowledge to use this app?",
     answer:
-      "No, the 7-day free trial does not require any credit card. You get full access to all features during the trial period.",
+      "No, Katmitra is built to be simple and easy to use. Anyone can start managing their catering business within minutes.",
   },
   {
-    question: "Can I manage multiple events at the same time?",
+    question: "How does payment tracking work?",
     answer:
-      "Yes, KatMitra allows you to handle unlimited orders and event bookings, making it easy to manage multiple events simultaneously.",
+      "You can manually record every payment entry. Even partial payments like INR 200, INR 500 can be tracked with date and details.",
   },
   {
-    question: "Can I add my team members to the platform?",
+    question: "Is online payment required?",
     answer:
-      "Yes! The Professional and Enterprise plans support unlimited team members with collaboration features.",
+      "No, all payments are handled offline between you and your customer. Katmitra helps you track and manage them.",
   },
   {
-    question: "Does KatMitra support multiple business locations?",
+    question: "Can I generate invoices?",
     answer:
-      "Yes, the Professional plan includes multi-location support, and Enterprise plan offers custom integrations for large-scale operations.",
+      "Yes, you can generate professional invoices based on selected menu and completed events.",
   },
   {
-    question: "Can I create and customize my catering menu?",
+    question: "How does the grocery list feature work?",
     answer:
-      "Absolutely! Our Menu Builder lets you create, edit, and customize menus with flexible pricing and client-based customization.",
+      "Based on the selected menu, Katmitra automatically generates a complete shopping list for your event.",
   },
   {
-    question: "How can I generate invoices and quotations?",
+    question: "Is the app free to use?",
     answer:
-      "You can generate professional invoices and proposals in seconds using the built-in Invoice & Quotation Generator.",
+      "Yes, currently Katmitra is completely free to use until 2027.",
   },
   {
-    question: "What payment methods are supported?",
+    question: "Will my data be safe?",
     answer:
-      "KatMitra supports multiple secure digital payment options depending on your subscription plan.",
+      "Yes, your data is securely stored and accessible only to you.",
   },
   {
-    question: "Is my business data safe?",
+    question: "Can I manage multiple events at once?",
     answer:
-      "Yes, we use advanced security and encrypted data protection to keep your business and client information secure.",
+      "Yes, you can manage multiple past and upcoming events using the calendar view.",
   },
   {
-    question: "Can I cancel my subscription anytime?",
+    question: "Do I need a laptop or can I use mobile?",
     answer:
-      "Yes, you can cancel anytime. There are no hidden charges or lock-in periods.",
-  },
-  {
-    question: "What kind of support will I receive?",
-    answer:
-      "Free Plan: Email support\nProfessional: Priority email support\nEnterprise: 24/7 phone & chat + dedicated manager",
-  },
-  {
-    question: "Does KatMitra offer training for new users?",
-    answer:
-      "Yes, the Enterprise plan includes custom onboarding, training, and dedicated support assistance.",
+      "You can use Katmitra on your mobile device (Android & iOS) to manage your business anytime, anywhere.",
   },
 ];
 
@@ -72,13 +62,15 @@ const FAQItem = ({
   answer,
   index,
   shouldReduceMotion,
+  defaultOpen = false,
 }: {
   question: string;
   answer: string;
   index: number;
   shouldReduceMotion: boolean;
+  defaultOpen?: boolean;
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(defaultOpen);
 
   return (
     <motion.div
@@ -169,7 +161,7 @@ const FAQs = () => {
               <span className="text-gradient-gold block">Questions</span>
             </h1>
             <p className="text-muted-foreground text-lg sm:text-xl max-w-2xl mx-auto">
-              Find answers to common questions about KatMitra and how it can help streamline your catering business.
+              Everything you need to know before getting started.
             </p>
           </motion.div>
 
@@ -182,6 +174,7 @@ const FAQs = () => {
                 answer={faq.answer}
                 index={index}
                 shouldReduceMotion={shouldReduceMotion}
+                defaultOpen={index === 0}
               />
             ))}
           </div>

@@ -13,11 +13,46 @@ const ContactSection = () => {
     phone: "",
     message: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "/api";
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Thank you! We'll get back to you soon.");
-    setFormData({ name: "", email: "", phone: "", message: "" });
+    if (isSubmitting) return;
+
+    try {
+      setIsSubmitting(true);
+      const response = await fetch(`${apiBaseUrl}/contact-us`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          customer_name: formData.name,
+          phone: formData.phone,
+          description: formData.message,
+        }),
+      });
+
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(result?.message || "Failed to submit inquiry");
+      }
+
+      toast.success(
+        result?.message || "Thank you! Your inquiry has been submitted.",
+      );
+      setFormData({ name: "", email: "", phone: "", message: "" });
+    } catch (error) {
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Unable to submit inquiry. Please try again.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -96,9 +131,10 @@ const ContactSection = () => {
               </div>
               <Button
                 type="submit"
+                disabled={isSubmitting}
                 className="w-full bg-gradient-gold text-primary-foreground font-semibold py-6 text-lg rounded-xl hover:opacity-90 transition-all duration-300 glow-gold-sm group"
               >
-                Send Message
+                {isSubmitting ? "Sending..." : "Send Message"}
                 <Send className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
             </form>
@@ -123,7 +159,7 @@ const ContactSection = () => {
               </div>
 
               <div className="space-y-6">
-                <div className="flex items-start gap-4">
+                {/* <div className="flex items-start gap-4">
                   <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
                     <MapPin className="w-6 h-6 text-primary" />
                   </div>
@@ -134,7 +170,7 @@ const ContactSection = () => {
                       Krishnanagar, Ahmedabad, Gujarat 382345
                     </p>
                   </div>
-                </div>
+                </div> */}
 
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
@@ -142,7 +178,7 @@ const ContactSection = () => {
                   </div>
                   <div>
                     <h4 className="font-semibold text-foreground mb-1">Phone</h4>
-                    <p className="text-muted-foreground text-sm">+91 93273 01738</p>
+                    <p className="text-muted-foreground text-sm">+91 92657 5484</p>
                   </div>
                 </div>
 
@@ -153,8 +189,8 @@ const ContactSection = () => {
                   <div>
                     <h4 className="font-semibold text-foreground mb-1">Email</h4>
                     <p className="text-muted-foreground text-sm">
-                      sales@myjucas.com<br />
-                      supports@myjucas.com
+                      katmitra.official@gmail.com<br />
+                      info.katmitra@gmail.com
                     </p>
                   </div>
                 </div>

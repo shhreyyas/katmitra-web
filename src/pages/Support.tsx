@@ -3,11 +3,9 @@ import { useReducedMotion } from "framer-motion";
 import { 
   Mail, 
   Phone, 
-  MapPin, 
   Clock, 
   CheckCircle2, 
   HelpCircle,
-  Calendar,
   X
 } from "lucide-react";
 import Footer from "@/components/Footer";
@@ -18,24 +16,6 @@ const supportServices = [
   "Invoice and quotation support",
   "Team and business setup guidance",
   "API and integration support (Professional & Enterprise)",
-];
-
-const responseTimes = [
-  {
-    plan: "Free Plan",
-    time: "24–48 hours",
-    icon: <Clock className="w-5 h-5" />,
-  },
-  {
-    plan: "Professional",
-    time: "12–24 hours",
-    icon: <Clock className="w-5 h-5" />,
-  },
-  {
-    plan: "Enterprise",
-    time: "Instant priority support",
-    icon: <CheckCircle2 className="w-5 h-5" />,
-  },
 ];
 
 const SupportCard = ({
@@ -182,13 +162,13 @@ const Support = () => {
                 title="Email"
                 content={
                   <a
-                    href="mailto:supports@myjucas.com"
+                    href="mailto:info.katmitra@gmail.com"
                     className="text-primary hover:underline font-medium"
                   >
-                    supports@myjucas.com
+                    info.katmitra@gmail.com
                   </a>
                 }
-                link="mailto:supports@myjucas.com"
+                link="mailto:info.katmitra@gmail.com"
                 index={0}
                 shouldReduceMotion={shouldReduceMotion}
               />
@@ -197,76 +177,14 @@ const Support = () => {
                 title="Phone"
                 content={
                   <a
-                    href="tel:+919327301738"
+                    href="tel:+91 926575484"
                     className="text-primary hover:underline font-medium"
                   >
-                    +91 93273 01738
+                    +91 926575484
                   </a>
                 }
-                link="tel:+919327301738"
+                link="tel:+91 926575484"
                 index={1}
-                shouldReduceMotion={shouldReduceMotion}
-              />
-            </div>
-          </motion.div>
-
-          {/* Response Time Section */}
-          <motion.div
-            initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: shouldReduceMotion ? 0 : 0.6, delay: 0.4 }}
-            className="mb-16"
-          >
-            <h3 className="text-2xl font-bold text-foreground mb-6 text-center">
-              Response Time
-            </h3>
-            <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-              {responseTimes.map((item, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{
-                    duration: shouldReduceMotion ? 0 : 0.5,
-                    delay: shouldReduceMotion ? 0 : index * 0.1 + 0.5,
-                  }}
-                  className="bg-card/50 backdrop-blur-sm border border-primary/20 rounded-xl p-6 text-center"
-                >
-                  <div className="flex justify-center mb-3 text-primary">
-                    {item.icon}
-                  </div>
-                  <h4 className="font-semibold text-foreground mb-2">{item.plan}</h4>
-                  <p className="text-muted-foreground">{item.time}</p>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Office Address Section */}
-          <motion.div
-            initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: shouldReduceMotion ? 0 : 0.6, delay: 0.5 }}
-            className="mb-16"
-          >
-            <h2 className="text-3xl font-bold text-foreground mb-8 text-center">
-              Office Address for In-Person Support
-            </h2>
-            <div className="max-w-2xl mx-auto">
-              <SupportCard
-                icon={<MapPin className="w-6 h-6" />}
-                title="Location"
-                content={
-                  <div className="text-muted-foreground leading-relaxed">
-                    353, Maruti Plaza, Vijay Park Society,
-                    <br />
-                    Krishnanagar, Ahmedabad, Gujarat – 382345
-                  </div>
-                }
-                index={0}
                 shouldReduceMotion={shouldReduceMotion}
               />
             </div>

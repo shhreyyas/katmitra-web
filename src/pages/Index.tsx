@@ -35,7 +35,7 @@ const Index = () => {
   }, [location]);
 
   return (
-    <main className="min-h-screen bg-background overflow-x-hidden">
+    <main className="min-h-screen bg-background overflow-x-hidden scroll-smooth">
       <Header />
       <HeroSection />
       <BenefitsSection />

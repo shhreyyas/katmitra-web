@@ -244,11 +244,11 @@ const TermsAndConditions = () => {
                   href="tel:+919327301738"
                   className="text-primary hover:underline text-sm"
                 >
-                  +91 93273 01738
+                  +91 92657 5484
                 </a>
               </motion.div>
 
-              <motion.div
+              {/* <motion.div
                 initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -262,7 +262,7 @@ const TermsAndConditions = () => {
                 <p className="text-muted-foreground text-sm leading-relaxed">
                   353, Maruti Plaza, Vijay Park Society, Krishnanagar, Ahmedabad, Gujarat 382345
                 </p>
-              </motion.div>
+              </motion.div> */}
             </div>
           </motion.div>
         </div>

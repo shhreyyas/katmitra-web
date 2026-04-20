@@ -1,114 +1,100 @@
-import { motion } from "framer-motion";
-import { Shield, Sparkles, Star, Zap } from "lucide-react";
-import {
-  CreativePricing,
-  type PricingTier,
-} from "@/components/ui/creative-pricing";
+import { motion, useReducedMotion } from "framer-motion";
+import { CheckCircle2 } from "lucide-react";
+import { ScrollReveal } from "@/components/motion/scroll-reveal";
+import { revealViewport } from "@/lib/motion";
 
-const pricingTiers: PricingTier[] = [
-  {
-    name: "Free Trial",
-    icon: <Zap className="w-6 h-6" />,
-    price: 0,
-    description: "Perfect for trying out KatMitra",
-    color: "primary",
-    features: [
-      "Full feature access for 7 days",
-      "Unlimited orders & bookings",
-      "Client management system",
-      "Menu builder & customization",
-      "Invoice generation",
-      "Basic analytics dashboard",
-      "Email support",
-      "No credit card required",
-    ],
-  },
-  {
-    name: "Professional",
-    icon: <Star className="w-6 h-6" />,
-    price: 2999,
-    description: "For growing catering businesses",
-    color: "primary",
-    features: [
-      "Everything in Free Trial",
-      "Unlimited team members",
-      "Advanced analytics & reports",
-      "Multi-location support",
-      "Custom branding & themes",
-      "Priority email support",
-      "API access",
-      "Advanced inventory management",
-    ],
-    popular: true,
-  },
-  {
-    name: "Enterprise",
-    icon: <Sparkles className="w-6 h-6" />,
-    price: 7999,
-    description: "For large-scale operations",
-    color: "primary",
-    features: [
-      "Everything in Professional",
-      "Dedicated account manager",
-      "Custom integrations",
-      "White-label solution",
-      "Advanced security features",
-      "24/7 phone & chat support",
-      "Custom training & onboarding",
-      "SLA guarantee",
-    ],
-  },
+const planFeatures = [
+  "Event & Order Management",
+  "Smart Payment Tracking (Partial Payments)",
+  "Menu Management",
+  "Auto Grocery List",
+  "Staff Management",
+  "Utensil (Vasan) Tracking",
+  "Estimation System",
+  "Invoice Generation",
+  "Calendar Overview",
 ];
 
 const PricingSection = () => {
+  const reduce = useReducedMotion();
+
   return (
-    <section id="pricing" className="relative py-24 bg-card/30 overflow-hidden">
-      {/* Background decoration */}
+    <section
+      id="pricing"
+      className="relative py-28 sm:py-32 lg:py-40 bg-background overflow-hidden"
+    >
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
       <div className="absolute inset-0 bg-gradient-radial from-primary/5 via-transparent to-transparent" />
 
       <div className="container mx-auto px-4 lg:px-8 relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
-          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
-            Simple &{" "}
-            <span className="text-gradient-gold">Transparent Pricing</span>
+        <ScrollReveal className="text-center mb-16 lg:mb-24 max-w-3xl mx-auto">
+          <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold mb-5 leading-tight">
+            Simple, Transparent Pricing
           </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Start free and upgrade when you're ready. No hidden fees, no
-            surprises.
+          <p className="text-muted-foreground text-lg sm:text-xl max-w-xl mx-auto leading-relaxed">
+            Start for free today. Upgrade anytime as your business grows.
           </p>
-        </motion.div>
+        </ScrollReveal>
 
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: reduce ? 0 : 36 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
+          viewport={revealViewport}
+          transition={{ duration: reduce ? 0 : 0.6, delay: reduce ? 0 : 0.08 }}
+          className="max-w-2xl mx-auto"
         >
-          <CreativePricing
-            tag="Simple Pricing"
-            title="Choose Your Plan"
-            description="Start free and scale as you grow"
-            tiers={pricingTiers}
-          />
-        </motion.div>
+          <div className="text-center mb-6">
+            <span className="inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-semibold text-primary">
+              🚀 Early Access
+            </span>
+          </div>
 
-        {/* Trust badges */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="flex items-center justify-center gap-2 mt-12 text-muted-foreground text-sm"
-        >
-          <Shield className="w-4 h-4 text-primary" />
-          <span>Cancel anytime • No hidden charges • Secure payment</span>
+          <article className="relative rounded-3xl border border-primary/30 bg-card p-8 sm:p-10 shadow-xl transition-transform duration-300 hover:scale-[1.02]">
+            <div className="absolute -top-3 right-6 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">
+              Early Access
+            </div>
+
+            <p className="text-sm font-semibold uppercase tracking-widest text-primary mb-3">
+              Starter Plan
+            </p>
+            <h3 className="font-display text-3xl sm:text-4xl font-bold text-foreground mb-3">
+              Free
+            </h3>
+            <p className="text-sm text-primary font-medium mb-3">
+              Available during early access
+            </p>
+            <p className="text-muted-foreground mb-8">
+              Everything you need to manage your catering business in one place.
+            </p>
+
+            <ul className="space-y-3 mb-8 text-left">
+              {planFeatures.map((feature) => (
+                <li
+                  key={feature}
+                  className="flex items-start gap-3 text-foreground"
+                >
+                  <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 shrink-0" />
+                  <span>{feature}</span>
+                </li>
+              ))}
+            </ul>
+
+            <a
+              href="#contact"
+              className="inline-flex w-full justify-center rounded-xl bg-primary px-6 py-3 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/20 hover:brightness-95 transition-all"
+            >
+              Start Free Now
+            </a>
+            <p className="text-center text-sm text-muted-foreground mt-4">
+              No credit card required • Setup in minutes
+            </p>
+            <p className="text-center text-sm text-muted-foreground mt-2">
+              Early users will receive special pricing when plans are introduced.
+            </p>
+            <p className="text-center text-sm text-muted-foreground mt-2">
+              Paid plans will be introduced in the future.
+            </p>
+          </article>
         </motion.div>
       </div>
     </section>
