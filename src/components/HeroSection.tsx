@@ -3,7 +3,6 @@ import { Calendar, Users, CheckSquare, ClipboardList } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { SparklesCore } from "@/components/ui/sparkles";
 import { useTheme } from "@/contexts/ThemeContext";
-import { Floating3DShapes } from "@/components/motion/floating-3d-shapes";
 import { Tilt3D } from "@/components/motion/tilt-3d";
 
 const DeviceCard = ({
