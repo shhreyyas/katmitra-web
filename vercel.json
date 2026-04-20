@@ -1,0 +1,15 @@
+{
+  "redirects": [
+    {
+      "source": "/pricing",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/pricing/",
+      "destination": "/",
+      "permanent": false
+    }
+  ],
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+}

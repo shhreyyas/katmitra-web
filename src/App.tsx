@@ -6,10 +6,25 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import Index from "./pages/Index";
+import PricingEntry from "./pages/PricingEntry";
 import FAQs from "./pages/FAQs";
 import Support from "./pages/Support";
 import TermsAndConditions from "./pages/TermsAndConditions";
 import NotFound from "./pages/NotFound";
+import AdminLogin from "./pages/admin/AdminLogin";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminUsers from "./pages/admin/AdminUsers";
+import AdminAccessCodes from "./pages/admin/AdminAccessCodes";
+import AdminSubscriptions from "./pages/admin/AdminSubscriptions";
+import AdminPayments from "./pages/admin/AdminPayments";
+import AdminBookings from "./pages/admin/AdminBookings";
+import AdminQuotations from "./pages/admin/AdminQuotations";
+import AdminNotifications from "./pages/admin/AdminNotifications";
+import AdminSupport from "./pages/admin/AdminSupport";
+import AdminSettings from "./pages/admin/AdminSettings";
+import AdminLogs from "./pages/admin/AdminLogs";
+import AdminLayout from "./components/admin/AdminLayout";
+import AdminProtectedRoute from "./components/admin/AdminProtectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -104,16 +119,33 @@ const AppRoutes = () => (
   <>
     <FaviconUpdater />
     <Routes>
-      <Route path="/" element={<Index />} />
+      {/* PricingEntry: normal visit = Index; ?session_id= = app checkout (avoids /pricing 404 on hosts without SPA rewrites) */}
+      <Route path="/" element={<PricingEntry />} />
       <Route path="/home" element={<Index />} />
       <Route path="/features" element={<Index />} />
       <Route path="/how-it-works" element={<Index />} />
-      <Route path="/pricing" element={<Index />} />
+      <Route path="/pricing" element={<PricingEntry />} />
       <Route path="/clients" element={<Index />} />
       <Route path="/contact" element={<Index />} />
       <Route path="/faqs" element={<FAQs />} />
       <Route path="/support" element={<Support />} />
       <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+      <Route path="/admin/login" element={<AdminLogin />} />
+      <Route element={<AdminProtectedRoute />}>
+        <Route element={<AdminLayout />}>
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/users" element={<AdminUsers />} />
+          <Route path="/admin/access-codes" element={<AdminAccessCodes />} />
+          <Route path="/admin/subscriptions" element={<AdminSubscriptions />} />
+          <Route path="/admin/payments" element={<AdminPayments />} />
+          <Route path="/admin/bookings" element={<AdminBookings />} />
+          <Route path="/admin/quotations" element={<AdminQuotations />} />
+          <Route path="/admin/notifications" element={<AdminNotifications />} />
+          <Route path="/admin/support" element={<AdminSupport />} />
+          <Route path="/admin/settings" element={<AdminSettings />} />
+          <Route path="/admin/logs" element={<AdminLogs />} />
+        </Route>
+      </Route>
       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
       <Route path="*" element={<NotFound />} />
     </Routes>
