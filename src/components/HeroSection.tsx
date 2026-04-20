@@ -188,6 +188,7 @@ const HeroSection = () => {
   const shouldReduceMotion = useReducedMotion();
   const heroRef = useRef<HTMLElement>(null);
   const [activeCardIndex, setActiveCardIndex] = useState(0);
+  const [enableHeavyEffects, setEnableHeavyEffects] = useState(false);
   const { theme } = useTheme();
 
   const { scrollYProgress } = useScroll({
@@ -212,13 +213,36 @@ const HeroSection = () => {
   
   // Auto-loop through cards
   useEffect(() => {
-    if (shouldReduceMotion) return;
+    if (shouldReduceMotion || !enableHeavyEffects) return;
     
     const interval = setInterval(() => {
       setActiveCardIndex((prev) => (prev + 1) % CARD_STACK_CONFIG.cardOrder.length);
     }, CARD_STACK_CONFIG.activeDuration);
     
     return () => clearInterval(interval);
+  }, [shouldReduceMotion, enableHeavyEffects]);
+
+  // Delay expensive visual effects to improve initial load responsiveness
+  useEffect(() => {
+    if (shouldReduceMotion) return;
+
+    const win = window as Window & {
+      requestIdleCallback?: (
+        callback: () => void,
+        options?: { timeout: number },
+      ) => number;
+      cancelIdleCallback?: (id: number) => void;
+    };
+
+    const enable = () => setEnableHeavyEffects(true);
+
+    if (win.requestIdleCallback) {
+      const id = win.requestIdleCallback(enable, { timeout: 1200 });
+      return () => win.cancelIdleCallback?.(id);
+    }
+
+    const timer = window.setTimeout(enable, 600);
+    return () => window.clearTimeout(timer);
   }, [shouldReduceMotion]);
   
   // Get animation props for each card
@@ -274,23 +298,25 @@ const HeroSection = () => {
       }`} />
 
       {/* Sparkles + radial drift subtly with scroll */}
-      <motion.div
-        className="absolute inset-0 w-full h-full pointer-events-none will-change-transform"
-        style={{ zIndex: 1, y: parallaxY, opacity: parallaxOpacity }}
-      >
-        <SparklesCore
-          id="hero-sparkles"
-          background="transparent"
-          minSize={theme === "dark" ? 0.4 : 0.6}
-          maxSize={theme === "dark" ? 1.2 : 1.5}
-          particleDensity={shouldReduceMotion ? 30 : (theme === "dark" ? 60 : 80)}
-          className="w-full h-full"
-          particleColor={sparkleColor}
-          speed={shouldReduceMotion ? 0.5 : 1.5}
-        />
-      </motion.div>
+      {enableHeavyEffects ? (
+        <motion.div
+          className="absolute inset-0 w-full h-full pointer-events-none will-change-transform"
+          style={{ zIndex: 1, y: parallaxY, opacity: parallaxOpacity }}
+        >
+          <SparklesCore
+            id="hero-sparkles"
+            background="transparent"
+            minSize={theme === "dark" ? 0.4 : 0.6}
+            maxSize={theme === "dark" ? 1.2 : 1.5}
+            particleDensity={shouldReduceMotion ? 20 : (theme === "dark" ? 36 : 48)}
+            className="w-full h-full"
+            particleColor={sparkleColor}
+            speed={shouldReduceMotion ? 0.4 : 1.1}
+          />
+        </motion.div>
+      ) : null}
 
-      <Floating3DShapes theme={theme} />
+      {/* <Floating3DShapes theme={theme} /> */}
 
       {/* Decorative particles */}
       <div
@@ -369,7 +395,7 @@ const HeroSection = () => {
                   Built for Catering Business Owners
                 </motion.p>
                 <motion.h1
-                  className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.08] mb-6 text-foreground"
+                  className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.16] pb-1 mb-6 text-foreground"
                   initial="hidden"
                   animate="visible"
                   variants={{
@@ -456,7 +482,7 @@ const HeroSection = () => {
                   }}
                   className="text-muted-foreground text-base sm:text-lg lg:text-xl mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed"
                 >
-                  From order booking to final invoice — manage events, payments,
+                  From order booking to final invoice - manage events, payments,
                   staff, utensils, and menus without Excel or paperwork.
                 </motion.p>
                 <motion.div

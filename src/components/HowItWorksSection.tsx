@@ -85,7 +85,7 @@ const HowItWorksSection = () => {
             Run Your Catering Business in 6 Simple Steps
           </h2>
           <p className="text-muted-foreground text-lg sm:text-xl max-w-xl leading-relaxed">
-            From creating an order to generating the final invoice — manage everything in one smooth workflow.
+            From creating an order to generating the final invoice - manage everything in one smooth workflow.
           </p>
         </ScrollReveal>
 

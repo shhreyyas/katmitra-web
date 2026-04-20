@@ -61,9 +61,9 @@ const Footer = () => {
             <ul className="space-y-2.5 text-sm mb-5 text-muted-foreground">
               <li><Link to="/support" className="hover:text-primary transition-colors">Help / Support</Link></li>
               <li>
-                <a href="mailto:support@katmitra.com" className="hover:text-primary transition-colors inline-flex items-center gap-2">
+                <a href="mailto:info.katmitra@gmail.com" className="hover:text-primary transition-colors inline-flex items-center gap-2">
                   <Mail className="w-4 h-4" />
-                  support@katmitra.com
+                  info.katmitra@gmail.com
                 </a>
               </li>
             </ul>
@@ -87,9 +87,9 @@ const Footer = () => {
               >
                 <Instagram className="w-5 h-5" />
               </a>
-              <a href="#" aria-label="YouTube" className="hover:text-primary transition-colors">
+              {/* <a href="#" aria-label="YouTube" className="hover:text-primary transition-colors">
                 <Youtube className="w-5 h-5" />
-              </a>
+              </a> */}
             </div>
           </div>
         </div>

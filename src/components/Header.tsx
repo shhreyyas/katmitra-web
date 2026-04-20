@@ -10,12 +10,11 @@ import {
   CreditCard,
   Users,
   Mail,
-  Sun,
-  Moon,
 } from "lucide-react";
+// import { Sun, Moon } from "lucide-react";
 import mainLogo from "@/assets/main-logo.jpg";
 import { AnimeNavBar } from "@/components/ui/anime-navbar";
-import { useTheme } from "@/contexts/ThemeContext";
+// import { useTheme } from "@/contexts/ThemeContext";
 
 const navItems = [
   { label: "Home", href: "/home", icon: Home },
@@ -39,7 +38,7 @@ const Header = () => {
     typeof window !== "undefined" ? window.matchMedia("(min-width: 1024px)").matches : false,
   );
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { theme, toggleTheme } = useTheme();
+  // const { theme, toggleTheme } = useTheme();
   const lastScrollY = useRef(0);
 
   useEffect(() => {
@@ -108,118 +107,20 @@ const Header = () => {
             style={{ overflow: "visible" }}
           >
             <AnimeNavBar items={animeNavItems} defaultActive="Home" />
-            
-            {/* Theme Toggle Button */}
-            <button
-              onClick={toggleTheme}
-              className={`relative w-20 h-10 rounded-full transition-all duration-500 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background group overflow-hidden ${
-                theme === "dark" 
-                  ? "bg-gradient-to-r from-slate-700 to-slate-600 hover:from-slate-600 hover:to-slate-500" 
-                  : "bg-gradient-to-r from-slate-200 to-slate-300 hover:from-slate-300 hover:to-slate-400"
-              }`}
-              aria-label="Toggle theme"
-            >
-              {/* Animated background glow */}
-              <div className={`absolute inset-0 rounded-full transition-opacity duration-500 ${
-                theme === "dark" 
-                  ? "bg-gradient-to-r from-primary/20 to-primary/10 opacity-0 group-hover:opacity-100" 
-                  : "bg-gradient-to-r from-primary/30 to-primary/20 opacity-0 group-hover:opacity-100"
-              }`} />
-              
-              {/* Toggle circle */}
-              <div
-                className={`absolute top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-primary transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] flex items-center justify-center shadow-xl ${
-                  theme === "dark" ? "left-1 scale-100" : "left-11 scale-100"
-                } group-active:scale-95`}
-                style={{
-                  boxShadow: theme === "dark" 
-                    ? "0 4px 20px hsl(43, 96%, 56%, 0.4), 0 0 0 2px hsl(43, 96%, 56%, 0.1)" 
-                    : "0 4px 20px hsl(180, 70%, 40%, 0.4), 0 0 0 2px hsl(180, 70%, 40%, 0.1)"
-                }}
-              >
-                <div
-                  className={`transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] ${
-                    theme === "dark" ? "rotate-0 scale-100" : "rotate-180 scale-100"
-                  }`}
-                >
-                  {theme === "dark" ? (
-                    <Moon className="w-5 h-5 text-primary-foreground transition-all duration-500 group-hover:scale-110" />
-                  ) : (
-                    <Sun className="w-5 h-5 text-primary-foreground transition-all duration-500 group-hover:scale-110" />
-                  )}
-                </div>
-              </div>
-              
-              {/* Decorative dots */}
-              <div className={`absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full transition-all duration-500 ${
-                theme === "dark" 
-                  ? "left-12 bg-primary/40 opacity-60" 
-                  : "left-2 bg-primary/40 opacity-60"
-              }`} />
-              <div className={`absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full transition-all duration-500 ${
-                theme === "dark" 
-                  ? "left-2 bg-primary/40 opacity-60" 
-                  : "left-12 bg-primary/40 opacity-60"
-              }`} />
+            {/* Theme toggle kept for future use
+            <button onClick={toggleTheme} aria-label="Toggle theme">
+              {theme === "dark" ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
             </button>
+            */}
           </div>
 
-          {/* Mobile Menu Button and Theme Toggle */}
+          {/* Mobile Menu Button */}
           <div className="lg:hidden flex items-center gap-3">
-            {/* Theme Toggle Button for Mobile */}
-            <button
-              onClick={toggleTheme}
-              className={`relative w-20 h-10 rounded-full transition-all duration-500 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background group overflow-hidden ${
-                theme === "dark" 
-                  ? "bg-gradient-to-r from-slate-700 to-slate-600 hover:from-slate-600 hover:to-slate-500" 
-                  : "bg-gradient-to-r from-slate-200 to-slate-300 hover:from-slate-300 hover:to-slate-400"
-              }`}
-              aria-label="Toggle theme"
-            >
-              {/* Animated background glow */}
-              <div className={`absolute inset-0 rounded-full transition-opacity duration-500 ${
-                theme === "dark" 
-                  ? "bg-gradient-to-r from-primary/20 to-primary/10 opacity-0 group-hover:opacity-100" 
-                  : "bg-gradient-to-r from-primary/30 to-primary/20 opacity-0 group-hover:opacity-100"
-              }`} />
-              
-              {/* Toggle circle */}
-              <div
-                className={`absolute top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-primary transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] flex items-center justify-center shadow-xl ${
-                  theme === "dark" ? "left-1 scale-100" : "left-11 scale-100"
-                } group-active:scale-95`}
-                style={{
-                  boxShadow: theme === "dark" 
-                    ? "0 4px 20px hsl(43, 96%, 56%, 0.4), 0 0 0 2px hsl(43, 96%, 56%, 0.1)" 
-                    : "0 4px 20px hsl(180, 70%, 40%, 0.4), 0 0 0 2px hsl(180, 70%, 40%, 0.1)"
-                }}
-              >
-                <div
-                  className={`transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] ${
-                    theme === "dark" ? "rotate-0 scale-100" : "rotate-180 scale-100"
-                  }`}
-                >
-                  {theme === "dark" ? (
-                    <Moon className="w-5 h-5 text-primary-foreground transition-all duration-500 group-hover:scale-110" />
-                  ) : (
-                    <Sun className="w-5 h-5 text-primary-foreground transition-all duration-500 group-hover:scale-110" />
-                  )}
-                </div>
-              </div>
-              
-              {/* Decorative dots */}
-              <div className={`absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full transition-all duration-500 ${
-                theme === "dark" 
-                  ? "left-12 bg-primary/40 opacity-60" 
-                  : "left-2 bg-primary/40 opacity-60"
-              }`} />
-              <div className={`absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full transition-all duration-500 ${
-                theme === "dark" 
-                  ? "left-2 bg-primary/40 opacity-60" 
-                  : "left-12 bg-primary/40 opacity-60"
-              }`} />
+            {/* Mobile theme toggle kept for future use
+            <button onClick={toggleTheme} aria-label="Toggle theme">
+              {theme === "dark" ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
             </button>
-            
+            */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="text-foreground p-2"

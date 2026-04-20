@@ -159,18 +159,18 @@ const ContactSection = () => {
               </div>
 
               <div className="space-y-6">
-                {/* <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <MapPin className="w-6 h-6 text-primary" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-foreground mb-1">Address</h4>
-                    <p className="text-muted-foreground text-sm">
-                      353, Maruti Plaza, Vijay Park Society,<br />
-                      Krishnanagar, Ahmedabad, Gujarat 382345
-                    </p>
-                  </div>
-                </div> */}
+                  {/* <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                      <MapPin className="w-6 h-6 text-primary" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-foreground mb-1">Address</h4>
+                      <p className="text-muted-foreground text-sm">
+                        353, Maruti Plaza, Vijay Park Society,<br />
+                        Krishnanagar, Ahmedabad, Gujarat 382345
+                      </p>
+                    </div>
+                  </div> */}
 
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
