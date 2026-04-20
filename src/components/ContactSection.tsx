@@ -111,13 +111,27 @@ const ContactSection = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">Phone</label>
-                <Input
-                  type="tel"
-                  placeholder="+91 98765 43210"
-                  value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="bg-background/50 border-border/50 focus:border-primary"
-                />
+                <div className="flex items-center rounded-md border border-border/50 bg-background/50 focus-within:border-primary">
+                  <span className="px-3 text-sm text-muted-foreground border-r border-border/50">
+                    +91
+                  </span>
+                  <Input
+                    type="tel"
+                    placeholder="9876543210"
+                    value={formData.phone}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        phone: e.target.value.replace(/\D/g, "").slice(0, 10),
+                      })
+                    }
+                    className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+                    inputMode="numeric"
+                    pattern="[0-9]{10}"
+                    maxLength={10}
+                    required
+                  />
+                </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">Message</label>
@@ -178,7 +192,7 @@ const ContactSection = () => {
                   </div>
                   <div>
                     <h4 className="font-semibold text-foreground mb-1">Phone</h4>
-                    <p className="text-muted-foreground text-sm">+91 92657 5484</p>
+                    <p className="text-muted-foreground text-sm">+91 9265758484</p>
                   </div>
                 </div>
 

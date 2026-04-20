@@ -244,7 +244,7 @@ const TermsAndConditions = () => {
                   href="tel:+919327301738"
                   className="text-primary hover:underline text-sm"
                 >
-                  +91 92657 5484
+                  +91 9265758484
                 </a>
               </motion.div>
 

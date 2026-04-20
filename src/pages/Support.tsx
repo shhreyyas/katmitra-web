@@ -177,13 +177,13 @@ const Support = () => {
                 title="Phone"
                 content={
                   <a
-                    href="tel:+91 926575484"
+                    href="tel:+91 9265758484"
                     className="text-primary hover:underline font-medium"
                   >
-                    +91 926575484
+                    +91 9265758484
                   </a>
                 }
-                link="tel:+91 926575484"
+                link="tel:+91 9265758484"
                 index={1}
                 shouldReduceMotion={shouldReduceMotion}
               />
