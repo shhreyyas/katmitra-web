@@ -29,33 +29,11 @@ interface ThemeProviderProps {
 
 export const ThemeProvider = ({ children }: ThemeProviderProps) => {
   const [theme, setTheme] = useState<Theme>(() => {
-    // Check localStorage first, then system preference, default to dark
-    const stored = localStorage.getItem("theme") as Theme | null;
-    if (stored) {
-      // Apply immediately
-      const root = document.documentElement;
-      if (stored === "dark") {
-        root.classList.add("dark");
-      } else {
-        root.classList.remove("dark");
-      }
-      return stored;
-    }
-
-    const systemPrefersLight = window.matchMedia(
-      "(prefers-color-scheme: light)"
-    ).matches;
-    const initialTheme = systemPrefersLight ? "light" : "dark";
-
-    // Apply immediately
+    // Keep web experience in dark mode consistently across devices.
     const root = document.documentElement;
-    if (initialTheme === "dark") {
-      root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
-    }
-
-    return initialTheme;
+    root.classList.add("dark");
+    localStorage.setItem("theme", "dark");
+    return "dark";
   });
 
   useEffect(() => {
