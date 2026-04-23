@@ -6,7 +6,6 @@ import {
   Phone, 
   MapPin,
   Shield,
-  CreditCard,
   Lock,
   Headphones,
   User,
@@ -28,16 +27,6 @@ const terms = [
   },
   {
     number: 2,
-    title: "Subscription & Payments",
-    icon: <CreditCard className="w-6 h-6" />,
-    content: [
-      "Plans can be upgraded, downgraded, or canceled anytime.",
-      "All payments are non-refundable unless stated under a special agreement (Enterprise SLA).",
-      "There are no hidden charges.",
-    ],
-  },
-  {
-    number: 3,
     title: "Data Protection",
     icon: <Lock className="w-6 h-6" />,
     content: [
@@ -46,16 +35,16 @@ const terms = [
     ],
   },
   {
-    number: 4,
+    number: 3,
     title: "Support Services",
     icon: <Headphones className="w-6 h-6" />,
     content: [
-      "Support is provided based on your active subscription plan.",
+      "Support is provided based on your active plan.",
       "Enterprise users receive dedicated assistance and SLA-based support.",
     ],
   },
   {
-    number: 5,
+    number: 4,
     title: "Account Responsibility",
     icon: <User className="w-6 h-6" />,
     content: [
@@ -64,7 +53,7 @@ const terms = [
     ],
   },
   {
-    number: 6,
+    number: 5,
     title: "Service Availability",
     icon: <Server className="w-6 h-6" />,
     content: [
@@ -72,7 +61,7 @@ const terms = [
     ],
   },
   {
-    number: 7,
+    number: 6,
     title: "Termination of Service",
     icon: <Ban className="w-6 h-6" />,
     content: [
@@ -80,7 +69,7 @@ const terms = [
     ],
   },
   {
-    number: 8,
+    number: 7,
     title: "Updates to Terms",
     icon: <RefreshCw className="w-6 h-6" />,
     content: [

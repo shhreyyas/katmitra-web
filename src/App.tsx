@@ -10,6 +10,7 @@ import PricingEntry from "./pages/PricingEntry";
 import FAQs from "./pages/FAQs";
 import Support from "./pages/Support";
 import TermsAndConditions from "./pages/TermsAndConditions";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 import NotFound from "./pages/NotFound";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -27,6 +28,16 @@ import AdminLayout from "./components/admin/AdminLayout";
 import AdminProtectedRoute from "./components/admin/AdminProtectedRoute";
 
 const queryClient = new QueryClient();
+
+const ScrollToTop = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }, [location.pathname]);
+
+  return null;
+};
 
 // Component to ensure favicon is properly set on all routes (fixes Safari issue)
 const FaviconUpdater = () => {
@@ -117,6 +128,7 @@ const FaviconUpdater = () => {
 
 const AppRoutes = () => (
   <>
+    <ScrollToTop />
     <FaviconUpdater />
     <Routes>
       {/* PricingEntry: normal visit = Index; ?session_id= = app checkout (avoids /pricing 404 on hosts without SPA rewrites) */}
@@ -129,6 +141,7 @@ const AppRoutes = () => (
       <Route path="/contact" element={<Index />} />
       <Route path="/faqs" element={<FAQs />} />
       <Route path="/support" element={<Support />} />
+      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
       <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route element={<AdminProtectedRoute />}>

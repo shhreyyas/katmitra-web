@@ -30,7 +30,7 @@ const Footer = () => {
               <span className="font-display text-2xl font-bold text-foreground">Katmitra</span>
             </div>
             <p className="text-sm leading-relaxed mb-3 text-muted-foreground">
-              All-in-one catering management software to manage orders, events,
+              Catering management software to manage orders, events,
               payments, staff, and operations.
             </p>
             <p className="text-sm text-muted-foreground">Built for catering business owners</p>
@@ -51,7 +51,7 @@ const Footer = () => {
             <ul className="space-y-2.5 text-sm text-muted-foreground">
               <li><Link to="/home" className="hover:text-primary transition-colors">About Us</Link></li>
               <li><Link to="/contact" className="hover:text-primary transition-colors">Contact</Link></li>
-              <li><Link to="/terms-and-conditions" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
+              <li><Link to="/privacy-policy" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
               <li><Link to="/terms-and-conditions" className="hover:text-primary transition-colors">Terms & Conditions</Link></li>
             </ul>
           </div>
@@ -97,7 +97,7 @@ const Footer = () => {
         <div className="border-t border-border/60 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-muted-foreground">
           <p>© 2026 Katmitra. All rights reserved.</p>
           <div className="flex items-center gap-5">
-            <Link to="/terms-and-conditions" className="hover:text-primary transition-colors">
+            <Link to="/privacy-policy" className="hover:text-primary transition-colors">
               Privacy Policy
             </Link>
             <Link to="/terms-and-conditions" className="hover:text-primary transition-colors">
