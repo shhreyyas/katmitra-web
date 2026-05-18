@@ -14,24 +14,12 @@ import {
 // import { Sun, Moon } from "lucide-react";
 import mainLogo from "@/assets/main-logo.jpg";
 import { AnimeNavBar } from "@/components/ui/anime-navbar";
+import HeaderControls from "@/components/HeaderControls";
+import { useI18n } from "@/contexts/I18nContext";
 // import { useTheme } from "@/contexts/ThemeContext";
 
-const navItems = [
-  { label: "Home", href: "/home", icon: Home },
-  { label: "Features", href: "/features", icon: Sparkles },
-  { label: "How It Works", href: "/how-it-works", icon: PlayCircle },
-  { label: "Pricing", href: "/pricing", icon: CreditCard },
-  { label: "Clients", href: "/clients", icon: Users },
-  { label: "Contact", href: "/contact", icon: Mail },
-];
-
-const animeNavItems = navItems.map((item) => ({
-  name: item.label,
-  url: item.href,
-  icon: item.icon,
-}));
-
 const Header = () => {
+  const { t } = useI18n();
   const [isScrolled, setIsScrolled] = useState(false);
   const [headerVisible, setHeaderVisible] = useState(true);
   const [isDesktop, setIsDesktop] = useState(
@@ -67,6 +55,19 @@ const Header = () => {
 
   const hideHeaderBar =
     isDesktop && headerVisible === false && !isMobileMenuOpen;
+  const navItems = [
+    { label: t("header.home"), href: "/home", icon: Home },
+    { label: t("header.features"), href: "/features", icon: Sparkles },
+    { label: t("header.howItWorks"), href: "/how-it-works", icon: PlayCircle },
+    { label: t("header.pricing"), href: "/pricing", icon: CreditCard },
+    { label: t("header.clients"), href: "/clients", icon: Users },
+    { label: t("header.contact"), href: "/contact", icon: Mail },
+  ];
+  const animeNavItems = navItems.map((item) => ({
+    name: item.label,
+    url: item.href,
+    icon: item.icon,
+  }));
 
   return (
     <motion.header
@@ -96,7 +97,7 @@ const Header = () => {
               className="w-12 h-12 object-contain transition-transform group-hover:scale-110"
             />
             <span className="font-display text-2xl font-bold">
-              <span className="text-primary">KAT</span>
+              <span className="text-gold">KAT</span>
               <span className="text-foreground">MITRA</span>
             </span>
           </Link>
@@ -106,7 +107,8 @@ const Header = () => {
             className="hidden lg:flex items-center relative z-10 gap-4"
             style={{ overflow: "visible" }}
           >
-            <AnimeNavBar items={animeNavItems} defaultActive="Home" />
+            <AnimeNavBar items={animeNavItems} defaultActive={t("header.home")} />
+            <HeaderControls />
             {/* Theme toggle kept for future use
             <button onClick={toggleTheme} aria-label="Toggle theme">
               {theme === "dark" ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
@@ -116,6 +118,7 @@ const Header = () => {
 
           {/* Mobile Menu Button */}
           <div className="lg:hidden flex items-center gap-3">
+            <HeaderControls />
             {/* Mobile theme toggle kept for future use
             <button onClick={toggleTheme} aria-label="Toggle theme">
               {theme === "dark" ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
@@ -141,7 +144,7 @@ const Header = () => {
                   key={item.label}
                   to={item.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="text-foreground hover:text-primary transition-colors py-2 font-medium text-base"
+                  className="text-foreground hover:text-gold transition-colors py-2 font-medium text-base"
                 >
                   {item.label}
                 </Link>

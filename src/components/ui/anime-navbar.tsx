@@ -104,7 +104,7 @@ export function AnimeNavBar({
       style={{ overflow: "visible" }}
     >
       <motion.div
-        className="flex items-center gap-3 bg-background/50 border border-primary/10 backdrop-blur-lg py-2 px-2 rounded-full shadow-lg relative"
+        className="flex items-center gap-3 bg-background/50 border border-gold/10 backdrop-blur-lg py-2 px-2 rounded-full shadow-lg relative"
         style={{ overflow: "visible" }}
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}

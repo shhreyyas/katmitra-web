@@ -3,6 +3,8 @@ import { useReducedMotion } from "framer-motion";
 import { ChevronDown, HelpCircle } from "lucide-react";
 import { useState } from "react";
 import Footer from "@/components/Footer";
+import { useI18n } from "@/contexts/I18nContext";
+import HeaderControls from "@/components/HeaderControls";
 
 const faqs = [
   {
@@ -82,15 +84,15 @@ const FAQItem = ({
         delay: shouldReduceMotion ? 0 : index * 0.1,
         ease: "easeOut",
       }}
-      className="border border-primary/20 rounded-xl overflow-hidden bg-card/50 backdrop-blur-sm"
+      className="border border-gold/20 rounded-xl overflow-hidden bg-card/50 backdrop-blur-sm"
     >
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-card/80 transition-colors duration-200 group"
       >
         <div className="flex items-center gap-4 flex-1">
-          <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/30 transition-colors">
-            <HelpCircle className="w-5 h-5 text-primary" />
+          <div className="w-10 h-10 rounded-lg bg-gold/20 flex items-center justify-center flex-shrink-0 group-hover:bg-gold/30 transition-colors">
+            <HelpCircle className="w-5 h-5 text-gold" />
           </div>
           <h3 className="text-lg font-semibold text-foreground pr-4">
             {question}
@@ -101,7 +103,7 @@ const FAQItem = ({
           transition={{ duration: 0.3, ease: "easeInOut" }}
           className="flex-shrink-0"
         >
-          <ChevronDown className="w-5 h-5 text-primary" />
+          <ChevronDown className="w-5 h-5 text-gold" />
         </motion.div>
       </button>
       <motion.div
@@ -124,16 +126,47 @@ const FAQItem = ({
 };
 
 const FAQs = () => {
+  const { language } = useI18n();
   const shouldReduceMotion = useReducedMotion();
+  const pageCopy =
+    language === "hi"
+      ? {
+          heading1: "अक्सर पूछे जाने वाले",
+          heading2: "प्रश्न",
+          subtitle: "शुरू करने से पहले आपको जो जानना है, वह सब यहां है।",
+          ctaTitle: "अब भी सवाल हैं?",
+          ctaText: "अपना जवाब नहीं मिला? हमारी टीम से संपर्क करें।",
+          ctaBtn: "संपर्क करें",
+        }
+      : language === "gu"
+        ? {
+            heading1: "વારંવાર પૂછાતા",
+            heading2: "પ્રશ્નો",
+            subtitle: "શરૂઆત પહેલાં તમને જે જાણવું છે તે બધું અહીં છે.",
+            ctaTitle: "હજી પ્રશ્નો છે?",
+            ctaText: "તમને જવાબ ન મળ્યો? અમારી ટીમનો સંપર્ક કરો.",
+            ctaBtn: "સંપર્ક કરો",
+          }
+        : {
+            heading1: "Frequently Asked",
+            heading2: "Questions",
+            subtitle: "Everything you need to know before getting started.",
+            ctaTitle: "Still have questions?",
+            ctaText: "Can't find the answer you're looking for? Please contact our friendly team.",
+            ctaBtn: "Contact Us",
+          };
 
   return (
     <main className="min-h-screen bg-background overflow-x-hidden">
       <section className="relative pt-20 pb-20 min-h-screen">
         {/* Background Effects */}
         <div className="absolute inset-0 bg-gradient-dark" />
-        <div className="absolute inset-0 bg-gradient-radial from-primary/10 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-radial from-gold/10 via-transparent to-transparent" />
 
         <div className="container mx-auto px-4 lg:px-8 relative z-10">
+          <div className="mb-6 flex justify-center">
+            <HeaderControls />
+          </div>
           {/* Header Section */}
           <motion.div
             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
@@ -152,16 +185,16 @@ const FAQs = () => {
               }}
               className="inline-block mb-6"
             >
-              <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center mx-auto">
-                <HelpCircle className="w-10 h-10 text-primary" />
+              <div className="w-20 h-20 rounded-full bg-gold/20 flex items-center justify-center mx-auto">
+                <HelpCircle className="w-10 h-10 text-gold" />
               </div>
             </motion.div>
             <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
-              Frequently Asked
-              <span className="text-gradient-gold block">Questions</span>
+              {pageCopy.heading1}
+              <span className="text-gradient-gold block">{pageCopy.heading2}</span>
             </h1>
             <p className="text-muted-foreground text-lg sm:text-xl max-w-2xl mx-auto">
-              Everything you need to know before getting started.
+              {pageCopy.subtitle}
             </p>
           </motion.div>
 
@@ -187,20 +220,20 @@ const FAQs = () => {
             transition={{ duration: shouldReduceMotion ? 0 : 0.6, delay: 0.3 }}
             className="text-center mt-16"
           >
-            <div className="bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl p-8 border border-primary/30">
+            <div className="bg-gradient-to-br from-gold/20 to-gold/10 rounded-2xl p-8 border border-gold/30">
               <h3 className="text-2xl font-bold text-foreground mb-4">
-                Still have questions?
+                {pageCopy.ctaTitle}
               </h3>
               <p className="text-muted-foreground mb-6">
-                Can't find the answer you're looking for? Please contact our friendly team.
+                {pageCopy.ctaText}
               </p>
               <motion.a
                 href="/contact"
                 whileHover={shouldReduceMotion ? {} : { scale: 1.05 }}
                 whileTap={shouldReduceMotion ? {} : { scale: 0.95 }}
-                className="inline-block px-8 py-3 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-primary/30"
+                className="inline-block px-8 py-3 bg-gradient-gold text-accent-foreground font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gold/35"
               >
-                Contact Us
+                {pageCopy.ctaBtn}
               </motion.a>
             </div>
           </motion.div>

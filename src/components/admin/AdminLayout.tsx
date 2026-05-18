@@ -34,7 +34,7 @@ const AdminLayout = () => {
                   to={path}
                   className={`block rounded-md px-3 py-2 text-sm transition-colors ${
                     active
-                      ? "bg-gradient-gold text-primary-foreground shadow-md"
+                      ? "bg-gradient-gold text-accent-foreground shadow-md"
                       : "text-foreground/80 hover:bg-secondary"
                   }`}
                 >

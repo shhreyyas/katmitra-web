@@ -10,6 +10,7 @@ type Theme = "light" | "dark";
 
 interface ThemeContextType {
   theme: Theme;
+  setTheme: (theme: Theme) => void;
   toggleTheme: () => void;
 }
 
@@ -27,13 +28,23 @@ interface ThemeProviderProps {
   children: ReactNode;
 }
 
+function readStoredTheme(): Theme {
+  try {
+    const saved = localStorage.getItem("theme");
+    if (saved === "dark" || saved === "light") return saved;
+  } catch {
+    /* ignore */
+  }
+  return "dark";
+}
+
 export const ThemeProvider = ({ children }: ThemeProviderProps) => {
   const [theme, setTheme] = useState<Theme>(() => {
-    // Keep web experience in dark mode consistently across devices.
+    const initial = readStoredTheme();
     const root = document.documentElement;
-    root.classList.add("dark");
-    localStorage.setItem("theme", "dark");
-    return "dark";
+    if (initial === "dark") root.classList.add("dark");
+    else root.classList.remove("dark");
+    return initial;
   });
 
   useEffect(() => {
@@ -51,7 +62,7 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme, setTheme, toggleTheme }}>
       {children}
     </ThemeContext.Provider>
   );

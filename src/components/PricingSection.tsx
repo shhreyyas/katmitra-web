@@ -2,21 +2,12 @@ import { motion, useReducedMotion } from "framer-motion";
 import { CheckCircle2 } from "lucide-react";
 import { ScrollReveal } from "@/components/motion/scroll-reveal";
 import { revealViewport } from "@/lib/motion";
-
-const planFeatures = [
-  "Event & Order Management",
-  "Smart Payment Tracking (Partial Payments)",
-  "Menu Management",
-  "Auto Grocery List",
-  "Staff Management",
-  "Utensil (Vasan) Tracking",
-  "Estimation System",
-  "Invoice Generation",
-  "Calendar Overview",
-];
+import { useI18n } from "@/contexts/I18nContext";
 
 const PricingSection = () => {
+  const { t, tList } = useI18n();
   const reduce = useReducedMotion();
+  const planFeatures = tList("pricing.planFeatures");
 
   return (
     <section
@@ -29,10 +20,10 @@ const PricingSection = () => {
       <div className="container mx-auto px-4 lg:px-8 relative z-10">
         <ScrollReveal className="text-center mb-16 lg:mb-24 max-w-3xl mx-auto">
           <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold mb-5 leading-tight">
-            Simple, Transparent Pricing
+            {t("pricing.heading")}
           </h2>
           <p className="text-muted-foreground text-lg sm:text-xl max-w-xl mx-auto leading-relaxed">
-            Start for free today. Upgrade anytime as your business grows.
+            {t("pricing.subtitle")}
           </p>
         </ScrollReveal>
 
@@ -44,27 +35,27 @@ const PricingSection = () => {
           className="max-w-2xl mx-auto"
         >
           <div className="text-center mb-6">
-            <span className="inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-semibold text-primary">
-              🚀 Early Access
+            <span className="inline-flex items-center rounded-full border border-gold/30 bg-gold/10 px-4 py-2 text-sm font-semibold text-gold">
+              {t("pricing.earlyAccessBadge")}
             </span>
           </div>
 
-          <article className="relative rounded-3xl border border-primary/30 bg-card p-8 sm:p-10 shadow-xl transition-transform duration-300 hover:scale-[1.02]">
+          <article className="relative rounded-3xl border border-gold/30 bg-card p-8 sm:p-10 shadow-xl transition-transform duration-300 hover:scale-[1.02]">
             <div className="absolute -top-3 right-6 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">
-              Early Access
+              {t("pricing.earlyAccessPill")}
             </div>
 
-            <p className="text-sm font-semibold uppercase tracking-widest text-primary mb-3">
-              Starter Plan
+            <p className="text-sm font-semibold uppercase tracking-widest text-gold mb-3">
+              {t("pricing.starterPlan")}
             </p>
             <h3 className="font-display text-3xl sm:text-4xl font-bold text-foreground mb-3">
-              Free
+              {t("pricing.free")}
             </h3>
-            <p className="text-sm text-primary font-medium mb-3">
-              Available during early access
+            <p className="text-sm text-gold font-medium mb-3">
+              {t("pricing.availableEarlyAccess")}
             </p>
             <p className="text-muted-foreground mb-8">
-              Everything you need to manage your catering business in one place.
+              {t("pricing.planDescription")}
             </p>
 
             <ul className="space-y-3 mb-8 text-left">
@@ -73,7 +64,7 @@ const PricingSection = () => {
                   key={feature}
                   className="flex items-start gap-3 text-foreground"
                 >
-                  <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 shrink-0" />
+                  <CheckCircle2 className="w-5 h-5 text-gold mt-0.5 shrink-0" />
                   <span>{feature}</span>
                 </li>
               ))}
@@ -83,16 +74,16 @@ const PricingSection = () => {
               href="#contact"
               className="inline-flex w-full justify-center rounded-xl bg-primary px-6 py-3 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/20 hover:brightness-95 transition-all"
             >
-              Start Free Now
+              {t("footer.startFreeNow")}
             </a>
             <p className="text-center text-sm text-muted-foreground mt-4">
-              No credit card required • Setup in minutes
+              {t("common.noCard")}
             </p>
             <p className="text-center text-sm text-muted-foreground mt-2">
-              Early users will receive special pricing when plans are introduced.
+              {t("pricing.specialPricingNote")}
             </p>
             <p className="text-center text-sm text-muted-foreground mt-2">
-              Paid plans will be introduced in the future.
+              {t("pricing.paidPlansNote")}
             </p>
           </article>
         </motion.div>

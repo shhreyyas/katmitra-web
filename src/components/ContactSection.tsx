@@ -5,14 +5,66 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useI18n } from "@/contexts/I18nContext";
 
 const ContactSection = () => {
+  const { language } = useI18n();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
     message: "",
   });
+  const content =
+    language === "hi"
+      ? {
+          title: "संपर्क में रहें",
+          subtitle:
+            "कोई सवाल है? हमें संदेश भेजें, हमें आपकी मदद करके खुशी होगी।",
+          name: "नाम",
+          email: "ईमेल",
+          phone: "फ़ोन",
+          message: "संदेश",
+          send: "संदेश भेजें",
+          sending: "भेजा जा रहा है...",
+          namePlaceholder: "आपका नाम",
+          messagePlaceholder: "अपने कैटरिंग बिज़नेस के बारे में बताएं...",
+          infoTitle: "डिजिटल कैटरिंग के साथ खुशियां पहुंचाएं।",
+          infoDesc:
+            "हम आपके कैटरिंग बिज़नेस को डिजिटल रूप से मजबूत बनाने में मदद करते हैं।",
+        }
+      : language === "gu"
+        ? {
+            title: "સંપર્કમાં રહો",
+            subtitle: "પ્રશ્ન છે? અમને મેસેજ કરો, અમે જરૂર મદદ કરીશું.",
+            name: "નામ",
+            email: "ઈમેલ",
+            phone: "ફોન",
+            message: "સંદેશ",
+            send: "સંદેશ મોકલો",
+            sending: "મોકલાઈ રહ્યું છે...",
+            namePlaceholder: "તમારું નામ",
+            messagePlaceholder: "તમારા કેટરિંગ બિઝનેસ વિશે જણાવો...",
+            infoTitle: "ડિજિટલ કેટરિંગ દ્વારા ખુશીઓ પહોંચાડીએ.",
+            infoDesc:
+              "અમે તમારા કેટરિંગ બિઝનેસને ડિજિટલ રીતે મજબૂત બનાવવા અહીં છીએ.",
+          }
+        : {
+            title: "Get in Touch",
+            subtitle:
+              "Have questions? We'd love to hear from you. Send us a message.",
+            name: "Name",
+            email: "Email",
+            phone: "Phone",
+            message: "Message",
+            send: "Send Message",
+            sending: "Sending...",
+            namePlaceholder: "Your name",
+            messagePlaceholder: "Tell us about your catering business...",
+            infoTitle: "Delivers happiness through digital Catering.",
+            infoDesc:
+              "We're here to help you transform your catering business with powerful digital tools.",
+          };
   const [isSubmitting, setIsSubmitting] = useState(false);
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "/api";
 
@@ -69,10 +121,10 @@ const ContactSection = () => {
           className="text-center mb-16"
         >
           <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
-            Get in <span className="text-gradient-gold">Touch</span>
+            {content.title}
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Have questions? We'd love to hear from you. Send us a message.
+            {content.subtitle}
           </p>
         </motion.div>
 
@@ -84,33 +136,46 @@ const ContactSection = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <form onSubmit={handleSubmit} className="glass-card-gold rounded-2xl p-8 space-y-6">
+            <form
+              onSubmit={handleSubmit}
+              className="glass-card-gold rounded-2xl p-8 space-y-6"
+            >
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">Name</label>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    {content.name}
+                  </label>
                   <Input
                     type="text"
-                    placeholder="Your name"
+                    placeholder={content.namePlaceholder}
                     value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, name: e.target.value })
+                    }
                     className="bg-background/50 border-border/50 focus:border-primary"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">Email</label>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    {content.email}
+                  </label>
                   <Input
                     type="email"
                     placeholder="your@email.com"
                     value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
                     className="bg-background/50 border-border/50 focus:border-primary"
                     required
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">Phone</label>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  {content.phone}
+                </label>
                 <div className="flex items-center rounded-md border border-border/50 bg-background/50 focus-within:border-primary">
                   <span className="px-3 text-sm text-muted-foreground border-r border-border/50">
                     +91
@@ -134,11 +199,15 @@ const ContactSection = () => {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">Message</label>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  {content.message}
+                </label>
                 <Textarea
-                  placeholder="Tell us about your catering business..."
+                  placeholder={content.messagePlaceholder}
                   value={formData.message}
-                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, message: e.target.value })
+                  }
                   className="bg-background/50 border-border/50 focus:border-primary min-h-[120px]"
                   required
                 />
@@ -146,9 +215,9 @@ const ContactSection = () => {
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-gradient-gold text-primary-foreground font-semibold py-6 text-lg rounded-xl hover:opacity-90 transition-all duration-300 glow-gold-sm group"
+                className="w-full bg-gradient-gold text-accent-foreground font-semibold py-6 text-lg rounded-xl hover:opacity-90 transition-all duration-300 glow-gold-sm group"
               >
-                {isSubmitting ? "Sending..." : "Send Message"}
+                {isSubmitting ? content.sending : content.send}
                 <Send className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
             </form>
@@ -165,17 +234,15 @@ const ContactSection = () => {
             <div className="space-y-8">
               <div>
                 <h3 className="font-display text-2xl font-bold text-foreground mb-4">
-                  Delivers happiness through digital Catering.
+                  {content.infoTitle}
                 </h3>
-                <p className="text-muted-foreground">
-                  We're here to help you transform your catering business with powerful digital tools.
-                </p>
+                <p className="text-muted-foreground">{content.infoDesc}</p>
               </div>
 
               <div className="space-y-6">
-                  {/* <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                      <MapPin className="w-6 h-6 text-primary" />
+                {/* <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-gold/10 flex items-center justify-center flex-shrink-0">
+                      <MapPin className="w-6 h-6 text-gold" />
                     </div>
                     <div>
                       <h4 className="font-semibold text-foreground mb-1">Address</h4>
@@ -187,23 +254,30 @@ const ContactSection = () => {
                   </div> */}
 
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <Phone className="w-6 h-6 text-primary" />
+                  <div className="w-12 h-12 rounded-xl bg-gold/10 flex items-center justify-center flex-shrink-0">
+                    <Phone className="w-6 h-6 text-gold" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-foreground mb-1">Phone</h4>
-                    <p className="text-muted-foreground text-sm">+91 9265758484</p>
+                    <h4 className="font-semibold text-foreground mb-1">
+                      {content.phone}
+                    </h4>
+                    <p className="text-muted-foreground text-sm">
+                      +91 9265758484
+                    </p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <Mail className="w-6 h-6 text-primary" />
+                  <div className="w-12 h-12 rounded-xl bg-gold/10 flex items-center justify-center flex-shrink-0">
+                    <Mail className="w-6 h-6 text-gold" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-foreground mb-1">Email</h4>
+                    <h4 className="font-semibold text-foreground mb-1">
+                      {content.email}
+                    </h4>
                     <p className="text-muted-foreground text-sm">
-                      katmitra.official@gmail.com<br />
+                      katmitra.official@gmail.com
+                      <br />
                       info.katmitra@gmail.com
                     </p>
                   </div>

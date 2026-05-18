@@ -1,81 +1,32 @@
 import { motion } from "framer-motion";
 import { useReducedMotion } from "framer-motion";
-import { 
-  FileText, 
-  Mail, 
-  Phone, 
-  MapPin,
+import type { LucideIcon } from "lucide-react";
+import {
+  FileText,
+  Mail,
+  Phone,
   Shield,
+  CreditCard,
   Lock,
   Headphones,
   User,
   Server,
   Ban,
-  RefreshCw
+  RefreshCw,
 } from "lucide-react";
 import Footer from "@/components/Footer";
+import { useI18n } from "@/contexts/I18nContext";
+import HeaderControls from "@/components/HeaderControls";
 
-const terms = [
-  {
-    number: 1,
-    title: "Use of Platform",
-    icon: <Shield className="w-6 h-6" />,
-    content: [
-      "The platform must be used only for legal catering business operations.",
-      "Users must not misuse or attempt unauthorized access to KatMitra services.",
-    ],
-  },
-  {
-    number: 2,
-    title: "Data Protection",
-    icon: <Lock className="w-6 h-6" />,
-    content: [
-      "User data is securely stored and encrypted.",
-      "KatMitra is not responsible for data loss caused by user negligence.",
-    ],
-  },
-  {
-    number: 3,
-    title: "Support Services",
-    icon: <Headphones className="w-6 h-6" />,
-    content: [
-      "Support is provided based on your active plan.",
-      "Enterprise users receive dedicated assistance and SLA-based support.",
-    ],
-  },
-  {
-    number: 4,
-    title: "Account Responsibility",
-    icon: <User className="w-6 h-6" />,
-    content: [
-      "You are responsible for keeping your login credentials confidential.",
-      "Sharing accounts across unauthorized users may lead to termination.",
-    ],
-  },
-  {
-    number: 5,
-    title: "Service Availability",
-    icon: <Server className="w-6 h-6" />,
-    content: [
-      "KatMitra strives for 99.9% uptime but does not guarantee uninterrupted service in cases of maintenance, updates, or technical failures.",
-    ],
-  },
-  {
-    number: 6,
-    title: "Termination of Service",
-    icon: <Ban className="w-6 h-6" />,
-    content: [
-      "KatMitra reserves the right to suspend or terminate accounts if users violate the terms.",
-    ],
-  },
-  {
-    number: 7,
-    title: "Updates to Terms",
-    icon: <RefreshCw className="w-6 h-6" />,
-    content: [
-      "These terms may be updated periodically. Continued use means acceptance of revised terms.",
-    ],
-  },
+const termDefinitions: { number: number; id: string; icon: LucideIcon }[] = [
+  { number: 1, id: "usePlatform", icon: Shield },
+  { number: 2, id: "subscription", icon: CreditCard },
+  { number: 3, id: "dataProtection", icon: Lock },
+  { number: 4, id: "support", icon: Headphones },
+  { number: 5, id: "account", icon: User },
+  { number: 6, id: "availability", icon: Server },
+  { number: 7, id: "termination", icon: Ban },
+  { number: 8, id: "updates", icon: RefreshCw },
 ];
 
 const TermCard = ({
@@ -83,10 +34,15 @@ const TermCard = ({
   index,
   shouldReduceMotion,
 }: {
-  term: typeof terms[0];
+  term: (typeof termDefinitions)[number];
   index: number;
   shouldReduceMotion: boolean;
 }) => {
+  const { t, tList } = useI18n();
+  const Icon = term.icon;
+  const bullets = tList(`terms.${term.id}.items`);
+  const title = t(`terms.${term.id}.title`);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
@@ -97,23 +53,26 @@ const TermCard = ({
         delay: shouldReduceMotion ? 0 : index * 0.1,
         ease: "easeOut",
       }}
-      className="bg-card/50 backdrop-blur-sm border border-primary/20 rounded-xl p-6 hover:border-primary/40 transition-all duration-300 hover:shadow-lg"
+      className="bg-card/50 backdrop-blur-sm border border-gold/20 rounded-xl p-6 hover:border-gold/40 transition-all duration-300 hover:shadow-lg"
     >
       <div className="flex items-start gap-4">
-        <div className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center flex-shrink-0 text-primary">
-          {term.icon}
+        <div className="w-12 h-12 rounded-lg bg-gold/20 flex items-center justify-center flex-shrink-0 text-gold">
+          <Icon className="w-6 h-6" />
         </div>
         <div className="flex-1">
           <div className="flex items-center gap-3 mb-3">
-            <span className="w-8 h-8 rounded-full bg-primary/30 text-primary font-bold text-sm flex items-center justify-center">
+            <span className="w-8 h-8 rounded-full bg-gold/30 text-gold font-bold text-sm flex items-center justify-center">
               {term.number}
             </span>
-            <h3 className="text-xl font-semibold text-foreground">{term.title}</h3>
+            <h3 className="text-xl font-semibold text-foreground">{title}</h3>
           </div>
           <ul className="space-y-2 ml-11">
-            {term.content.map((item, idx) => (
-              <li key={idx} className="text-muted-foreground leading-relaxed flex items-start gap-2">
-                <span className="text-primary mt-1.5">•</span>
+            {bullets.map((item, idx) => (
+              <li
+                key={idx}
+                className="text-muted-foreground leading-relaxed flex items-start gap-2"
+              >
+                <span className="text-gold mt-1.5">•</span>
                 <span>{item}</span>
               </li>
             ))}
@@ -125,6 +84,7 @@ const TermCard = ({
 };
 
 const TermsAndConditions = () => {
+  const { t } = useI18n();
   const shouldReduceMotion = useReducedMotion();
 
   return (
@@ -132,9 +92,12 @@ const TermsAndConditions = () => {
       <section className="relative pt-20 pb-20 min-h-screen">
         {/* Background Effects */}
         <div className="absolute inset-0 bg-gradient-dark" />
-        <div className="absolute inset-0 bg-gradient-radial from-primary/10 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-radial from-gold/10 via-transparent to-transparent" />
 
         <div className="container mx-auto px-4 lg:px-8 relative z-10">
+          <div className="mb-6 flex justify-center">
+            <HeaderControls />
+          </div>
           {/* Header Section */}
           <motion.div
             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
@@ -153,12 +116,12 @@ const TermsAndConditions = () => {
               }}
               className="inline-block mb-6"
             >
-              <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center mx-auto">
-                <FileText className="w-10 h-10 text-primary" />
+              <div className="w-20 h-20 rounded-full bg-gold/20 flex items-center justify-center mx-auto">
+                <FileText className="w-10 h-10 text-gold" />
               </div>
             </motion.div>
             <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
-              Terms & Conditions
+              {t("terms.pageTitle")}
             </h1>
             <motion.div
               initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
@@ -167,19 +130,19 @@ const TermsAndConditions = () => {
               className="max-w-3xl mx-auto"
             >
               <p className="text-muted-foreground text-lg sm:text-xl mb-4">
-                Welcome to KatMitra
+                {t("terms.welcome")}
               </p>
               <p className="text-muted-foreground leading-relaxed">
-                By accessing and using KatMitra, you agree to comply with the following terms. Please read them carefully.
+                {t("terms.intro")}
               </p>
             </motion.div>
           </motion.div>
 
           {/* Terms List */}
           <div className="max-w-4xl mx-auto space-y-6 mb-16">
-            {terms.map((term, index) => (
+            {termDefinitions.map((term, index) => (
               <TermCard
-                key={index}
+                key={term.id}
                 term={term}
                 index={index}
                 shouldReduceMotion={shouldReduceMotion}
@@ -193,26 +156,30 @@ const TermsAndConditions = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: shouldReduceMotion ? 0 : 0.6, delay: 0.3 }}
-            className="max-w-3xl mx-auto"
+            className="max-w-4xl mx-auto w-full"
           >
-            <h2 className="text-3xl font-bold text-foreground mb-8 text-center">
-              Contact for Policy Queries
-            </h2>
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="flex flex-col items-center text-center mb-10 px-2">
+              <h2 className="font-display text-3xl sm:text-4xl font-bold text-foreground leading-tight max-w-3xl">
+                {t("terms.contactHeading")}
+              </h2>
+            </div>
+            <div className="grid sm:grid-cols-2 gap-6 max-w-2xl mx-auto w-full sm:px-0">
               <motion.div
                 initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: shouldReduceMotion ? 0 : 0.4, delay: 0.4 }}
-                className="bg-card/50 backdrop-blur-sm border border-primary/20 rounded-xl p-6 text-center hover:border-primary/40 transition-all duration-300"
+                className="bg-card/50 backdrop-blur-sm border border-gold/20 rounded-xl p-6 text-center hover:border-gold/40 transition-all duration-300"
               >
-                <div className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center mx-auto mb-4 text-primary">
+                <div className="w-12 h-12 rounded-lg bg-gold/20 flex items-center justify-center mx-auto mb-4 text-gold">
                   <Mail className="w-6 h-6" />
                 </div>
-                <h3 className="font-semibold text-foreground mb-2">Email</h3>
+                <h3 className="font-semibold text-foreground mb-2">
+                  {t("terms.emailLabel")}
+                </h3>
                 <a
                   href="mailto:katmitra.official@gmail.com"
-                  className="text-primary hover:underline text-sm"
+                  className="text-gold hover:underline text-sm"
                 >
                   katmitra.official@gmail.com
                 </a>
@@ -223,35 +190,21 @@ const TermsAndConditions = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: shouldReduceMotion ? 0 : 0.4, delay: 0.5 }}
-                className="bg-card/50 backdrop-blur-sm border border-primary/20 rounded-xl p-6 text-center hover:border-primary/40 transition-all duration-300"
+                className="bg-card/50 backdrop-blur-sm border border-gold/20 rounded-xl p-6 text-center hover:border-gold/40 transition-all duration-300"
               >
-                <div className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center mx-auto mb-4 text-primary">
+                <div className="w-12 h-12 rounded-lg bg-gold/20 flex items-center justify-center mx-auto mb-4 text-gold">
                   <Phone className="w-6 h-6" />
                 </div>
-                <h3 className="font-semibold text-foreground mb-2">Phone</h3>
+                <h3 className="font-semibold text-foreground mb-2">
+                  {t("terms.phoneLabel")}
+                </h3>
                 <a
-                  href="tel:+919327301738"
-                  className="text-primary hover:underline text-sm"
+                  href="tel:+919265758484"
+                  className="text-gold hover:underline text-sm"
                 >
                   +91 9265758484
                 </a>
               </motion.div>
-
-              {/* <motion.div
-                initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: shouldReduceMotion ? 0 : 0.4, delay: 0.6 }}
-                className="bg-card/50 backdrop-blur-sm border border-primary/20 rounded-xl p-6 text-center hover:border-primary/40 transition-all duration-300"
-              >
-                <div className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center mx-auto mb-4 text-primary">
-                  <MapPin className="w-6 h-6" />
-                </div>
-                <h3 className="font-semibold text-foreground mb-2">Address</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">
-                  353, Maruti Plaza, Vijay Park Society, Krishnanagar, Ahmedabad, Gujarat 382345
-                </p>
-              </motion.div> */}
             </div>
           </motion.div>
         </div>
@@ -263,4 +216,3 @@ const TermsAndConditions = () => {
 };
 
 export default TermsAndConditions;
-

@@ -1,6 +1,7 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { ScrollReveal } from "@/components/motion/scroll-reveal";
 import { revealViewport } from "@/lib/motion";
+import { useI18n } from "@/contexts/I18nContext";
 
 const testimonials = [
   {
@@ -17,14 +18,10 @@ const testimonials = [
   },
 ];
 
-const trustPoints = [
-  "Built for Indian Catering Businesses",
-  "Designed for real-world use",
-  "Simple & easy to use",
-];
-
 const ClientsSection = () => {
+  const { t, tList } = useI18n();
   const reduce = useReducedMotion();
+  const trustPoints = tList("clients.trustPoints");
 
   return (
     <section
@@ -34,10 +31,10 @@ const ClientsSection = () => {
       <div className="container mx-auto px-4 lg:px-8 relative z-10">
         <ScrollReveal className="text-center mb-14 lg:mb-20 max-w-3xl mx-auto">
           <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold mb-5 leading-tight">
-            Built for Catering Owners Like You
+            {t("clients.heading")}
           </h2>
           <p className="text-muted-foreground text-lg sm:text-xl max-w-xl mx-auto leading-relaxed">
-            Designed to solve real problems faced by catering businesses.
+            {t("clients.subtitle")}
           </p>
         </ScrollReveal>
 
@@ -53,7 +50,7 @@ const ClientsSection = () => {
               key={item.name}
               className="rounded-2xl border border-border bg-white dark:bg-card p-6 shadow-sm hover:shadow-md transition-all duration-300"
             >
-              <div className="w-11 h-11 rounded-full bg-primary/15 text-primary flex items-center justify-center font-semibold mb-4">
+              <div className="w-11 h-11 rounded-full bg-gold/15 text-gold flex items-center justify-center font-semibold mb-4">
                 {item.name.slice(0, 1)}
               </div>
               <p className="text-muted-foreground leading-relaxed mb-5">
@@ -79,8 +76,8 @@ const ClientsSection = () => {
               {point}
             </span>
           ))}
-          <span className="inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-semibold text-primary">
-            500+ Events Managed
+          <span className="inline-flex items-center rounded-full border border-gold/30 bg-gold/10 px-4 py-2 text-sm font-semibold text-gold">
+            {t("clients.eventsBadge")}
           </span>
         </motion.div>
       </div>

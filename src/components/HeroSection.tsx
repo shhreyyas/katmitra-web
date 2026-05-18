@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { SparklesCore } from "@/components/ui/sparkles";
 import { useTheme } from "@/contexts/ThemeContext";
 import { Tilt3D } from "@/components/motion/tilt-3d";
+import { useI18n } from "@/contexts/I18nContext";
 
 const DeviceCard = ({
   children,
@@ -22,10 +23,10 @@ const DeviceCard = ({
 }) => {
   const shouldReduceMotion = useReducedMotion();
   
-  // Theme-aware shadow color
-  const shadowColor = theme === "dark" 
-    ? "hsl(43, 96%, 56%, 0.2)" // Gold for dark mode
-    : "hsl(180, 70%, 40%, 0.2)"; // Teal/cyan for light mode
+  const shadowColor =
+    theme === "dark"
+      ? "hsl(43, 96%, 56%, 0.22)"
+      : "hsl(43, 96%, 56%, 0.14)";
   
   return (
     <motion.div
@@ -41,20 +42,20 @@ const DeviceCard = ({
         delay: shouldReduceMotion ? 0 : delay,
         ease: "easeOut"
       }}
-      className={`bg-gradient-to-br from-card/95 to-card/80 backdrop-blur-xl rounded-2xl border border-primary/30 p-5 shadow-2xl hover:border-primary/50 transition-colors duration-200 [transform-style:preserve-3d] ${className}`}
+      className={`bg-gradient-to-br from-card/95 to-card/80 backdrop-blur-xl rounded-2xl border border-gold/30 p-5 shadow-2xl hover:border-gold/45 transition-colors duration-200 [transform-style:preserve-3d] ${className}`}
       style={{
         boxShadow: `0 8px 32px rgba(0, 0, 0, ${theme === "dark" ? "0.3" : "0.1"}), 0 0 40px ${shadowColor}, inset 0 1px 0 rgba(255, 255, 255, 0.1)`,
         willChange: "transform, opacity",
       }}
     >
     {title && (
-      <div className="mb-4 pb-3 border-b border-primary/20 flex items-center gap-2">
+      <div className="mb-4 pb-3 border-b border-gold/20 flex items-center gap-2">
         {Icon && (
-          <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">
-            <Icon className="w-4 h-4 text-primary" />
+          <div className="w-8 h-8 rounded-lg bg-gold/20 flex items-center justify-center">
+            <Icon className="w-4 h-4 text-gold" />
           </div>
         )}
-        <span className="text-sm font-bold text-primary uppercase tracking-wider">
+        <span className="text-sm font-bold text-gold uppercase tracking-wider">
           {title}
         </span>
       </div>
@@ -64,7 +65,13 @@ const DeviceCard = ({
   );
 };
 
-const CalendarCard = ({ shouldReduceMotion }: { shouldReduceMotion: boolean }) => {
+const CalendarCard = ({
+  shouldReduceMotion,
+  theme,
+}: {
+  shouldReduceMotion: boolean;
+  theme: "light" | "dark";
+}) => {
   const [animationComplete, setAnimationComplete] = useState(false);
   const totalDays = 28;
   const animationDuration = shouldReduceMotion ? 0 : 0.015 * totalDays + 0.1;
@@ -85,6 +92,7 @@ const CalendarCard = ({ shouldReduceMotion }: { shouldReduceMotion: boolean }) =
     <DeviceCard
       title="Calendar"
       icon={Calendar}
+      theme={theme}
       className="relative w-full z-[8]"
       delay={shouldReduceMotion ? 0 : 0.6}
     >
@@ -133,9 +141,9 @@ const CalendarCard = ({ shouldReduceMotion }: { shouldReduceMotion: boolean }) =
               }}
               className={`text-center p-1 sm:p-1.5 rounded-md sm:rounded-lg text-[10px] sm:text-xs min-w-[24px] sm:min-w-[28px] flex items-center justify-center ${
                 isToday
-                  ? "bg-primary/40 text-primary font-bold border-2 border-primary/70 shadow-sm"
+                  ? "bg-gold/30 text-gold font-bold border-2 border-gold/55 shadow-sm"
                   : isHighlighted
-                  ? "bg-gradient-to-br from-primary/50 to-primary/30 text-primary-foreground font-bold shadow-sm sm:shadow-md"
+                    ? "bg-gradient-to-br from-gold/50 to-gold/25 text-accent-foreground font-bold shadow-sm sm:shadow-md"
                   : "text-muted-foreground"
               }`}
               style={{ 
@@ -147,7 +155,7 @@ const CalendarCard = ({ shouldReduceMotion }: { shouldReduceMotion: boolean }) =
           );
         })}
       </motion.div>
-      <div className="mt-4 pt-3 border-t border-primary/20">
+      <div className="mt-4 pt-3 border-t border-gold/20">
         <div className="flex items-center justify-between">
           <div>
             <div className="text-sm text-foreground font-bold">
@@ -158,7 +166,7 @@ const CalendarCard = ({ shouldReduceMotion }: { shouldReduceMotion: boolean }) =
             </div>
           </div>
           <motion.div 
-            className="w-2 h-2 rounded-full bg-primary"
+            className="w-2 h-2 rounded-full bg-gold"
             animate={shouldReduceMotion ? {} : { 
               scale: [1, 1.2, 1],
               opacity: [0.7, 1, 0.7]
@@ -184,6 +192,7 @@ const CARD_STACK_CONFIG = {
 };
 
 const HeroSection = () => {
+  const { t } = useI18n();
   const shouldReduceMotion = useReducedMotion();
   const heroRef = useRef<HTMLElement>(null);
   const [activeCardIndex, setActiveCardIndex] = useState(0);
@@ -205,10 +214,10 @@ const HeroSection = () => {
     [1, 0.92, shouldReduceMotion ? 1 : 0.65],
   );
   
-  // Theme-aware sparkle color - darker and more saturated for light mode visibility
-  const sparkleColor = theme === "dark" 
-    ? "hsl(43, 96%, 56%)" // Gold for dark mode
-    : "hsl(180, 70%, 35%)"; // Darker teal/cyan for light mode visibility
+  const sparkleColor =
+    theme === "dark"
+      ? "hsl(43, 96%, 56%)"
+      : "hsl(43, 90%, 44%)";
   
   // Auto-loop through cards
   useEffect(() => {
@@ -267,10 +276,8 @@ const HeroSection = () => {
     // Shadow: active card has stronger shadow
     const shadowIntensity = isActive ? 0.4 : 0.2 - (distanceFromActive * 0.05);
     
-    // Theme-aware shadow color (RGB values)
-    const shadowColor = theme === "dark" 
-      ? "rgba(251, 191, 36" // Gold RGB (hsl(43, 96%, 56%))
-      : "rgba(59, 180, 184"; // Teal/cyan RGB (hsl(180, 70%, 40%))
+    const shadowColor =
+      theme === "dark" ? "rgba(251, 189, 35" : "rgba(251, 189, 35";
     
     return {
       zIndex,
@@ -290,11 +297,13 @@ const HeroSection = () => {
     >
       {/* Background Effects */}
       <div className="absolute inset-0 bg-gradient-dark" />
-      <div className={`absolute inset-0 bg-gradient-radial ${
-        theme === "dark" 
-          ? "from-primary/10 via-transparent to-transparent" 
-          : "from-primary/25 via-primary/10 to-transparent"
-      }`} />
+      <div
+        className={`absolute inset-0 bg-gradient-radial ${
+          theme === "dark"
+            ? "from-gold/12 via-transparent to-transparent"
+            : "from-gold/18 via-gold/5 to-transparent"
+        }`}
+      />
 
       {/* Sparkles + radial drift subtly with scroll */}
       {enableHeavyEffects ? (
@@ -336,12 +345,8 @@ const HeroSection = () => {
       />
 
       {/* Primary color lines decoration */}
-      <div className={`absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent ${
-        theme === "dark" ? "via-primary/30" : "via-primary/50"
-      } to-transparent`} />
-      <div className={`absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent ${
-        theme === "dark" ? "via-primary/30" : "via-primary/50"
-      } to-transparent`} />
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/35 to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/35 to-transparent" />
 
       <div className="container mx-auto px-4 lg:px-8 py-12 lg:py-20">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center min-h-[80vh]">
@@ -389,9 +394,9 @@ const HeroSection = () => {
                     duration: shouldReduceMotion ? 0 : 0.45,
                     ease: "easeOut",
                   }}
-                  className="inline-flex w-fit rounded-full border border-primary/30 bg-primary/10 px-4 py-2 text-xs sm:text-sm font-semibold text-primary mb-5"
+                  className="inline-flex w-fit rounded-full border border-gold/35 bg-gold/10 px-4 py-2 text-xs sm:text-sm font-semibold text-gold mb-5"
                 >
-                  Built for Catering Business Owners
+                  {t("hero.badge")}
                 </motion.p>
                 <motion.h1
                   className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.16] pb-1 mb-6 text-foreground"
@@ -408,7 +413,7 @@ const HeroSection = () => {
                   }}
                 >
                   <span className="block overflow-visible">
-                    {["Manage", "Your", "Entire", "Catering"].map((word) => (
+                    {t("hero.titleTop").split(" ").map((word) => (
                       <motion.span
                         key={word}
                         className="inline-block mr-[0.28em] last:mr-0 origin-bottom"
@@ -438,7 +443,7 @@ const HeroSection = () => {
                     ))}
                   </span>
                   <span className="block mt-2 sm:mt-3 overflow-visible">
-                    {["Business", "in", "One", "App"].map((word) => (
+                    {t("hero.titleBottom").split(" ").map((word) => (
                       <motion.span
                         key={word}
                         className={`inline-block mr-[0.28em] last:mr-0 origin-bottom text-gradient-gold`}
@@ -481,8 +486,7 @@ const HeroSection = () => {
                   }}
                   className="text-muted-foreground text-base sm:text-lg lg:text-xl mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed"
                 >
-                  From order booking to final invoice - manage events, payments,
-                  staff, utensils, and menus without Excel or paperwork.
+                  {t("hero.description")}
                 </motion.p>
                 <motion.div
                   initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 8 }}
@@ -498,17 +502,17 @@ const HeroSection = () => {
                     href="#pricing"
                     className="inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 text-sm sm:text-base font-semibold text-primary-foreground shadow-lg shadow-primary/25 hover:brightness-110 transition-all"
                   >
-                    Start Free Trial
+                    {t("common.startFreeTrial")}
                   </a>
                   <a
                     href="#contact"
-                    className="inline-flex items-center justify-center rounded-xl border border-primary/40 bg-card/60 px-6 py-3 text-sm sm:text-base font-semibold text-foreground hover:bg-card/80 transition-all"
+                    className="inline-flex items-center justify-center rounded-xl border border-gold/40 bg-card/60 px-6 py-3 text-sm sm:text-base font-semibold text-foreground hover:bg-card/80 transition-all"
                   >
-                    Book Demo
+                    {t("common.bookDemo")}
                   </a>
                 </motion.div>
                 <p className="text-xs sm:text-sm text-muted-foreground">
-                  No credit card required • Setup in minutes
+                  {t("common.noCard")}
                 </p>
               </div>
             </div>
@@ -558,10 +562,10 @@ const HeroSection = () => {
                 ].map((client, i) => (
                   <div
                     key={i}
-                    className="flex items-center justify-between p-3 rounded-xl bg-gradient-to-r from-card/60 to-card/40 border border-primary/10 hover:border-primary/30 hover:from-card/80 hover:to-card/60 transition-colors duration-150 group"
+                    className="flex items-center justify-between p-3 rounded-xl bg-gradient-to-r from-card/60 to-card/40 border border-gold/10 hover:border-gold/30 hover:from-card/80 hover:to-card/60 transition-colors duration-150 group"
                   >
                     <div className="flex items-center gap-3 flex-1">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/30 to-primary/10 flex items-center justify-center text-primary font-bold text-sm shadow-lg">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gold/30 to-gold/10 flex items-center justify-center text-gold font-bold text-sm shadow-lg">
                         {client.avatar}
                       </div>
                       <div className="flex-1 min-w-0">
@@ -570,20 +574,16 @@ const HeroSection = () => {
                         </span>
                         <span className="text-xs text-muted-foreground flex items-center gap-1">
                           <span className={`w-1.5 h-1.5 rounded-full ${
-                            client.status === "Active" 
-                              ? "bg-green-500" 
-                              : theme === "dark" 
-                                ? "bg-primary" 
-                                : "bg-accent"
+                            client.status === "Active" ? "bg-green-500" : "bg-gold"
                           }`}></span>
                           {client.status}
                         </span>
                       </div>
                     </div>
-                    <CheckSquare className="w-5 h-5 text-primary flex-shrink-0 opacity-60 group-hover:opacity-100 transition-opacity" />
+                    <CheckSquare className="w-5 h-5 text-gold flex-shrink-0 opacity-60 group-hover:opacity-100 transition-opacity" />
                   </div>
                 ))}
-                <button className="w-full mt-5 px-4 py-2.5 bg-gradient-to-r from-primary/30 to-primary/20 text-primary rounded-xl text-sm font-semibold hover:from-primary/40 hover:to-primary/30 transition-all duration-200 border border-primary/30 shadow-lg hover:shadow-xl">
+                <button className="w-full mt-5 px-4 py-2.5 bg-gradient-to-r from-gold/30 to-gold/20 text-gold rounded-xl text-sm font-semibold hover:from-gold/40 hover:to-gold/30 transition-all duration-200 border border-gold/30 shadow-lg hover:shadow-xl">
                   View All Clients
                 </button>
               </div>
@@ -616,12 +616,12 @@ const HeroSection = () => {
                 theme={theme}
               >
               <div className="space-y-4">
-                <div className="p-4 bg-gradient-to-br from-primary/20 to-primary/10 rounded-xl border border-primary/20">
+                <div className="p-4 bg-gradient-to-br from-gold/20 to-gold/10 rounded-xl border border-gold/20">
                   <div className="text-xs text-muted-foreground mb-1.5 font-medium uppercase tracking-wide">
                     Priority Order
                   </div>
                   <div className="text-base text-foreground font-bold flex items-center gap-2">
-                    <ClipboardList className="w-4 h-4 text-primary" />
+                    <ClipboardList className="w-4 h-4 text-gold" />
                     O-218 / 450 Guests
                   </div>
                 </div>
@@ -634,8 +634,8 @@ const HeroSection = () => {
                       key={i}
                       className={`p-3 rounded-xl border transition-colors duration-150 ${
                         event.type === "primary"
-                          ? "bg-gradient-to-r from-primary/20 to-primary/10 border-primary/30"
-                          : "bg-card/50 border-primary/10 hover:border-primary/20"
+                          ? "bg-gradient-to-r from-gold/20 to-gold/10 border-gold/30"
+                          : "bg-card/50 border-gold/10 hover:border-gold/20"
                       }`}
                     >
                       <div className="text-sm text-foreground font-semibold">
@@ -685,15 +685,15 @@ const HeroSection = () => {
                 ].map((item, i) => (
                   <div
                     key={i}
-                    className="flex items-center justify-between p-3 rounded-xl bg-gradient-to-r from-card/60 to-card/40 border border-primary/10 hover:border-primary/30 hover:from-card/80 hover:to-card/60 transition-colors duration-150 group"
+                    className="flex items-center justify-between p-3 rounded-xl bg-gradient-to-r from-card/60 to-card/40 border border-gold/10 hover:border-gold/30 hover:from-card/80 hover:to-card/60 transition-colors duration-150 group"
                   >
                     <div className="flex items-center gap-3">
                       <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold ${
                         item.status === "paid"
                           ? "bg-green-500/20 text-green-400"
                           : theme === "dark"
-                            ? "bg-primary/20 text-primary"
-                            : "bg-accent/20 text-accent"
+                            ? "bg-gold/20 text-gold"
+                            : "bg-gold/15 text-gold"
                       }`}>
                         {item.icon}
                       </div>
@@ -705,8 +705,8 @@ const HeroSection = () => {
                       item.status === "paid"
                         ? "bg-green-500/20 text-green-400"
                         : theme === "dark"
-                          ? "bg-primary/20 text-primary"
-                          : "bg-accent/20 text-accent"
+                          ? "bg-gold/20 text-gold"
+                          : "bg-gold/15 text-gold"
                     }`}>
                       {item.status}
                     </div>
@@ -733,13 +733,11 @@ const HeroSection = () => {
                 filter: `drop-shadow(0 ${getCardAnimationProps(3).shadowIntensity * 20}px ${getCardAnimationProps(3).shadowIntensity * 30}px ${getCardAnimationProps(3).shadowColor}, ${getCardAnimationProps(3).shadowIntensity}))`,
               }}
             >
-              <CalendarCard shouldReduceMotion={shouldReduceMotion} />
+              <CalendarCard shouldReduceMotion={shouldReduceMotion} theme={theme} />
             </motion.div>
 
             {/* Decorative glow behind devices */}
-            <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full blur-3xl ${
-              theme === "dark" ? "bg-primary/10" : "bg-primary/20"
-            }`} />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full blur-3xl bg-gold/12 dark:bg-gold/10" />
           </motion.div>
         </div>
       </div>

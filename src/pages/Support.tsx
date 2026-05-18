@@ -9,6 +9,8 @@ import {
   X
 } from "lucide-react";
 import Footer from "@/components/Footer";
+import { useI18n } from "@/contexts/I18nContext";
+import HeaderControls from "@/components/HeaderControls";
 
 const supportServices = [
   "Technical assistance",
@@ -43,10 +45,10 @@ const SupportCard = ({
         delay: shouldReduceMotion ? 0 : index * 0.1,
         ease: "easeOut",
       }}
-      className="bg-card/50 backdrop-blur-sm border border-primary/20 rounded-xl p-6 hover:border-primary/40 transition-all duration-300 hover:shadow-lg"
+      className="bg-card/50 backdrop-blur-sm border border-gold/20 rounded-xl p-6 hover:border-gold/40 transition-all duration-300 hover:shadow-lg"
     >
       <div className="flex items-start gap-4">
-        <div className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center flex-shrink-0 text-primary">
+        <div className="w-12 h-12 rounded-lg bg-gold/20 flex items-center justify-center flex-shrink-0 text-gold">
           {icon}
         </div>
         <div className="flex-1">
@@ -69,16 +71,26 @@ const SupportCard = ({
 };
 
 const Support = () => {
+  const { language } = useI18n();
   const shouldReduceMotion = useReducedMotion();
+  const copy =
+    language === "hi"
+      ? { title1: "हम यहां", title2: "मदद के लिए हैं!", subtitle: "अगर आपको कोई समस्या है, हमारी टीम आपकी सहायता के लिए उपलब्ध है।" }
+      : language === "gu"
+        ? { title1: "અમે અહીં", title2: "મદદ માટે છીએ!", subtitle: "જો તમને કોઈ સમસ્યા હોય, તો અમારી ટીમ મદદ માટે તૈયાર છે." }
+        : { title1: "We're here to", title2: "help!", subtitle: "If you're facing any issues or need assistance, our support team is available to guide you." };
 
   return (
     <main className="min-h-screen bg-background overflow-x-hidden">
       <section className="relative pt-20 pb-20 min-h-screen">
         {/* Background Effects */}
         <div className="absolute inset-0 bg-gradient-dark" />
-        <div className="absolute inset-0 bg-gradient-radial from-primary/10 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-radial from-gold/10 via-transparent to-transparent" />
 
         <div className="container mx-auto px-4 lg:px-8 relative z-10">
+          <div className="mb-6 flex justify-center">
+            <HeaderControls />
+          </div>
           {/* Header Section */}
           <motion.div
             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
@@ -97,16 +109,16 @@ const Support = () => {
               }}
               className="inline-block mb-6"
             >
-              <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center mx-auto">
-                <HelpCircle className="w-10 h-10 text-primary" />
+              <div className="w-20 h-20 rounded-full bg-gold/20 flex items-center justify-center mx-auto">
+                <HelpCircle className="w-10 h-10 text-gold" />
               </div>
             </motion.div>
             <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
-              We're here to
-              <span className="text-gradient-gold block">help!</span>
+              {copy.title1}
+              <span className="text-gradient-gold block">{copy.title2}</span>
             </h1>
             <p className="text-muted-foreground text-lg sm:text-xl max-w-2xl mx-auto">
-              If you're facing any issues or need assistance, our support team is available to guide you.
+              {copy.subtitle}
             </p>
           </motion.div>
 
@@ -122,7 +134,7 @@ const Support = () => {
               Support Services We Provide
             </h2>
             <div className="max-w-3xl mx-auto">
-              <div className="bg-card/50 backdrop-blur-sm border border-primary/20 rounded-xl p-6">
+              <div className="bg-card/50 backdrop-blur-sm border border-gold/20 rounded-xl p-6">
                 <ul className="space-y-4">
                   {supportServices.map((service, index) => (
                     <motion.li
@@ -136,7 +148,7 @@ const Support = () => {
                       }}
                       className="flex items-center gap-3 text-muted-foreground"
                     >
-                      <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0" />
+                      <CheckCircle2 className="w-5 h-5 text-gold flex-shrink-0" />
                       <span className="text-base">{service}</span>
                     </motion.li>
                   ))}
@@ -163,7 +175,7 @@ const Support = () => {
                 content={
                   <a
                     href="mailto:info.katmitra@gmail.com"
-                    className="text-primary hover:underline font-medium"
+                    className="text-gold hover:underline font-medium"
                   >
                     info.katmitra@gmail.com
                   </a>
@@ -178,7 +190,7 @@ const Support = () => {
                 content={
                   <a
                     href="tel:+91 9265758484"
-                    className="text-primary hover:underline font-medium"
+                    className="text-gold hover:underline font-medium"
                   >
                     +91 9265758484
                   </a>
@@ -202,7 +214,7 @@ const Support = () => {
               Working Hours
             </h2>
             <div className="max-w-2xl mx-auto">
-              <div className="bg-card/50 backdrop-blur-sm border border-primary/20 rounded-xl p-6">
+              <div className="bg-card/50 backdrop-blur-sm border border-gold/20 rounded-xl p-6">
                 <div className="space-y-4">
                   <motion.div
                     initial={{ opacity: 0, x: shouldReduceMotion ? 0 : -20 }}
@@ -211,7 +223,7 @@ const Support = () => {
                     transition={{ duration: shouldReduceMotion ? 0 : 0.4 }}
                     className="flex items-center gap-3"
                   >
-                    <Clock className="w-5 h-5 text-primary flex-shrink-0" />
+                    <Clock className="w-5 h-5 text-gold flex-shrink-0" />
                     <span className="text-muted-foreground">
                       <span className="font-semibold text-foreground">Monday to Saturday:</span> 9:00 AM – 6:00 PM (IST)
                     </span>
@@ -241,10 +253,10 @@ const Support = () => {
             transition={{ duration: shouldReduceMotion ? 0 : 0.6, delay: 0.7 }}
             className="max-w-3xl mx-auto"
           >
-            <div className="bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl p-8 border border-primary/30">
+            <div className="bg-gradient-to-br from-gold/20 to-gold/10 rounded-2xl p-8 border border-gold/30">
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-lg bg-primary/30 flex items-center justify-center flex-shrink-0">
-                  <HelpCircle className="w-5 h-5 text-primary" />
+                <div className="w-10 h-10 rounded-lg bg-gold/30 flex items-center justify-center flex-shrink-0">
+                  <HelpCircle className="w-5 h-5 text-gold" />
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-foreground mb-3">
