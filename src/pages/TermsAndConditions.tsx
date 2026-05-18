@@ -102,7 +102,10 @@ const TermsAndConditions = () => {
           <motion.div
             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: shouldReduceMotion ? 0 : 0.6, ease: "easeOut" }}
+            transition={{
+              duration: shouldReduceMotion ? 0 : 0.6,
+              ease: "easeOut",
+            }}
             className="text-center mb-16"
           >
             <motion.div
@@ -126,7 +129,10 @@ const TermsAndConditions = () => {
             <motion.div
               initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: shouldReduceMotion ? 0 : 0.6, delay: 0.3 }}
+              transition={{
+                duration: shouldReduceMotion ? 0 : 0.6,
+                delay: 0.3,
+              }}
               className="max-w-3xl mx-auto"
             >
               <p className="text-muted-foreground text-lg sm:text-xl mb-4">
@@ -168,7 +174,10 @@ const TermsAndConditions = () => {
                 initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: shouldReduceMotion ? 0 : 0.4, delay: 0.4 }}
+                transition={{
+                  duration: shouldReduceMotion ? 0 : 0.4,
+                  delay: 0.4,
+                }}
                 className="bg-card/50 backdrop-blur-sm border border-gold/20 rounded-xl p-6 text-center hover:border-gold/40 transition-all duration-300"
               >
                 <div className="w-12 h-12 rounded-lg bg-gold/20 flex items-center justify-center mx-auto mb-4 text-gold">
@@ -189,7 +198,10 @@ const TermsAndConditions = () => {
                 initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: shouldReduceMotion ? 0 : 0.4, delay: 0.5 }}
+                transition={{
+                  duration: shouldReduceMotion ? 0 : 0.4,
+                  delay: 0.5,
+                }}
                 className="bg-card/50 backdrop-blur-sm border border-gold/20 rounded-xl p-6 text-center hover:border-gold/40 transition-all duration-300"
               >
                 <div className="w-12 h-12 rounded-lg bg-gold/20 flex items-center justify-center mx-auto mb-4 text-gold">
@@ -199,10 +211,10 @@ const TermsAndConditions = () => {
                   {t("terms.phoneLabel")}
                 </h3>
                 <a
-                  href="tel:+919265758484"
+                  href="tel:+919427077230"
                   className="text-gold hover:underline text-sm"
                 >
-                  +91 9265758484
+                  +91 9427077230
                 </a>
               </motion.div>
             </div>
