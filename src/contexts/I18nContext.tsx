@@ -192,6 +192,50 @@ const translations: Record<Language, Record<string, TranslationValue>> = {
     "terms.contactHeading": "Contact for Policy Queries",
     "terms.emailLabel": "Email",
     "terms.phoneLabel": "Phone",
+    "privacy.pageTitle": "Privacy Policy",
+    "privacy.intro":
+      "This Privacy Policy explains how Katmitra collects, uses, and protects information when you use our website and mobile application.",
+    "privacy.effectiveDate": "Effective date: 23 April 2026",
+    "privacy.collect.title": "1. Information We Collect",
+    "privacy.collect.items": [
+      "Account and profile data such as your name, email address, phone number, password, and business details when you sign up or update your profile in the mobile app.",
+      "Operational data such as bookings, quotations, menu items, customer details, and support requests that you create while using Katmitra.",
+      "Contact form data from the website, including your name, email, phone number, and message.",
+    ],
+    "privacy.use.title": "2. How We Use Your Information",
+    "privacy.use.items": [
+      "To create and manage your account, authenticate users, and provide core catering management features.",
+      "To respond to support requests, improve service quality, and maintain platform security.",
+    ],
+    "privacy.permissions.title": "3. Device Permissions and Notifications (Mobile App)",
+    "privacy.permissions.items": [
+      "The mobile app may request access to notifications, camera, photo library, and related device capabilities to support app features such as alerts and image uploads.",
+      "If notifications are enabled, device/app notification tokens may be used to deliver service messages.",
+    ],
+    "privacy.storage.title": "4. Storage and Security",
+    "privacy.storage.items": [
+      "We use industry-standard safeguards to protect data in transit and at rest. No method of transmission or storage is completely risk-free.",
+      "Some app preferences and session-related data are stored locally on your device to keep you signed in and preserve your experience.",
+    ],
+    "privacy.sharing.title": "5. Data Sharing",
+    "privacy.sharing.items": [
+      "We do not sell your personal information.",
+      "We may share data with service providers and infrastructure partners only as needed to operate Katmitra, or when required by law.",
+    ],
+    "privacy.retention.title": "6. Data Retention",
+    "privacy.retention.items": [
+      "We retain data for as long as needed to provide services, comply with legal obligations, resolve disputes, and enforce agreements.",
+      "Retention periods may vary based on the type of information and legal requirements.",
+    ],
+    "privacy.choices.title": "7. Your Choices",
+    "privacy.choices.items": [
+      "You can update account and business information from within the app where available.",
+      "You may contact us to request account-related help, including privacy questions.",
+    ],
+    "privacy.updates.title": "8. Updates to This Policy",
+    "privacy.updates.items": [
+      "We may update this Privacy Policy from time to time. The updated version will be posted on this page with a revised effective date.",
+    ],
   },
   hi: {
     "lang.english": "अंग्रेज़ी",
@@ -380,6 +424,50 @@ const translations: Record<Language, Record<string, TranslationValue>> = {
     "terms.contactHeading": "नीति संबंधी प्रश्नों के लिए संपर्क",
     "terms.emailLabel": "ईमेल",
     "terms.phoneLabel": "फोन",
+    "privacy.pageTitle": "गोपनीयता नीति",
+    "privacy.intro":
+      "यह गोपनीयता नीति बताती है कि आपके द्वारा हमारी वेबसाइट और मोबाइल एप्लिकेशन का उपयोग करते समय Katmitra जानकारी एकत्र, उपयोग और सुरक्षित कैसे करता है।",
+    "privacy.effectiveDate": "प्रभावी तारीख: 23 अप्रैल 2026",
+    "privacy.collect.title": "1. जो जानकारी हम एकत्र करते हैं",
+    "privacy.collect.items": [
+      "खाते और प्रोफ़ाइल डेटा जैसे नाम, ईमेल, फोन, पासवर्ड और व्यवसाय संबंधी विवरण, जब आप मोबाइल एप में साइन अप या प्रोफ़ाइल अपडेट करते हैं।",
+      "ऑपरेशनल डेटा जैसे बुकिंग, कोटेशन, मेनू आइटम, ग्राहक विवरण और सहायता अनुरोध जो आप Katmitra उपयोग करते समय बनाते हैं।",
+      "वेबसाइट के संपर्क फॉर्म का डेटा, जिसमें नाम, ईमेल, फोन और संदेश शामिल है।",
+    ],
+    "privacy.use.title": "2. हम आपकी जानकारी का उपयोग कैसे करते हैं",
+    "privacy.use.items": [
+      "आपके खाते को बनाने व प्रबंधित करने, उपयोगकर्ताओं को प्रमाणित करने और मुख्य कैटरिंग प्रबंधन सुविधाओं का प्रदान।",
+      "सहायता अनुरोधों का जवाब, सेवा गुणवत्ता सुधारना और मंच सुरक्षा बनाए रखना।",
+    ],
+    "privacy.permissions.title": "3. डिवाइस अनुमतियाँ और सूचनाएँ (मोबाइल ऐप)",
+    "privacy.permissions.items": [
+      "मोबाइल ऐप सूचनाओं, कैमरे, फ़ोटो लाइब्रेरी और संबंधित क्षमताओं का अनुरोध कर सकता है ताकि अलर्ट और इमेज अपलोड जैसी सुविधाओं का समर्थन हो।",
+      "अगर सूचनाएँ सक्षम हैं, तो सर्विस संदेश देने के लिए डिवाइस/ऐप नोटिफिकेशन टोकन का उपयोग किया जा सकता है।",
+    ],
+    "privacy.storage.title": "4. संचय और सुरक्षा",
+    "privacy.storage.items": [
+      "हम डेटा के संचरण और संग्रहण के दौरान उद्योग-मानक सुरक्षा उपायों का उपयोग करते हैं। कोई भी तरीका पूर्णतया जोखिम-मुक्त नहीं है।",
+      "कुछ ऐप प्राथमिकताएँ और सत्र डेटा आपके डिवाइस पर स्थानीय रूप से संग्रहित हो सकते हैं ताकि आप लॉग-इन रहें और अनुभव सहेजा जाए।",
+    ],
+    "privacy.sharing.title": "5. डेटा साझाकरण",
+    "privacy.sharing.items": [
+      "हम आपकी व्यक्तिगत जानकारी नहीं बेचते।",
+      "हम डेटा केवल सर्विस प्रदाताओं और बुनियादी भागीदारों के साथ साझा कर सकते हैं जितना Katmitra चलाने के लिए ज़रूरी हो, या जब कानून से आवश्यक हो।",
+    ],
+    "privacy.retention.title": "6. डेटा प्रतिधारण",
+    "privacy.retention.items": [
+      "हम डेटा तब तक रखते हैं जब तक सेवाएँ प्रदान करने, कानूनी बाध्यता, विवाद सुलझाने और करार लागू करने की आवश्यकता हो।",
+      "प्रतिधारण अवधि जानकारी के प्रकार और कानूनी आवश्यकता के आधार पर भिन्न हो सकती है।",
+    ],
+    "privacy.choices.title": "7. आपकी पसंद",
+    "privacy.choices.items": [
+      "जहाँ उपलब्ध हो, आप ऐप के भीतर से खाता और व्यावसायिक जानकारी अपडेट कर सकते हैं।",
+      "आप खाते से जुड़ी मदद या गोपनीयता से संबंधित प्रश्नों के लिए हमसे संपर्क कर सकते हैं।",
+    ],
+    "privacy.updates.title": "8. इस नीति में अपडेट",
+    "privacy.updates.items": [
+      "हम समय-समय पर इस गोपनीयता नीति को अपडेट कर सकते हैं। अपडेट किया संस्करण संशोधित प्रभावी तारीख के साथ इस पृष्ठ पर पोस्ट किया जाएगा।",
+    ],
   },
   gu: {
     "lang.english": "અંગ્રેજી",
@@ -567,6 +655,50 @@ const translations: Record<Language, Record<string, TranslationValue>> = {
     "terms.contactHeading": "પોલિસી સંબંધી પ્રશ્નો માટે સંપર્ક",
     "terms.emailLabel": "ઇમેઇલ",
     "terms.phoneLabel": "ફોન",
+    "privacy.pageTitle": "પ્રાઇવસી પોલિસી",
+    "privacy.intro":
+      "આ પ્રાઇવસી પોલિસી સમજાવે છે કે જ્યારે તમે અમની વેબસાઇટ અને મોબાઇલ એપ્લિકેશનનો ઉપયોગ કરો ત્યારે Katmitra માહિતી કેવી રીતે ભેગી, ઉપયોગ અને સલામત રાખે છે.",
+    "privacy.effectiveDate": "અસરકારક તારીખ: 23 એપ્રિલ 2026",
+    "privacy.collect.title": "1. અમે કઈ માહિતી ભેગી કરીએ છીએ",
+    "privacy.collect.items": [
+      "એકાઉન્ટ અને પ્રોફાઇલ ડેટા જેવા કે નામ, ઇમેઇલ, ફોન નંબર, પાસવર્ડ અને વ્યવસાય વિગતો, જ્યારે તમે મોબાઇલ એપમાં નોંધણી કરો અથવા પ્રોફાઇલ અપડેટ કરો.",
+      "ઓપરેશનલ ડેટા જેવા બુકિંગ્સ, ક્વોટેશન્સ, મેનુ આઇટમ્સ, ગ્રાહક વિગતો અને સપોર્ટ વિનંતીઓ જે તમે Katmitra વપરાતાં બનાવો છો.",
+      "વેબસાઇટના સંપર્ક ફોર્મની માહિતી જેમાં નામ, ઇમેઇલ, ફોન અને સંદેશ શામેલ છે.",
+    ],
+    "privacy.use.title": "2. અમે તમારી માહિતીનો ઉપયોગ કેવી રીતે કરીએ છીએ",
+    "privacy.use.items": [
+      "તમારું એકાઉન્ટ બનાવવા અને મેનેજ કરવા, વપરાશકર્તાઓની ખાતરી કરવા અને મુખ્ય કેટરિંગ વ્યવસ્થાપન સુવિધાઓ પૂરી પાડવા માટે.",
+      "સપોર્ટ વિનંતીઓનો જવાબ આપવા, સર્વિસ ગુણવત્તા સુધારવા અને પ્લેટફોર્મ સુરક્ષા જાળવવા માટે.",
+    ],
+    "privacy.permissions.title": "3. ડિવાઇસ મંજૂરી અને સૂચનાઓ (મોબાઇલ એપ)",
+    "privacy.permissions.items": [
+      "મોબાઇલ એપ સૂચના, કૅમેરો, ફોટો લાઇબ્રેરી અને સંબંધિત સુવિધાઓ માટે ઍક્સેસની વિનંતી કરી શકે છે જેથી એલર્ટ અને ઇમેજ અપલોડ જેવી વિશેષતાઓ સપોર્ટ થાય.",
+      "જો સૂચનાઓ સક્ષમ હોય, તો સર્વિસ મેસેજ પહોંચાડવા ડિવાઇસ/એપ નોટિફિકેશન ટોકન વપરાઈ શકે છે.",
+    ],
+    "privacy.storage.title": "4. સંગ્રહ અને સુરક્ષા",
+    "privacy.storage.items": [
+      "માહિતી મોકલતી અને રાખતી વખતે આમ માન્ય સલામતી દ્વારા અમે ડેટા સલામત રાખીએ છીએ. કોઈ પણ પદ્ધતિ સંપૂર્ણ જોખમ વિના નથી.",
+      "એપ પસંદગીઓ અને સત્રને લગતો કેટલોક ડેટા સાઇન ઇન જાળવવા અને અનુભવ સંભાળવા તમારા ડિવાઇસ પર સ્થાનિકપણે સંગ્રહ પણ થઈ શકે છે.",
+    ],
+    "privacy.sharing.title": "5. ડેટા શેરિંગ",
+    "privacy.sharing.items": [
+      "અમે તમારો વ્યક્તિગત ડેટા વેચતા નથી.",
+      "Katmitra ચલાવવા જરૂરી જેટલું અથવા કાનૂની રીતે જ્યારે જોઈતું હોય ત્યારે જ અમે સર્વિસ પ્રોવાઇડર્સ અને ઇન્ફ્રાસ્ટ્રક્ચર ભાગીદારો સાથે ડેટા શેર કરી શકીએ છીએ.",
+    ],
+    "privacy.retention.title": "6. ડેટા રિટેંશન",
+    "privacy.retention.items": [
+      "સેવાઓ આપવા, કાનૂની દાયિત્વોનું પાલન કરવા, વિવાદો ઉકેલવા અને કરાર લાગુ કરવા જેટલા સમય સુધી અમે ડેટા રાખીએ છીએ.",
+      "માહિતીના પ્રકાર અને કાનૂની જરૂરિયાત મુજબ રિટેંશન સમયગાળો અલગ હોઈ શકે છે.",
+    ],
+    "privacy.choices.title": "7. તમારી પસંદગીઓ",
+    "privacy.choices.items": [
+      "જ્યાં ઉપલબ્ધ હોય ત્યાં તમે એપ દ્વારા એકાઉન્ટ અને વ્યવસાયિક વિગતો અપડેટ કરી શકો છો.",
+      "ખાતું સંબંધિત મદદ અથવા ગોપનીયતા પ્રશ્નો માટે તમે અમારો સંપર્ક કરી શકો છો.",
+    ],
+    "privacy.updates.title": "8. આ પોલિસીમાં અપડેટ",
+    "privacy.updates.items": [
+      "અમે સમયાંતરે આ પ્રાઇવસી પોલિસી અપડેટ કરી શકીએ છીએ. નવું સંસ્કરણ સુધારેલ અસરકારક તારીખ સાથે આ પૃષ્ઠ પર મૂકાશે.",
+    ],
   },
 };
 

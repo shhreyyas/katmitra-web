@@ -1,13 +1,6 @@
 import { motion } from "framer-motion";
 import { useReducedMotion } from "framer-motion";
-import { 
-  Mail, 
-  Phone, 
-  Clock, 
-  CheckCircle2, 
-  HelpCircle,
-  X
-} from "lucide-react";
+import { Mail, Phone, Clock, CheckCircle2, HelpCircle, X } from "lucide-react";
 import Footer from "@/components/Footer";
 import { useI18n } from "@/contexts/I18nContext";
 import HeaderControls from "@/components/HeaderControls";
@@ -52,7 +45,9 @@ const SupportCard = ({
           {icon}
         </div>
         <div className="flex-1">
-          <h3 className="text-xl font-semibold text-foreground mb-2">{title}</h3>
+          <h3 className="text-xl font-semibold text-foreground mb-2">
+            {title}
+          </h3>
           <div className="text-muted-foreground leading-relaxed">{content}</div>
         </div>
       </div>
@@ -75,10 +70,24 @@ const Support = () => {
   const shouldReduceMotion = useReducedMotion();
   const copy =
     language === "hi"
-      ? { title1: "हम यहां", title2: "मदद के लिए हैं!", subtitle: "अगर आपको कोई समस्या है, हमारी टीम आपकी सहायता के लिए उपलब्ध है।" }
+      ? {
+          title1: "हम यहां",
+          title2: "मदद के लिए हैं!",
+          subtitle:
+            "अगर आपको कोई समस्या है, हमारी टीम आपकी सहायता के लिए उपलब्ध है।",
+        }
       : language === "gu"
-        ? { title1: "અમે અહીં", title2: "મદદ માટે છીએ!", subtitle: "જો તમને કોઈ સમસ્યા હોય, તો અમારી ટીમ મદદ માટે તૈયાર છે." }
-        : { title1: "We're here to", title2: "help!", subtitle: "If you're facing any issues or need assistance, our support team is available to guide you." };
+        ? {
+            title1: "અમે અહીં",
+            title2: "મદદ માટે છીએ!",
+            subtitle: "જો તમને કોઈ સમસ્યા હોય, તો અમારી ટીમ મદદ માટે તૈયાર છે.",
+          }
+        : {
+            title1: "We're here to",
+            title2: "help!",
+            subtitle:
+              "If you're facing any issues or need assistance, our support team is available to guide you.",
+          };
 
   return (
     <main className="min-h-screen bg-background overflow-x-hidden">
@@ -95,7 +104,10 @@ const Support = () => {
           <motion.div
             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: shouldReduceMotion ? 0 : 0.6, ease: "easeOut" }}
+            transition={{
+              duration: shouldReduceMotion ? 0 : 0.6,
+              ease: "easeOut",
+            }}
             className="text-center mb-16"
           >
             <motion.div
@@ -189,13 +201,13 @@ const Support = () => {
                 title="Phone"
                 content={
                   <a
-                    href="tel:+91 9265758484"
+                    href="tel:+91 9427077230"
                     className="text-gold hover:underline font-medium"
                   >
-                    +91 9265758484
+                    +91 9427077230
                   </a>
                 }
-                link="tel:+91 9265758484"
+                link="tel:+91 9427077230"
                 index={1}
                 shouldReduceMotion={shouldReduceMotion}
               />
@@ -225,19 +237,28 @@ const Support = () => {
                   >
                     <Clock className="w-5 h-5 text-gold flex-shrink-0" />
                     <span className="text-muted-foreground">
-                      <span className="font-semibold text-foreground">Monday to Saturday:</span> 9:00 AM – 6:00 PM (IST)
+                      <span className="font-semibold text-foreground">
+                        Monday to Saturday:
+                      </span>{" "}
+                      9:00 AM – 6:00 PM (IST)
                     </span>
                   </motion.div>
                   <motion.div
                     initial={{ opacity: 0, x: shouldReduceMotion ? 0 : -20 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
-                    transition={{ duration: shouldReduceMotion ? 0 : 0.4, delay: 0.1 }}
+                    transition={{
+                      duration: shouldReduceMotion ? 0 : 0.4,
+                      delay: 0.1,
+                    }}
                     className="flex items-center gap-3"
                   >
                     <X className="w-5 h-5 text-muted-foreground flex-shrink-0" />
                     <span className="text-muted-foreground">
-                      <span className="font-semibold text-foreground">Sunday:</span> Closed
+                      <span className="font-semibold text-foreground">
+                        Sunday:
+                      </span>{" "}
+                      Closed
                     </span>
                   </motion.div>
                 </div>
@@ -263,7 +284,8 @@ const Support = () => {
                     For faster resolution
                   </h3>
                   <p className="text-muted-foreground leading-relaxed">
-                    Please include your registered email, phone number, and issue details when contacting us.
+                    Please include your registered email, phone number, and
+                    issue details when contacting us.
                   </p>
                 </div>
               </div>
@@ -278,4 +300,3 @@ const Support = () => {
 };
 
 export default Support;
-

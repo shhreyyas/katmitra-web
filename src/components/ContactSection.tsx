@@ -262,7 +262,7 @@ const ContactSection = () => {
                       {content.phone}
                     </h4>
                     <p className="text-muted-foreground text-sm">
-                      +91 9265758484
+                      +91 9427077230
                     </p>
                   </div>
                 </div>
