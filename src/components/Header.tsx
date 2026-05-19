@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import {
   Menu,
   X,
@@ -15,27 +16,45 @@ import {
 import mainLogo from "@/assets/main-logo.jpg";
 import { AnimeNavBar } from "@/components/ui/anime-navbar";
 import HeaderControls from "@/components/HeaderControls";
+import { SparklesCore } from "@/components/ui/sparkles";
 import { useI18n } from "@/contexts/I18nContext";
-// import { useTheme } from "@/contexts/ThemeContext";
+import { useTheme } from "@/contexts/ThemeContext";
+import { cn } from "@/lib/utils";
+
+const MOBILE_MENU_TOP = "5.5rem";
 
 const Header = () => {
   const { t } = useI18n();
+  const { theme } = useTheme();
+  const shouldReduceMotion = useReducedMotion();
   const [isScrolled, setIsScrolled] = useState(false);
   const [headerVisible, setHeaderVisible] = useState(true);
   const [isDesktop, setIsDesktop] = useState(
     typeof window !== "undefined" ? window.matchMedia("(min-width: 1024px)").matches : false,
   );
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  // const { theme, toggleTheme } = useTheme();
   const lastScrollY = useRef(0);
 
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 1024px)");
-    const onMq = () => setIsDesktop(mq.matches);
+    const onMq = () => {
+      const desktop = mq.matches;
+      setIsDesktop(desktop);
+      if (desktop) setIsMobileMenuOpen(false);
+    };
     onMq();
     mq.addEventListener("change", onMq);
     return () => mq.removeEventListener("change", onMq);
   }, []);
+
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [isMobileMenuOpen]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -60,7 +79,7 @@ const Header = () => {
     { label: t("header.features"), href: "/features", icon: Sparkles },
     { label: t("header.howItWorks"), href: "/how-it-works", icon: PlayCircle },
     { label: t("header.pricing"), href: "/pricing", icon: CreditCard },
-    { label: t("header.clients"), href: "/clients", icon: Users },
+    // { label: t("header.clients"), href: "/clients", icon: Users },
     { label: t("header.contact"), href: "/contact", icon: Mail },
   ];
   const animeNavItems = navItems.map((item) => ({
@@ -69,10 +88,72 @@ const Header = () => {
     icon: item.icon,
   }));
 
+  const sparkleColor =
+    theme === "dark" ? "hsl(43, 96%, 56%)" : "hsl(43, 90%, 44%)";
+
+  const mobileMenu =
+    isMobileMenuOpen &&
+    typeof document !== "undefined" &&
+    createPortal(
+      <motion.div
+        className="lg:hidden fixed inset-x-0 bottom-0 z-40 overflow-y-auto"
+        style={{ top: MOBILE_MENU_TOP }}
+        role="dialog"
+        aria-modal="true"
+        aria-label={t("header.home")}
+      >
+        <div className="absolute inset-0 bg-gradient-dark" />
+        <div
+          className={cn(
+            "absolute inset-0 bg-gradient-radial",
+            theme === "dark"
+              ? "from-gold/12 via-transparent to-transparent"
+              : "from-gold/18 via-gold/5 to-transparent",
+          )}
+        />
+        {!shouldReduceMotion ? (
+          <div className="absolute inset-0 pointer-events-none">
+            <SparklesCore
+              id="mobile-menu-sparkles"
+              background="transparent"
+              minSize={theme === "dark" ? 0.4 : 0.6}
+              maxSize={theme === "dark" ? 1.2 : 1.5}
+              particleDensity={theme === "dark" ? 28 : 36}
+              className="h-full w-full"
+              particleColor={sparkleColor}
+              speed={0.9}
+            />
+          </div>
+        ) : null}
+        <nav className="relative z-10 flex flex-col gap-1 px-4 py-5 container mx-auto">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            return (
+              <Link
+                key={item.label}
+                to={item.href}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center gap-3 rounded-lg px-3 py-3 text-foreground hover:bg-card/50 hover:text-gold transition-colors font-medium text-base active:bg-card/70"
+              >
+                <Icon className="h-5 w-5 shrink-0 text-muted-foreground" />
+                {item.label}
+              </Link>
+            );
+          })}
+          <HeaderControls variant="panel" className="mt-3 border-t border-border/50" />
+        </nav>
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/35 to-transparent pointer-events-none" />
+      </motion.div>,
+      document.body,
+    );
+
   return (
+    <>
     <motion.header
       className={`fixed top-0 left-0 right-0 z-50 border-b transition-colors duration-300 ${
-        isScrolled
+        isMobileMenuOpen && !isDesktop
+          ? "bg-gradient-dark border-border/50 shadow-sm"
+          : isScrolled
           ? "bg-background/95 backdrop-blur-xl border-border/55 shadow-sm"
           : "bg-background/80 backdrop-blur-md border-border/40"
       }`}
@@ -117,8 +198,7 @@ const Header = () => {
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="lg:hidden flex items-center gap-3">
-            <HeaderControls />
+          <div className="lg:hidden flex items-center">
             {/* Mobile theme toggle kept for future use
             <button onClick={toggleTheme} aria-label="Toggle theme">
               {theme === "dark" ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
@@ -132,31 +212,13 @@ const Header = () => {
             </button>
           </div>
         </div>
-
-        {/* Mobile Menu */}
-        {isMobileMenuOpen && (
-          <div 
-            className="lg:hidden absolute top-full left-0 right-0 bg-gradient-to-b from-background/95 via-background/90 to-background/95 border-b border-border/50 py-4 shadow-2xl backdrop-blur-xl"
-          >
-            <nav className="flex flex-col gap-4 px-4">
-              {navItems.map((item) => (
-                <Link
-                  key={item.label}
-                  to={item.href}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="text-foreground hover:text-gold transition-colors py-2 font-medium text-base"
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
-          </div>
-        )}
       </div>
 
       {/* Gold accent line */}
       <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
     </motion.header>
+    {mobileMenu}
+    </>
   );
 };
 

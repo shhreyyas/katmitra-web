@@ -6,6 +6,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 
 const languages: Language[] = ["en", "hi", "gu"];
 
@@ -15,7 +16,11 @@ function labelForLang(lang: Language, t: (key: string) => string) {
   return t("lang.gujarati");
 }
 
-const LanguageSwitcher = () => {
+type LanguageSwitcherProps = {
+  triggerClassName?: string;
+};
+
+const LanguageSwitcher = ({ triggerClassName }: LanguageSwitcherProps) => {
   const { language, setLanguage, t } = useI18n();
 
   return (
@@ -25,7 +30,10 @@ const LanguageSwitcher = () => {
     >
       <SelectTrigger
         aria-label={t("header.selectLanguage")}
-        className="h-9 w-[148px] border-border/60 bg-card/70 text-xs font-medium shadow-sm focus:ring-gold/40"
+        className={cn(
+          "h-9 w-[148px] border-border/60 bg-card/70 text-sm font-medium shadow-sm focus:ring-gold/40",
+          triggerClassName,
+        )}
       >
         <SelectValue placeholder={t("header.selectLanguage")} />
       </SelectTrigger>
