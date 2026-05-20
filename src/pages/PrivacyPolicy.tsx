@@ -6,13 +6,16 @@ import HeaderControls from "@/components/HeaderControls";
 import { useI18n } from "@/contexts/I18nContext";
 
 const PRIVACY_SECTION_IDS = [
+  "controller",
   "collect",
   "use",
   "permissions",
   "storage",
   "sharing",
   "retention",
-  "choices",
+  "rights",
+  "international",
+  "children",
   "updates",
 ] as const;
 

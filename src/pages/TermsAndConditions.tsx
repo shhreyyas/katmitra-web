@@ -13,6 +13,10 @@ import {
   Server,
   Ban,
   RefreshCw,
+  Link2,
+  Copyright,
+  UserRound,
+  Scale,
 } from "lucide-react";
 import Footer from "@/components/Footer";
 import { useI18n } from "@/contexts/I18nContext";
@@ -27,6 +31,10 @@ const termDefinitions: { number: number; id: string; icon: LucideIcon }[] = [
   { number: 6, id: "availability", icon: Server },
   { number: 7, id: "termination", icon: Ban },
   { number: 8, id: "updates", icon: RefreshCw },
+  { number: 9, id: "privacyLink", icon: Link2 },
+  { number: 10, id: "intellectualProperty", icon: Copyright },
+  { number: 11, id: "userContent", icon: UserRound },
+  { number: 12, id: "governingLaw", icon: Scale },
 ];
 
 const TermCard = ({
@@ -187,10 +195,10 @@ const TermsAndConditions = () => {
                   {t("terms.emailLabel")}
                 </h3>
                 <a
-                  href="mailto:katmitra.official@gmail.com"
+                  href="mailto:info.katmitra@gmail.com"
                   className="text-gold hover:underline text-sm"
                 >
-                  katmitra.official@gmail.com
+                  info.katmitra@gmail.com
                 </a>
               </motion.div>
 
