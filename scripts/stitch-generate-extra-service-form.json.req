@@ -1,0 +1,15 @@
+{
+  "jsonrpc": "2.0",
+  "id": 81,
+  "method": "tools/call",
+  "params": {
+    "name": "generate_screen_from_text",
+    "arguments": {
+      "projectId": "13574437747058455058",
+      "deviceType": "DESKTOP",
+      "modelId": "GEMINI_3_1_PRO",
+      "designSystem": "assets/11681309600308476629",
+      "prompt": "Katmitra Admin — Add Extra Service drawer, desktop 1440px, dark slate + gold. Drawer 560px Add extra service blurred list behind. SECTION Availability radios Global all caterers gold border selected; Business only with Select business dropdown. SECTION Details: Title required, Description textarea optional, Pricing type segmented control Fixed price | Per guest | Per unit, Price Rs number input large, Optional toggle Is this optional for bookings default on. Active toggle on. Helper Caterers add these lines on booking summary. Footer Cancel Save extra service gold. Katmitra admin design."
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "jsonrpc": "2.0",
+  "id": 22,
+  "method": "tools/call",
+  "params": {
+    "name": "generate_screen_from_text",
+    "arguments": {
+      "projectId": "13574437747058455058",
+      "deviceType": "DESKTOP",
+      "modelId": "GEMINI_3_1_PRO",
+      "designSystem": "assets/11681309600308476629",
+      "prompt": "Katmitra Admin — COMPLETE Dashboard screen, desktop 1440px, dark slate + gold #d4a853. Same left sidebar as before with Dashboard active (gold). Top bar: breadcrumb Home / Dashboard, search icon, bell with red badge 3, admin avatar Admin User. ROW 1 — six KPI stat cards in a grid: Total Users 164 (+12%), Active Subscriptions 139, Expired Users 19, Total Revenue Rs 8,24,500, Total Bookings 312, Total Quotations 487; each card has icon, big number, small trend chip green/red. ROW 2 — two equal chart cards side by side: left Monthly Revenue line chart Jan–Dec with gold line; right User Growth bar chart with blue bars. ROW 3 — two columns: left Recent Bookings table (columns Business, Client, Event date, Status badge Confirmed/Pending/Draft, Amount) with 5 sample rows and View all link; right Support Inbox card listing 3 open tickets with business name, message snippet, Mark resolved button. ROW 4 — Quick Actions strip: buttons Generate access codes, Send notification, Export users CSV. Polished SaaS admin, scrollable main content, consistent spacing."
+    }
+  }
+}

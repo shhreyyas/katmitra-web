@@ -1,0 +1,15 @@
+{
+  "jsonrpc": "2.0",
+  "id": 108,
+  "method": "tools/call",
+  "params": {
+    "name": "generate_screen_from_text",
+    "arguments": {
+      "projectId": "13574437747058455058",
+      "deviceType": "DESKTOP",
+      "modelId": "GEMINI_3_1_PRO",
+      "designSystem": "assets/11681309600308476629",
+      "prompt": "Katmitra Admin — Support, desktop 1440px, dark slate + gold. Sidebar Support active. Tabs Inbox | Contact settings. Inbox tab: table From name email phone, Message preview, Date, Status Open Resolved, Mark resolved. Contact settings tab: Support phone, WhatsApp, Email, Office hours, Address textarea, Save gold. Shown on app and website contact us. Katmitra admin."
+    }
+  }
+}

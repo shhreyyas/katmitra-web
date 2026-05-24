@@ -1,0 +1,15 @@
+{
+  "jsonrpc": "2.0",
+  "id": 40,
+  "method": "tools/call",
+  "params": {
+    "name": "generate_screen_from_text",
+    "arguments": {
+      "projectId": "13574437747058455058",
+      "deviceType": "DESKTOP",
+      "modelId": "GEMINI_3_1_PRO",
+      "designSystem": "assets/11681309600308476629",
+      "prompt": "Katmitra Admin — Menu Items list (single module, global + per-business), desktop 1440px, dark slate + gold. Sidebar Catalog, Menu Items active gold. Breadcrumb Catalog / Menu Items. Title Menu Items, subtitle Manage catalog for all caterers or one business. Filters: search, Category dropdown, Veg/Non-veg, Availability dropdown All / Global only / Business-specific, Business dropdown disabled until Business-specific selected showing Royal Caterers. Table columns: thumbnail, Item name EN with HI subtitle, Category, Veg badge, Price per plate Rs, Availability pill Global gold or Business name, Linked business if scoped, Status Active, Actions Edit Delete. Sample rows mix Global Starters Paneer Tikka and Business-only Royal Caterers Special Dal. + Add menu item gold button. Global badge icon on global rows."
+    }
+  }
+}

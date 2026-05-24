@@ -1,0 +1,15 @@
+{
+  "jsonrpc": "2.0",
+  "id": 21,
+  "method": "tools/call",
+  "params": {
+    "name": "generate_screen_from_text",
+    "arguments": {
+      "projectId": "13574437747058455058",
+      "deviceType": "DESKTOP",
+      "modelId": "GEMINI_3_1_PRO",
+      "designSystem": "assets/11681309600308476629",
+      "prompt": "Desktop admin dashboard for Katmitra at 1440px width. Persistent left sidebar 260px slate-900 with nav links: Dashboard, Users, Catalog (Menu Categories, Global Menu Items, Supply Categories, Global Supply Items, Units), Service Types & Extras, Import, Billing (Subscriptions, Payments, Access Codes), Bookings, Quotations, Notifications, Support, App Version, Settings, Logs; Logout at bottom. Gold accent highlights active Dashboard. Main area top bar breadcrumbs Dashboard and user avatar dropdown. KPI row cards: Total users, Active subs, Monthly revenue sparkline placeholder, Pending supports. Secondary row: bookings table preview 5 rows with filters. Dark theme slate panels, bordered cards."
+    }
+  }
+}

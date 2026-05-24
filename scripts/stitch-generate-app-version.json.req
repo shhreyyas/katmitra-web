@@ -1,0 +1,15 @@
+{
+  "jsonrpc": "2.0",
+  "id": 109,
+  "method": "tools/call",
+  "params": {
+    "name": "generate_screen_from_text",
+    "arguments": {
+      "projectId": "13574437747058455058",
+      "deviceType": "DESKTOP",
+      "modelId": "GEMINI_3_1_PRO",
+      "designSystem": "assets/11681309600308476629",
+      "prompt": "Katmitra Admin — App Version Control, desktop 1440px, dark slate + gold. Sidebar App Version active. Two columns iOS and Android cards each: Latest version input 1.2.0, Minimum version force update 1.0.0, Update message textarea, Preview force vs optional update badges. Save changes gold. Katmitra admin mobile app updates."
+    }
+  }
+}

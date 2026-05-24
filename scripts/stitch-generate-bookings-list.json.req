@@ -1,0 +1,15 @@
+{
+  "jsonrpc": "2.0",
+  "id": 103,
+  "method": "tools/call",
+  "params": {
+    "name": "generate_screen_from_text",
+    "arguments": {
+      "projectId": "13574437747058455058",
+      "deviceType": "DESKTOP",
+      "modelId": "GEMINI_3_1_PRO",
+      "designSystem": "assets/11681309600308476629",
+      "prompt": "Katmitra Admin — Bookings monitor list, desktop 1440px, dark slate + gold. Sidebar Bookings active. Read-only monitor all caterers. Filters date, Business search, Status Draft Confirmed Cancelled. Table Booking code, Business, Client, Event date, Location, Guests, Total Rs, Payment status, Actions View. Katmitra admin."
+    }
+  }
+}

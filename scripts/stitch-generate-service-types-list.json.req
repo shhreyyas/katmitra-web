@@ -1,0 +1,15 @@
+{
+  "jsonrpc": "2.0",
+  "id": 70,
+  "method": "tools/call",
+  "params": {
+    "name": "generate_screen_from_text",
+    "arguments": {
+      "projectId": "13574437747058455058",
+      "deviceType": "DESKTOP",
+      "modelId": "GEMINI_3_1_PRO",
+      "designSystem": "assets/11681309600308476629",
+      "prompt": "Katmitra Admin — Service Types list, desktop 1440px, dark slate + gold #d4a853. Sidebar section Catalog or Settings area label Service Types active gold. Breadcrumb Catalog / Service Types. Title Service Types subtitle Shown during caterer business registration onboarding. Info card: Global service types appear when owners register their catering business. Search, Status filter Active Inactive, gold + Add service type. Table columns: Icon emoji or material icon placeholder, Name English with Hindi subtitle smaller, Slug monospace, Businesses using count e.g. 48, Status Active pill, Actions Edit Delete. Sample rows: Live Counter live-counter, Outdoor Catering outdoor-catering, Wedding Catering wedding, Corporate Lunch corporate-lunch, Home Delivery home-delivery, Buffet Service buffet. Global badge. Pagination."
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "jsonrpc": "2.0",
+  "id": 31,
+  "method": "tools/call",
+  "params": {
+    "name": "generate_screen_from_text",
+    "arguments": {
+      "projectId": "13574437747058455058",
+      "deviceType": "DESKTOP",
+      "modelId": "GEMINI_3_1_PRO",
+      "designSystem": "assets/11681309600308476629",
+      "prompt": "Katmitra Admin — Add Menu Category form, desktop 1440px, dark slate + gold. Show Menu Categories list blurred in background. Center-right slide-over drawer panel 480px width titled Add category with X close. Form fields: Category image upload dropzone with dashed border Upload image PNG JPG max 2MB and small preview placeholder. Language tabs row: English active gold underline, Hindi, Kutchi — three tabs. Under tabs three name inputs when English tab: Category name English required; switch tab shows parallel fields. Slug field with auto-generate hint from English name, editable monospace. Sort order number input default 0. Active toggle switch ON with label Active category visible in app. Footer sticky: Cancel ghost button, Save category gold primary. Helper text All admin categories are global and shared with every caterer. Match Katmitra admin design system, form validation hint under slug if empty."
+    }
+  }
+}

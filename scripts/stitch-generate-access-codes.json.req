@@ -1,0 +1,15 @@
+{
+  "jsonrpc": "2.0",
+  "id": 102,
+  "method": "tools/call",
+  "params": {
+    "name": "generate_screen_from_text",
+    "arguments": {
+      "projectId": "13574437747058455058",
+      "deviceType": "DESKTOP",
+      "modelId": "GEMINI_3_1_PRO",
+      "designSystem": "assets/11681309600308476629",
+      "prompt": "Katmitra Admin — Access Codes, desktop 1440px, dark slate + gold. Sidebar Billing Access Codes active. Top card Generate codes: plan dropdown 1M 6M 12M, quantity number, Generate gold button. Table Code 6 digit, Plan, Status unused used disabled, Assigned user business, Created, Disable action. Katmitra admin."
+    }
+  }
+}

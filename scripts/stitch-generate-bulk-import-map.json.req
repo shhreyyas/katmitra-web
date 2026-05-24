@@ -1,0 +1,15 @@
+{
+  "jsonrpc": "2.0",
+  "id": 91,
+  "method": "tools/call",
+  "params": {
+    "name": "generate_screen_from_text",
+    "arguments": {
+      "projectId": "13574437747058455058",
+      "deviceType": "DESKTOP",
+      "modelId": "GEMINI_3_1_PRO",
+      "designSystem": "assets/11681309600308476629",
+      "prompt": "Katmitra Admin — Bulk Import upload and map columns, desktop 1440px, dark slate + gold. Breadcrumb Bulk Import / Menu Items. Stepper steps 1 Upload 2 Map columns 3 Review 4 Import with step 2 active. Left panel drag-drop zone dashed border Upload CSV or Excel or click browse, file name menu_items_march.csv 2.4 MB uploaded checkmark, Download sample template link gold. Right panel Map columns table: File column header dropdown maps to system field e.g. name_en maps to Name English required, name_hi Name Hindi, category_slug Category slug, price_per_plate Price, food_type Veg or Non-veg, availability Global or business_id. Toggle First row is header. Checkbox Skip duplicate slugs. Footer Back Continue gold Map and preview button. Katmitra admin."
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "jsonrpc": "2.0",
+  "id": 61,
+  "method": "tools/call",
+  "params": {
+    "name": "generate_screen_from_text",
+    "arguments": {
+      "projectId": "13574437747058455058",
+      "deviceType": "DESKTOP",
+      "modelId": "GEMINI_3_1_PRO",
+      "designSystem": "assets/11681309600308476629",
+      "prompt": "Katmitra Admin — Add Unit drawer, desktop 1440px, dark slate + gold. Background units list blurred. Center drawer 420px Add unit. Fields: Unit name required placeholder e.g. Kilogram, Slug auto-generated from name editable monospace placeholder kg helper Used in supply item unit options. Note text Units are always global and cannot be assigned to a single business. Footer Cancel ghost, Save unit gold primary. Minimal form two fields only. Match Katmitra admin drawer style."
+    }
+  }
+}

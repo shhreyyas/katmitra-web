@@ -1,0 +1,15 @@
+{
+  "jsonrpc": "2.0",
+  "id": 92,
+  "method": "tools/call",
+  "params": {
+    "name": "generate_screen_from_text",
+    "arguments": {
+      "projectId": "13574437747058455058",
+      "deviceType": "DESKTOP",
+      "modelId": "GEMINI_3_1_PRO",
+      "designSystem": "assets/11681309600308476629",
+      "prompt": "Katmitra Admin — Bulk Import results, desktop 1440px, dark slate + gold. Stepper step 4 Import complete all done green checkmarks. Success summary cards: 248 rows imported green, 12 skipped duplicates yellow, 5 failed red. Failed rows expandable table Row number Error message e.g. Row 14 invalid category slug starterss, Row 28 missing name_en. Buttons Download error CSV gold outline, Import another file ghost, View menu items link. Progress was 100 percent complete bar gold. Celebration subtle confetti optional minimal. Sidebar Bulk Import active."
+    }
+  }
+}

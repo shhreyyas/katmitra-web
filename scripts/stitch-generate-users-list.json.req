@@ -1,0 +1,15 @@
+{
+  "jsonrpc": "2.0",
+  "id": 23,
+  "method": "tools/call",
+  "params": {
+    "name": "generate_screen_from_text",
+    "arguments": {
+      "projectId": "13574437747058455058",
+      "deviceType": "DESKTOP",
+      "modelId": "GEMINI_3_1_PRO",
+      "designSystem": "assets/11681309600308476629",
+      "prompt": "Katmitra Admin — Users list screen, desktop 1440px, dark slate + gold accent. Left sidebar with Users nav item active (gold highlight). Top bar breadcrumb Users, page title Users & Businesses. Filter bar: search input Search by business, owner, email, phone; dropdown filters Plan (All, Free, Trial, Subscribed, Expired), Status (Active, Suspended); gold primary button + Add user optional ghost. Data table with columns: Business name, Owner, Phone, Email, Plan badge (FREE / TRIAL / 12M / EXPIRED), Expiry date, Status pill Active/Suspended, Actions (View, Suspend). Show 8 realistic Indian caterer sample rows. Pagination footer Showing 1–8 of 164, prev/next. Row hover state. Empty state not shown. Professional admin table, sticky header, zebra optional subtle."
+    }
+  }
+}

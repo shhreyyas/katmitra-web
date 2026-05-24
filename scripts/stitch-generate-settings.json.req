@@ -1,0 +1,15 @@
+{
+  "jsonrpc": "2.0",
+  "id": 110,
+  "method": "tools/call",
+  "params": {
+    "name": "generate_screen_from_text",
+    "arguments": {
+      "projectId": "13574437747058455058",
+      "deviceType": "DESKTOP",
+      "modelId": "GEMINI_3_1_PRO",
+      "designSystem": "assets/11681309600308476629",
+      "prompt": "Katmitra Admin — Settings, desktop 1440px, dark slate + gold. Sidebar Settings active. Sections cards: General App name Katmitra, Support email; Payments UPI id, Bank details textarea; Maintenance mode toggle with warning banner when on; Save settings gold. Clean form layout. Katmitra admin."
+    }
+  }
+}

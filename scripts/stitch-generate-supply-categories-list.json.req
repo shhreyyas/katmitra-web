@@ -1,0 +1,15 @@
+{
+  "jsonrpc": "2.0",
+  "id": 42,
+  "method": "tools/call",
+  "params": {
+    "name": "generate_screen_from_text",
+    "arguments": {
+      "projectId": "13574437747058455058",
+      "deviceType": "DESKTOP",
+      "modelId": "GEMINI_3_1_PRO",
+      "designSystem": "assets/11681309600308476629",
+      "prompt": "Katmitra Admin — Supply Categories list, desktop 1440px, dark slate + gold. Sidebar Catalog expanded, Supply Categories active gold. Breadcrumb Catalog / Supply Categories. Title Supply Categories subtitle Global ingredient and utensil groupings. + Add category, search, Status filter Active Inactive. Table: icon type Ingredient or Utensil chip, names EN HI Kutchi preview, slug vegetables dairy groceries utensils, sort order, status Active, item count, Global badge, Edit Delete. Rows Vegetables Dairy Groceries Utensils with slugs. Pagination. Professional admin."
+    }
+  }
+}
