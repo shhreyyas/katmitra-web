@@ -1,0 +1,15 @@
+{
+  "jsonrpc": "2.0",
+  "id": 20,
+  "method": "tools/call",
+  "params": {
+    "name": "generate_screen_from_text",
+    "arguments": {
+      "projectId": "13574437747058455058",
+      "deviceType": "DESKTOP",
+      "modelId": "GEMINI_3_1_PRO",
+      "designSystem": "assets/11681309600308476629",
+      "prompt": "Desktop admin login for Katmitra. Centered card on very dark slate background. Header: Katmitra Admin with small subtitle Operations. Fields: Email, Password with show/hide. Remember me checkbox, primary Sign in button with gold accent #d4a853, Forgot password link. Compact professional SaaS dashboard style, sidebar not shown yet, viewport 1440x900 framing."
+    }
+  }
+}

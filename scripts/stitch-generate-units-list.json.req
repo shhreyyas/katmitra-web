@@ -1,0 +1,15 @@
+{
+  "jsonrpc": "2.0",
+  "id": 60,
+  "method": "tools/call",
+  "params": {
+    "name": "generate_screen_from_text",
+    "arguments": {
+      "projectId": "13574437747058455058",
+      "deviceType": "DESKTOP",
+      "modelId": "GEMINI_3_1_PRO",
+      "designSystem": "assets/11681309600308476629",
+      "prompt": "Katmitra Admin — Units list screen, desktop 1440px, dark slate + gold #d4a853. Sidebar Catalog section, Units nav item active gold highlight. Breadcrumb Catalog / Units. Page title Units subtitle Global measurement units used in supply items and recipes. Info banner slate card icon info: Admin-managed units are shared across all caterers. Header: search Search units by name or slug, gold + Add unit button. Simple clean data table columns: Unit name, Slug monospace gray, Used in count e.g. 142 supply items, Created date, Actions Edit Delete. Sample rows: Kilogram kg, Gram gram, Litre litre, Millilitre ml, Piece piece, Dozen dozen, Packet packet, Box box. Pagination Showing 1-8 of 24. No tabs. Compact professional admin table, Global badge small on header."
+    }
+  }
+}

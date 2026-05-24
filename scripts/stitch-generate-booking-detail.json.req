@@ -1,0 +1,15 @@
+{
+  "jsonrpc": "2.0",
+  "id": 104,
+  "method": "tools/call",
+  "params": {
+    "name": "generate_screen_from_text",
+    "arguments": {
+      "projectId": "13574437747058455058",
+      "deviceType": "DESKTOP",
+      "modelId": "GEMINI_3_1_PRO",
+      "designSystem": "assets/11681309600308476629",
+      "prompt": "Katmitra Admin — Booking detail read-only, desktop 1440px, dark slate + gold. Breadcrumb Bookings / KAT-2024-001. Header Confirmed badge, business Royal Caterers. Cards customer info, events list, menu summary, pricing breakdown subtotal tax total, payments received. Admin note read-only monitor no edit except Cancel booking outline red. Katmitra admin."
+    }
+  }
+}

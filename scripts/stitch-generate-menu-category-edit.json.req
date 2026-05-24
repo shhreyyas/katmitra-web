@@ -1,0 +1,15 @@
+{
+  "jsonrpc": "2.0",
+  "id": 32,
+  "method": "tools/call",
+  "params": {
+    "name": "generate_screen_from_text",
+    "arguments": {
+      "projectId": "13574437747058455058",
+      "deviceType": "DESKTOP",
+      "modelId": "GEMINI_3_1_PRO",
+      "designSystem": "assets/11681309600308476629",
+      "prompt": "Katmitra Admin — Edit Menu Category drawer, desktop 1440px, dark slate + gold. Background: menu categories table dimmed. Drawer title Edit category — Starters. Same layout as add form: image upload with existing food thumbnail preview, language tabs English Hindi Kutchi with sample filled values English Starters Hindi स्टार्टर्स Kutchi સ્ટાર્ટર્સ, slug starters read-only style or editable, sort order 1, Active toggle on. Danger zone section at bottom red outline Delete category button with warning Cannot delete if menu items linked. Footer Cancel and Update category gold button. Global badge near title."
+    }
+  }
+}

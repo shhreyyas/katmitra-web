@@ -1,0 +1,15 @@
+{
+  "jsonrpc": "2.0",
+  "id": 71,
+  "method": "tools/call",
+  "params": {
+    "name": "generate_screen_from_text",
+    "arguments": {
+      "projectId": "13574437747058455058",
+      "deviceType": "DESKTOP",
+      "modelId": "GEMINI_3_1_PRO",
+      "designSystem": "assets/11681309600308476629",
+      "prompt": "Katmitra Admin — Add Service Type drawer, desktop 1440px, dark slate + gold. Drawer 480px Add service type on blurred list. Icon picker row: grid of emoji or icon buttons restaurant event storefront with selected gold border. Language tabs English Hindi Kutchi for service name. Slug auto from English editable. Status toggle Active on. Helper Service types are global and used in app registration. Footer Cancel Save service type gold. Katmitra admin style."
+    }
+  }
+}

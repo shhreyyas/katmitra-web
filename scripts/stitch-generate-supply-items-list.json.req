@@ -1,0 +1,15 @@
+{
+  "jsonrpc": "2.0",
+  "id": 50,
+  "method": "tools/call",
+  "params": {
+    "name": "generate_screen_from_text",
+    "arguments": {
+      "projectId": "13574437747058455058",
+      "deviceType": "DESKTOP",
+      "modelId": "GEMINI_3_1_PRO",
+      "designSystem": "assets/11681309600308476629",
+      "prompt": "Katmitra Admin — Supply Items list, desktop 1440px, dark slate + gold #d4a853. Sidebar Catalog, Supply Items active gold. Breadcrumb Catalog / Supply Items. Title Supply Items subtitle Global ingredients and utensils for all caterers. Top segmented tabs: Ingredients (active) | Utensils with counts. Filter bar: search, Category dropdown All Vegetables Dairy Groceries, Availability All Global Business-specific, Business dropdown, Status Active Inactive. Gold + Add supply item. Table columns: photo thumbnail, Name EN with HI subtitle, Type chip Ingredient or Utensil, Category, Default unit kg piece, Unit options chips, Availability Global or business name, Stock count optional, Status Active, Edit Delete. Sample ingredient rows Tomato Onion Ghee Paneer and utensil row Large Kadai. Mix global and one row Business-only Royal Caterers Custom Tawa. Pagination. Export CSV ghost button."
+    }
+  }
+}

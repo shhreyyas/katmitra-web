@@ -1,0 +1,15 @@
+{
+  "jsonrpc": "2.0",
+  "id": 52,
+  "method": "tools/call",
+  "params": {
+    "name": "generate_screen_from_text",
+    "arguments": {
+      "projectId": "13574437747058455058",
+      "deviceType": "DESKTOP",
+      "modelId": "GEMINI_3_1_PRO",
+      "designSystem": "assets/11681309600308476629",
+      "prompt": "Katmitra Admin — Edit Supply Item drawer, desktop 1440px, dark slate + gold. Title Edit supply item — Tomato. Type Ingredient locked chip. Availability Global badge. Image with tomato photo preview. EN Hindi Kutchi names filled टमाटर ટામેટા, category Vegetables slug vegetables, unit options kg gram default kg, available count 500, Active on. Danger zone Delete supply item cannot delete if used in bookings. Update button gold. Same Katmitra admin drawer style as menu item edit."
+    }
+  }
+}

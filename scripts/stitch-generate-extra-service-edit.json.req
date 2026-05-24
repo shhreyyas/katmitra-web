@@ -1,0 +1,15 @@
+{
+  "jsonrpc": "2.0",
+  "id": 82,
+  "method": "tools/call",
+  "params": {
+    "name": "generate_screen_from_text",
+    "arguments": {
+      "projectId": "13574437747058455058",
+      "deviceType": "DESKTOP",
+      "modelId": "GEMINI_3_1_PRO",
+      "designSystem": "assets/11681309600308476629",
+      "prompt": "Katmitra Admin — Edit Extra Service drawer, desktop 1440px, dark slate + gold. Title Edit extra service — Decoration Package. Global badge. Fields title Decoration Package, description Full stage floral setup, pricing Fixed price selected, price 15000, Optional on, Active on. Read-only Used in 23 bookings this month. Danger zone Delete extra service. Update gold Cancel. Match other edit drawers."
+    }
+  }
+}

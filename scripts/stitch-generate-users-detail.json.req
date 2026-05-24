@@ -1,0 +1,15 @@
+{
+  "jsonrpc": "2.0",
+  "id": 24,
+  "method": "tools/call",
+  "params": {
+    "name": "generate_screen_from_text",
+    "arguments": {
+      "projectId": "13574437747058455058",
+      "deviceType": "DESKTOP",
+      "modelId": "GEMINI_3_1_PRO",
+      "designSystem": "assets/11681309600308476629",
+      "prompt": "Katmitra Admin — User detail screen, desktop 1440px, dark slate + gold. Sidebar Users active. Breadcrumb Users / Royal Caterers. Header: business name Royal Caterers, status badge Active, plan badge Subscribed 12M, action buttons Suspend user (outline red), Extend subscription (gold primary), Cancel subscription (ghost). Two-column layout. LEFT column cards: Business info (owner Ravi Shah, phone, email, address, GST, years experience); Subscription (plan 12M, start/end dates, Razorpay customer id, trial used No); Last login timestamp. RIGHT column: Subscription history timeline list; Record offline payment card with fields Amount, Method UPI/Cash/Bank, Transaction id, Notes, Save button; Activity mini log. Modal drawer hint Extend subscription: new expiry date picker, months 1/6/12 chips. Match Katmitra admin design system."
+    }
+  }
+}

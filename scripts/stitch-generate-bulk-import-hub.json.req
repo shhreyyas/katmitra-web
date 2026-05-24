@@ -1,0 +1,15 @@
+{
+  "jsonrpc": "2.0",
+  "id": 90,
+  "method": "tools/call",
+  "params": {
+    "name": "generate_screen_from_text",
+    "arguments": {
+      "projectId": "13574437747058455058",
+      "deviceType": "DESKTOP",
+      "modelId": "GEMINI_3_1_PRO",
+      "designSystem": "assets/11681309600308476629",
+      "prompt": "Katmitra Admin — Bulk Import hub, desktop 1440px, dark slate + gold #d4a853. Sidebar Catalog, Bulk Import active gold. Breadcrumb Catalog / Bulk Import. Title Bulk Import subtitle Upload CSV or Excel to add catalog data at once. Three large selectable cards in a row: 1 Menu Items import dishes with EN HI Kutchi category price veg icon Upload menu CSV, 2 Supply Items ingredients utensils with category units photo Upload supply CSV, 3 Categories menu or supply categories optional Upload categories CSV. Each card has icon document spreadsheet gold accent on hover, Start import button. Below section Recent imports table columns Type Date rows success failed Status Completed Failed Download error report link. Note banner Supported formats CSV XLSX PDF coming soon gray chip. Professional admin."
+    }
+  }
+}

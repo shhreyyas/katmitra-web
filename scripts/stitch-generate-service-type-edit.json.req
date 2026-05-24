@@ -1,0 +1,15 @@
+{
+  "jsonrpc": "2.0",
+  "id": 72,
+  "method": "tools/call",
+  "params": {
+    "name": "generate_screen_from_text",
+    "arguments": {
+      "projectId": "13574437747058455058",
+      "deviceType": "DESKTOP",
+      "modelId": "GEMINI_3_1_PRO",
+      "designSystem": "assets/11681309600308476629",
+      "prompt": "Katmitra Admin — Edit Service Type drawer, desktop 1440px, dark slate + gold. Title Edit service type — Live Counter. Icon selected. EN Live Counter HI लाइव काउंटर Kutchi લાઇવ કાઉન્ટર, slug live-counter, Active on, stat 48 businesses linked read-only. Danger zone Delete service type warning if businesses still use it. Update gold button Cancel. Global badge."
+    }
+  }
+}

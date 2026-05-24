@@ -1,0 +1,15 @@
+{
+  "jsonrpc": "2.0",
+  "id": 100,
+  "method": "tools/call",
+  "params": {
+    "name": "generate_screen_from_text",
+    "arguments": {
+      "projectId": "13574437747058455058",
+      "deviceType": "DESKTOP",
+      "modelId": "GEMINI_3_1_PRO",
+      "designSystem": "assets/11681309600308476629",
+      "prompt": "Katmitra Admin — Subscriptions list, desktop 1440px, dark slate + gold. Sidebar Billing, Subscriptions active gold. Title Subscriptions. Filters search business, Plan 1M 6M 12M, Status active expired cancelled. Table Business, Owner, Plan, Start, End, Razorpay sub id truncated, Status badge, Actions Extend Activate Cancel. Sample rows. Pagination. Katmitra admin."
+    }
+  }
+}

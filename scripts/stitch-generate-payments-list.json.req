@@ -1,0 +1,15 @@
+{
+  "jsonrpc": "2.0",
+  "id": 101,
+  "method": "tools/call",
+  "params": {
+    "name": "generate_screen_from_text",
+    "arguments": {
+      "projectId": "13574437747058455058",
+      "deviceType": "DESKTOP",
+      "modelId": "GEMINI_3_1_PRO",
+      "designSystem": "assets/11681309600308476629",
+      "prompt": "Katmitra Admin — Payments list, desktop 1440px, dark slate + gold. Sidebar Billing Payments active. Title Payments platform and offline. Filters date range, Method Razorpay UPI Cash Bank, Status Paid Pending Failed. Table Business, Amount Rs, Method, Transaction id, Date, Status, Mark paid action. Totals row revenue this month. Katmitra admin."
+    }
+  }
+}

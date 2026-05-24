@@ -1,0 +1,15 @@
+{
+  "jsonrpc": "2.0",
+  "id": 62,
+  "method": "tools/call",
+  "params": {
+    "name": "generate_screen_from_text",
+    "arguments": {
+      "projectId": "13574437747058455058",
+      "deviceType": "DESKTOP",
+      "modelId": "GEMINI_3_1_PRO",
+      "designSystem": "assets/11681309600308476629",
+      "prompt": "Katmitra Admin — Edit Unit drawer, desktop 1440px, dark slate + gold. Title Edit unit — Kilogram. Fields name Kilogram slug kg read-only style or editable, Used in 142 items read-only stat. Danger zone Delete unit disabled state hint Cannot delete unit while linked to supply items. Footer Cancel Update unit gold. Small Global badge. Same admin design system as other edit drawers."
+    }
+  }
+}

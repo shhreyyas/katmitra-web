@@ -1,0 +1,15 @@
+{
+  "jsonrpc": "2.0",
+  "id": 80,
+  "method": "tools/call",
+  "params": {
+    "name": "generate_screen_from_text",
+    "arguments": {
+      "projectId": "13574437747058455058",
+      "deviceType": "DESKTOP",
+      "modelId": "GEMINI_3_1_PRO",
+      "designSystem": "assets/11681309600308476629",
+      "prompt": "Katmitra Admin — Extra Services list, desktop 1440px, dark slate + gold #d4a853. Sidebar Catalog or Services, Extra Services active gold. Breadcrumb Catalog / Extra Services. Title Extra Services subtitle Optional add-ons for bookings decoration live counter etc. Info: Templates can be global or for one caterer only. Filters search, Pricing type All Fixed Per guest Per unit, Availability Global Business-specific, Status Active. Gold + Add extra service. Table columns: Title, Description truncated, Pricing type badge FIXED PER_GUEST PER_UNIT, Price Rs amount, Optional yes no chip, Availability Global or business name, Status Active, Edit Delete. Sample rows Decoration Package fixed 15000 global, VIP Service Boy per guest 50 global, Royal Caterers Custom Stage business-only. Pagination."
+    }
+  }
+}

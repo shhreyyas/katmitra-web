@@ -1,0 +1,15 @@
+{
+  "jsonrpc": "2.0",
+  "id": 107,
+  "method": "tools/call",
+  "params": {
+    "name": "generate_screen_from_text",
+    "arguments": {
+      "projectId": "13574437747058455058",
+      "deviceType": "DESKTOP",
+      "modelId": "GEMINI_3_1_PRO",
+      "designSystem": "assets/11681309600308476629",
+      "prompt": "Katmitra Admin — Notifications, desktop 1440px, dark slate + gold. Sidebar Notifications active. Two columns: left Compose card Title input, Message textarea, audience All app users badge, Send to all gold button with confirm modal hint. Right Sent history table Title, Sent count users, Date, preview snippet. Katmitra admin push broadcast."
+    }
+  }
+}

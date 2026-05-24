@@ -16,15 +16,28 @@ import NotFound from "./pages/NotFound";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminUsers from "./pages/admin/AdminUsers";
+import AdminUserDetail from "./pages/admin/AdminUserDetail";
 import AdminAccessCodes from "./pages/admin/AdminAccessCodes";
 import AdminSubscriptions from "./pages/admin/AdminSubscriptions";
 import AdminPayments from "./pages/admin/AdminPayments";
 import AdminBookings from "./pages/admin/AdminBookings";
+import AdminBookingDetail from "./pages/admin/AdminBookingDetail";
 import AdminQuotations from "./pages/admin/AdminQuotations";
+import AdminQuotationDetail from "./pages/admin/AdminQuotationDetail";
 import AdminNotifications from "./pages/admin/AdminNotifications";
 import AdminSupport from "./pages/admin/AdminSupport";
+import AdminAppVersion from "./pages/admin/AdminAppVersion";
 import AdminSettings from "./pages/admin/AdminSettings";
 import AdminLogs from "./pages/admin/AdminLogs";
+import AdminMenuCategories from "./pages/admin/AdminMenuCategories";
+import AdminMenuItems from "./pages/admin/AdminMenuItems";
+import AdminSupplyCategories from "./pages/admin/AdminSupplyCategories";
+import AdminSupplyItems from "./pages/admin/AdminSupplyItems";
+import AdminUnits from "./pages/admin/AdminUnits";
+import AdminServiceTypes from "./pages/admin/AdminServiceTypes";
+import AdminExtraServices from "./pages/admin/AdminExtraServices";
+import AdminBulkImport from "./pages/admin/AdminBulkImport";
+import AdminComingSoon from "./pages/admin/AdminComingSoon";
 import AdminLayout from "./components/admin/AdminLayout";
 import AdminProtectedRoute from "./components/admin/AdminProtectedRoute";
 
@@ -149,13 +162,25 @@ const AppRoutes = () => (
         <Route element={<AdminLayout />}>
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/users" element={<AdminUsers />} />
+          <Route path="/admin/users/:userId" element={<AdminUserDetail />} />
+          <Route path="/admin/menu-categories" element={<AdminMenuCategories />} />
+          <Route path="/admin/menu-items" element={<AdminMenuItems />} />
+          <Route path="/admin/supply-categories" element={<AdminSupplyCategories />} />
+          <Route path="/admin/supply-items" element={<AdminSupplyItems />} />
+          <Route path="/admin/units" element={<AdminUnits />} />
+          <Route path="/admin/service-types" element={<AdminServiceTypes />} />
+          <Route path="/admin/extra-services" element={<AdminExtraServices />} />
+          <Route path="/admin/bulk-import/*" element={<AdminBulkImport />} />
           <Route path="/admin/access-codes" element={<AdminAccessCodes />} />
           <Route path="/admin/subscriptions" element={<AdminSubscriptions />} />
           <Route path="/admin/payments" element={<AdminPayments />} />
           <Route path="/admin/bookings" element={<AdminBookings />} />
+          <Route path="/admin/bookings/:bookingId" element={<AdminBookingDetail />} />
           <Route path="/admin/quotations" element={<AdminQuotations />} />
+          <Route path="/admin/quotations/:quotationId" element={<AdminQuotationDetail />} />
           <Route path="/admin/notifications" element={<AdminNotifications />} />
           <Route path="/admin/support" element={<AdminSupport />} />
+          <Route path="/admin/app-version" element={<AdminAppVersion />} />
           <Route path="/admin/settings" element={<AdminSettings />} />
           <Route path="/admin/logs" element={<AdminLogs />} />
         </Route>

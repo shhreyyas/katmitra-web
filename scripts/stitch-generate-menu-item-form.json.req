@@ -1,0 +1,15 @@
+{
+  "jsonrpc": "2.0",
+  "id": 41,
+  "method": "tools/call",
+  "params": {
+    "name": "generate_screen_from_text",
+    "arguments": {
+      "projectId": "13574437747058455058",
+      "deviceType": "DESKTOP",
+      "modelId": "GEMINI_3_1_PRO",
+      "designSystem": "assets/11681309600308476629",
+      "prompt": "Katmitra Admin — Add Menu Item drawer, desktop 1440px, dark slate + gold. Background menu items list blurred. Wide drawer 560px titled Add menu item. SECTION Availability (important): radio cards — Global visible to all caterers (selected, gold border); Business only visible to one caterer with searchable dropdown Select business e.g. Royal Caterers when second radio selected. Helper When a caterer requests a private item, choose Business only. SECTION Details: image upload, EN HI Kutchi name tabs, category select Starters, Veg Non-veg toggle, price per plate, description textarea. SECTION Ingredients: table add ingredient name qty unit link to supply optional. Footer Cancel Save. Match admin design system."
+    }
+  }
+}

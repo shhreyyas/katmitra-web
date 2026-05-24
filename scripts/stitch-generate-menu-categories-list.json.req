@@ -1,0 +1,15 @@
+{
+  "jsonrpc": "2.0",
+  "id": 30,
+  "method": "tools/call",
+  "params": {
+    "name": "generate_screen_from_text",
+    "arguments": {
+      "projectId": "13574437747058455058",
+      "deviceType": "DESKTOP",
+      "modelId": "GEMINI_3_1_PRO",
+      "designSystem": "assets/11681309600308476629",
+      "prompt": "Katmitra Admin — Menu Categories list screen, desktop 1440px, dark slate + gold #d4a853. Left sidebar: Catalog section expanded, Menu Categories item active with gold highlight. Breadcrumb Catalog / Menu Categories. Page title Menu Categories with subtitle Global categories visible to all caterers. Header actions: ghost Export CSV, gold primary + Add category. Filter row: search Search categories, dropdown Status All / Active / Inactive, dropdown Sort by Sort order. Data table columns: thumbnail small square image placeholder, Category name (show English primary + Hindi subtitle smaller), Slug monospace, Sort order number, Status pill Active green or Inactive gray, Items count e.g. 24 menus, Actions Edit and Delete icons. Show 8 sample rows: Starters, Main Course, Desserts, Beverages, Gujarati Thali, Rajasthani, South Indian, Chinese with realistic slugs starters main-course desserts. Badge Global on each row. Pagination 1-8 of 12. Empty state not shown. Professional admin table."
+    }
+  }
+}

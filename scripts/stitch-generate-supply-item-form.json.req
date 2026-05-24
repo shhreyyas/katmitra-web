@@ -1,0 +1,15 @@
+{
+  "jsonrpc": "2.0",
+  "id": 51,
+  "method": "tools/call",
+  "params": {
+    "name": "generate_screen_from_text",
+    "arguments": {
+      "projectId": "13574437747058455058",
+      "deviceType": "DESKTOP",
+      "modelId": "GEMINI_3_1_PRO",
+      "designSystem": "assets/11681309600308476629",
+      "prompt": "Katmitra Admin — Add Supply Item drawer, desktop 1440px, dark slate + gold. Wide drawer 600px Add supply item on blurred supply list. SECTION Type: segmented Ingredient | Utensil. SECTION Availability: radio Global all caterers gold selected; Business only with Select business dropdown. Helper for private caterer requests. SECTION Details: photo upload dashed zone, language tabs EN HI Kutchi name fields, Category select Vegetables, Unit options multi-select chips kg gram litre piece dozen with default unit dropdown, Available count optional number. Active toggle on. SECTION for Ingredient only small note Linking from menu items can auto-create supply rows. Footer Cancel Save supply item. Professional SaaS form."
+    }
+  }
+}

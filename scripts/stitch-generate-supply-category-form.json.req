@@ -1,0 +1,15 @@
+{
+  "jsonrpc": "2.0",
+  "id": 43,
+  "method": "tools/call",
+  "params": {
+    "name": "generate_screen_from_text",
+    "arguments": {
+      "projectId": "13574437747058455058",
+      "deviceType": "DESKTOP",
+      "modelId": "GEMINI_3_1_PRO",
+      "designSystem": "assets/11681309600308476629",
+      "prompt": "Katmitra Admin — Add Supply Category drawer, desktop 1440px, dark slate + gold. Drawer Add supply category. Type segmented control Ingredient category vs Utensil category. Language tabs English Hindi Kutchi for category name. Slug field, sort order, Active toggle. Note Admin supply categories are always global. Cancel Save category. Same visual style as menu category drawer."
+    }
+  }
+}

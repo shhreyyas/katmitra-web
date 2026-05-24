@@ -1,0 +1,15 @@
+{
+  "jsonrpc": "2.0",
+  "id": 105,
+  "method": "tools/call",
+  "params": {
+    "name": "generate_screen_from_text",
+    "arguments": {
+      "projectId": "13574437747058455058",
+      "deviceType": "DESKTOP",
+      "modelId": "GEMINI_3_1_PRO",
+      "designSystem": "assets/11681309600308476629",
+      "prompt": "Katmitra Admin — Quotations monitor list, desktop 1440px, dark slate + gold. Sidebar Quotations active. Filters business, Status DRAFT SENT ACCEPTED, date. Table Business, Client, Function type, Event date, Guests, Total Rs, Status, View. Katmitra admin."
+    }
+  }
+}
