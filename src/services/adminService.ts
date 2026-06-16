@@ -386,6 +386,7 @@ export type NotificationLogRow = {
   id: string;
   title: string;
   message: string;
+  priority: "normal" | "important" | "critical";
   sent_to: string;
   sent_count: number;
   tokens_count: number;
@@ -405,7 +406,11 @@ export const fetchAdminNotifications = (filters?: { page?: number; limit?: numbe
   }>(`/admin/v1/notifications${qs ? `?${qs}` : ""}`);
 };
 
-export const sendAdminNotification = (body: { title: string; message: string }) =>
+export const sendAdminNotification = (body: {
+  title: string;
+  message: string;
+  priority?: "normal" | "important" | "critical";
+}) =>
   adminFetch<{
     notification: NotificationLogRow;
     delivery_note?: string;
@@ -413,6 +418,44 @@ export const sendAdminNotification = (body: { title: string; message: string }) 
     method: "POST",
     body: JSON.stringify(body),
   });
+
+export type EventReminderRow = {
+  id: string;
+  reminder_type: string;
+  sent_at: string;
+  event: {
+    id: string | null;
+    event_at: string | null;
+    event_location: string | null;
+    function_type: string | null;
+    guest_count: number | null;
+  };
+  booking: {
+    id: string | null;
+    customer_name: string | null;
+    business_name: string | null;
+  };
+};
+
+export const fetchEventReminders = (filters?: { page?: number; limit?: number }) => {
+  const params = new URLSearchParams();
+  if (filters?.page) params.set("page", String(filters.page));
+  if (filters?.limit) params.set("limit", String(filters.limit));
+  const qs = params.toString();
+  return adminFetch<{
+    reminders: EventReminderRow[];
+    pagination: { page: number; limit: number; total: number; total_pages: number };
+  }>(`/admin/v1/reminders${qs ? `?${qs}` : ""}`);
+};
+
+export const triggerReminderCron = () =>
+  adminFetch<{ message: string }>("/admin/v1/reminders/trigger", { method: "POST" });
+
+export const testEventReminder = (bookingEventId: string, reminderType = "24_HOUR") =>
+  adminFetch<{ ok: boolean; push_sent: number; reminder_type: string }>(
+    `/admin/v1/reminders/test/${bookingEventId}`,
+    { method: "POST", body: JSON.stringify({ reminder_type: reminderType }) },
+  );
 
 export type SupportMessageRow = {
   id: string;

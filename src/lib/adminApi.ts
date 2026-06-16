@@ -37,6 +37,7 @@ export async function adminFetch<T>(
     headers.set("Authorization", `Bearer ${token}`);
   }
   headers.set("X-Language", "en");
+  headers.set("ngrok-skip-browser-warning", "true");
 
   const res = await fetch(`${getApiBaseUrl()}${path}`, { ...init, headers });
   let json: ApiEnvelope<T> | null = null;
