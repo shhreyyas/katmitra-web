@@ -1,10 +1,12 @@
 import { useMemo, useState } from "react";
+import { Check, Loader2 } from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -32,13 +34,18 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   createMenuItem,
+  createSupplyItem,
   deleteMenuItem,
   fetchBusinesses,
   fetchMenuCategories,
   fetchMenuItems,
+  fetchSupplyCategories,
+  fetchSupplyItems,
   type LocalizedNameInput,
   type MenuItemIngredient,
   type MenuItemRow,
+  type SupplyCategoryRow,
+  type SupplyItemRow,
   updateMenuItem,
 } from "@/services/adminService";
 import { AdminApiError } from "@/lib/adminApi";
@@ -58,6 +65,10 @@ type FormState = {
   image_url: string;
   ingredients: MenuItemIngredient[];
 };
+
+const ALL_UNITS = ["kg", "g", "mg", "L", "ml", "pcs", "dozen", "tbsp", "tsp", "cup"] as const;
+type Unit = (typeof ALL_UNITS)[number];
+const FALLBACK_UNITS: Unit[] = [...ALL_UNITS];
 
 const emptyForm = (): FormState => ({
   scope: "global",
@@ -87,6 +98,363 @@ const rowToForm = (row: MenuItemRow): FormState => ({
   ingredients: row.ingredients?.length ? [...row.ingredients] : [],
 });
 
+// Bulk comma-search: type multiple names, Search, add found + create missing
+function SupplyItemPicker({
+  items,
+  alreadyAdded,
+  supplyCategories,
+  onAdd,
+  onItemCreated,
+}: {
+  items: SupplyItemRow[];
+  alreadyAdded: Set<string>;
+  supplyCategories: SupplyCategoryRow[];
+  onAdd: (selected: SupplyItemRow[]) => void;
+  onItemCreated: () => void;
+}) {
+  type FoundResult = { item: SupplyItemRow; checked: boolean };
+  type CreateForm = { term: string; en: string; hi: string; gu: string; category: string; units: Set<Unit> };
+
+  const [bulkInput, setBulkInput] = useState("");
+  const [searched, setSearched] = useState(false);
+  const [foundResults, setFoundResults] = useState<FoundResult[]>([]);
+  const [createForms, setCreateForms] = useState<CreateForm[]>([]);
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSearch = () => {
+    const terms = bulkInput.split(",").map((s) => s.trim()).filter(Boolean);
+    if (!terms.length) return;
+
+    const usedIds = new Set<string>();
+    const found: FoundResult[] = [];
+    const notFoundTerms: string[] = [];
+
+    for (const term of terms) {
+      const q = term.toLowerCase();
+      const match =
+        items.find((i) => !usedIds.has(i.id) && i.name.toLowerCase() === q) ??
+        items.find((i) => !usedIds.has(i.id) && i.name.toLowerCase().includes(q)) ??
+        items.find((i) => !usedIds.has(i.id) && q.includes(i.name.toLowerCase()));
+
+      if (match) {
+        usedIds.add(match.id);
+        found.push({ item: match, checked: !alreadyAdded.has(match.id) });
+      } else {
+        notFoundTerms.push(term);
+      }
+    }
+
+    setFoundResults(found);
+    setCreateForms(
+      notFoundTerms.map((term) => ({ term, en: term, hi: "", gu: "", category: "", units: new Set() })),
+    );
+    setSearched(true);
+  };
+
+  const updateCreateForm = (idx: number, patch: Partial<Omit<CreateForm, "units">>) =>
+    setCreateForms((prev) => prev.map((f, i) => (i === idx ? { ...f, ...patch } : f)));
+
+  const toggleCreateUnit = (idx: number, unit: Unit) =>
+    setCreateForms((prev) =>
+      prev.map((f, i) => {
+        if (i !== idx) return f;
+        const next = new Set(f.units);
+        if (next.has(unit)) next.delete(unit);
+        else next.add(unit);
+        return { ...f, units: next };
+      }),
+    );
+
+  const buildAddLabel = () => {
+    const nFound = foundResults.filter((f) => f.checked).length;
+    const nCreate = createForms.filter(
+      (f) => f.en && f.hi && f.gu && f.category && f.units.size,
+    ).length;
+    if (nFound && nCreate) return `Add ${nFound} + Create ${nCreate}`;
+    if (nFound) return `Add ${nFound} found`;
+    if (nCreate) return `Create ${nCreate} new`;
+    return "Add";
+  };
+
+  const handleAddAll = async () => {
+    setSubmitting(true);
+    try {
+      const toAdd = foundResults.filter((f) => f.checked).map((f) => f.item);
+      if (toAdd.length) onAdd(toAdd);
+
+      const created: SupplyItemRow[] = [];
+      for (const form of createForms) {
+        const unitList = ALL_UNITS.filter((u) => form.units.has(u));
+        if (!form.en.trim() || !form.hi.trim() || !form.gu.trim() || !form.category || !unitList.length)
+          continue;
+        try {
+          const newItem = await createSupplyItem({
+            scope: "global",
+            type: "INGREDIENT",
+            name: { en: form.en.trim(), hi: form.hi.trim(), gu: form.gu.trim() },
+            category_slug: form.category,
+            unit_options: unitList,
+            default_unit: unitList[0],
+          });
+          created.push(newItem);
+        } catch (e) {
+          toast.error(`Failed to create "${form.en}": ${(e as Error).message}`);
+        }
+      }
+      if (created.length) {
+        onAdd(created);
+        onItemCreated();
+      }
+
+      const total = toAdd.length + created.length;
+      if (total) toast.success(`${total} ingredient(s) added`);
+
+      setBulkInput("");
+      setFoundResults([]);
+      setCreateForms([]);
+      setSearched(false);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleClear = () => {
+    setBulkInput("");
+    setFoundResults([]);
+    setCreateForms([]);
+    setSearched(false);
+  };
+
+  const addDisabled =
+    submitting ||
+    (foundResults.every((f) => !f.checked) && createForms.length === 0);
+
+  return (
+    <div className="space-y-3">
+      {/* Bulk input row */}
+      <div className="flex gap-2">
+        <Input
+          placeholder="Flour, Salt, Saffron… (comma-separated)"
+          value={bulkInput}
+          onChange={(e) => setBulkInput(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+        />
+        <Button type="button" onClick={handleSearch}>
+          Search
+        </Button>
+      </div>
+
+      {/* Results — only shown after a search */}
+      {searched && (
+        <div className="space-y-3">
+          {/* Found items */}
+          {foundResults.length > 0 && (
+            <div className="space-y-1">
+              <p className="text-xs font-medium text-muted-foreground">
+                Found ({foundResults.length})
+              </p>
+              {foundResults.map((r, idx) => (
+                <div
+                  key={r.item.id}
+                  className="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-muted/50 cursor-pointer select-none"
+                  onClick={() =>
+                    setFoundResults((prev) =>
+                      prev.map((f, i) => (i === idx ? { ...f, checked: !f.checked } : f)),
+                    )
+                  }
+                >
+                  <Checkbox
+                    checked={r.checked}
+                    onCheckedChange={(v) =>
+                      setFoundResults((prev) =>
+                        prev.map((f, i) => (i === idx ? { ...f, checked: !!v } : f)),
+                      )
+                    }
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                  <span className="flex-1 text-sm">{r.item.name}</span>
+                  {alreadyAdded.has(r.item.id) && (
+                    <span className="text-xs text-muted-foreground">already added</span>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Not-found create forms */}
+          {createForms.length > 0 && (
+            <div className="space-y-3">
+              <p className="text-xs font-medium text-muted-foreground">
+                Not found — add to catalog ({createForms.length})
+              </p>
+              {createForms.map((form, idx) => (
+                <div key={idx} className="rounded-md border p-3 space-y-2">
+                  <p className="text-sm font-medium">&ldquo;{form.term}&rdquo;</p>
+                  <Input
+                    placeholder="English"
+                    value={form.en}
+                    onChange={(e) => updateCreateForm(idx, { en: e.target.value })}
+                  />
+                  <Input
+                    placeholder="Hindi"
+                    value={form.hi}
+                    onChange={(e) => updateCreateForm(idx, { hi: e.target.value })}
+                  />
+                  <Input
+                    placeholder="Gujarati"
+                    value={form.gu}
+                    onChange={(e) => updateCreateForm(idx, { gu: e.target.value })}
+                  />
+                  <Select
+                    value={form.category || "__none__"}
+                    onValueChange={(v) =>
+                      updateCreateForm(idx, { category: v === "__none__" ? "" : v })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {supplyCategories.map((c) => (
+                        <SelectItem key={c.id} value={c.slug}>
+                          {c.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <div className="space-y-1">
+                    <p className="text-xs font-medium">Units (first = default)</p>
+                    <div className="flex flex-wrap gap-2">
+                      {ALL_UNITS.map((u) => (
+                        <label
+                          key={u}
+                          className="flex items-center gap-1.5 cursor-pointer select-none"
+                        >
+                          <Checkbox
+                            checked={form.units.has(u)}
+                            onCheckedChange={() => toggleCreateUnit(idx, u)}
+                          />
+                          <span className="text-sm">{u}</span>
+                        </label>
+                      ))}
+                    </div>
+                    {form.units.size > 0 && (
+                      <p className="text-xs text-muted-foreground">
+                        Default: <strong>{ALL_UNITS.find((u) => form.units.has(u))}</strong>
+                      </p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Footer buttons */}
+          <div className="flex gap-2">
+            <Button type="button" size="sm" variant="outline" onClick={handleClear}>
+              ← Clear
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              disabled={addDisabled}
+              onClick={() => void handleAddAll()}
+            >
+              {submitting ? (
+                <>
+                  <Loader2 className="mr-1 h-3 w-3 animate-spin" />
+                  Working…
+                </>
+              ) : (
+                buildAddLabel()
+              )}
+            </Button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Ingredient list with inline qty / unit editing
+function IngredientList({
+  ingredients,
+  supplyIngredients,
+  onUpdate,
+  onRemove,
+}: {
+  ingredients: MenuItemIngredient[];
+  supplyIngredients: SupplyItemRow[];
+  onUpdate: (index: number, patch: Partial<MenuItemIngredient>) => void;
+  onRemove: (index: number) => void;
+}) {
+  if (ingredients.length === 0) {
+    return (
+      <p className="text-sm text-muted-foreground py-1">
+        No ingredients added yet.
+      </p>
+    );
+  }
+
+  return (
+    <div className="space-y-1.5">
+      {ingredients.map((ing, i) => {
+        const supply = supplyIngredients.find((s) => s.id === ing.supply_item_id);
+        const unitOptions = supply?.unit_options?.length
+          ? supply.unit_options
+          : FALLBACK_UNITS;
+
+        return (
+          <div
+            key={i}
+            className="flex flex-wrap items-center gap-2 rounded-md bg-muted/40 px-3 py-1.5 text-sm"
+          >
+            <span className="flex-1 min-w-0 font-medium truncate">{ing.name}</span>
+            {!ing.supply_item_id && (
+              <Badge variant="outline" className="text-xs text-yellow-600 shrink-0">
+                no supply link
+              </Badge>
+            )}
+            <Input
+              type="number"
+              min={0}
+              step="any"
+              className="w-20 h-7 text-sm"
+              placeholder="Qty"
+              value={ing.qty ?? ""}
+              onChange={(e) => onUpdate(i, { qty: e.target.value })}
+            />
+            <Select
+              value={ing.unit || unitOptions[0] || ""}
+              onValueChange={(v) => onUpdate(i, { unit: v })}
+            >
+              <SelectTrigger className="w-20 h-7 text-sm">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {unitOptions.map((u) => (
+                  <SelectItem key={u} value={u}>
+                    {u}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
+              className="h-6 w-6 p-0 text-muted-foreground hover:text-destructive shrink-0"
+              onClick={() => onRemove(i)}
+            >
+              ×
+            </Button>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 const AdminMenuItems = () => {
   const qc = useQueryClient();
   const [scopeFilter, setScopeFilter] = useState<ScopeFilter>("all");
@@ -94,9 +462,17 @@ const AdminMenuItems = () => {
   const [categoryFilter, setCategoryFilter] = useState("");
   const [foodFilter, setFoodFilter] = useState("");
   const [search, setSearch] = useState("");
+
+  // Full edit / create dialog
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<MenuItemRow | null>(null);
   const [form, setForm] = useState<FormState>(emptyForm);
+
+  // Dedicated ingredient editor dialog (per table row)
+  const [ingDialogOpen, setIngDialogOpen] = useState(false);
+  const [ingTarget, setIngTarget] = useState<MenuItemRow | null>(null);
+  const [ingList, setIngList] = useState<MenuItemIngredient[]>([]);
+  const [ingDialogSaving, setIngDialogSaving] = useState(false);
 
   const { data: categories = [] } = useQuery({
     queryKey: ["admin", "menu-categories", "active"],
@@ -129,8 +505,27 @@ const AdminMenuItems = () => {
   });
 
   const items = listQuery.data ?? [];
-
   const filtered = useMemo(() => items, [items]);
+
+  // Load INGREDIENT supply items when either dialog is open
+  const { data: supplyIngredients = [] } = useQuery({
+    queryKey: ["admin", "supply-items", "INGREDIENT"],
+    queryFn: () => fetchSupplyItems({ type: "INGREDIENT" }),
+    enabled: dialogOpen || ingDialogOpen,
+  });
+
+  // Load supply categories for the inline create form
+  const { data: supplyCategories = [] } = useQuery({
+    queryKey: ["admin", "supply-categories", "active"],
+    queryFn: () => fetchSupplyCategories("active"),
+    enabled: dialogOpen || ingDialogOpen,
+  });
+
+  const onSupplyItemCreated = () => {
+    void qc.invalidateQueries({ queryKey: ["admin", "supply-items", "INGREDIENT"] });
+  };
+
+  // ─── Full edit/create dialog handlers ───────────────────────────────────────
 
   const saveMutation = useMutation({
     mutationFn: async () => {
@@ -173,7 +568,7 @@ const AdminMenuItems = () => {
       setDialogOpen(false);
       setEditing(null);
       setForm(emptyForm());
-      qc.invalidateQueries({ queryKey: ["admin", "menu-items"] });
+      void qc.invalidateQueries({ queryKey: ["admin", "menu-items"] });
     },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -182,7 +577,7 @@ const AdminMenuItems = () => {
     mutationFn: (id: string) => deleteMenuItem(id),
     onSuccess: () => {
       toast.success("Menu item deleted");
-      qc.invalidateQueries({ queryKey: ["admin", "menu-items"] });
+      void qc.invalidateQueries({ queryKey: ["admin", "menu-items"] });
     },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -199,26 +594,86 @@ const AdminMenuItems = () => {
     setDialogOpen(true);
   };
 
-  const addIngredient = () => {
+  const addToDlgIngredients = (selected: SupplyItemRow[]) => {
+    const existingIds = new Set(
+      form.ingredients.map((i) => i.supply_item_id).filter(Boolean),
+    );
+    const toAdd = selected
+      .filter((s) => !existingIds.has(s.id))
+      .map((s) => ({
+        supply_item_id: s.id,
+        name: s.name,
+        qty: "",
+        unit: s.default_unit || s.unit_options?.[0] || "",
+      }));
+    setForm((f) => ({ ...f, ingredients: [...f.ingredients, ...toAdd] }));
+  };
+
+  const updateDlgIngredient = (index: number, patch: Partial<MenuItemIngredient>) => {
     setForm((f) => ({
       ...f,
-      ingredients: [...f.ingredients, { name: "", qty: "", unit: "" }],
+      ingredients: f.ingredients.map((ing, i) =>
+        i === index ? { ...ing, ...patch } : ing,
+      ),
     }));
   };
 
-  const updateIngredient = (index: number, patch: Partial<MenuItemIngredient>) => {
-    setForm((f) => ({
-      ...f,
-      ingredients: f.ingredients.map((row, i) => (i === index ? { ...row, ...patch } : row)),
-    }));
-  };
-
-  const removeIngredient = (index: number) => {
+  const removeDlgIngredient = (index: number) => {
     setForm((f) => ({
       ...f,
       ingredients: f.ingredients.filter((_, i) => i !== index),
     }));
   };
+
+  // ─── Dedicated ingredient editor dialog handlers ────────────────────────────
+
+  const openIngDialog = (row: MenuItemRow) => {
+    setIngTarget(row);
+    setIngList(row.ingredients?.length ? [...row.ingredients] : []);
+    setIngDialogOpen(true);
+  };
+
+  const addToIngList = (selected: SupplyItemRow[]) => {
+    const existingIds = new Set(
+      ingList.map((i) => i.supply_item_id).filter(Boolean),
+    );
+    const toAdd = selected
+      .filter((s) => !existingIds.has(s.id))
+      .map((s) => ({
+        supply_item_id: s.id,
+        name: s.name,
+        qty: "",
+        unit: s.default_unit || s.unit_options?.[0] || "",
+      }));
+    setIngList((prev) => [...prev, ...toAdd]);
+  };
+
+  const updateIngListItem = (index: number, patch: Partial<MenuItemIngredient>) => {
+    setIngList((prev) =>
+      prev.map((ing, i) => (i === index ? { ...ing, ...patch } : ing)),
+    );
+  };
+
+  const removeIngListItem = (index: number) => {
+    setIngList((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const saveIngredients = async () => {
+    if (!ingTarget) return;
+    setIngDialogSaving(true);
+    try {
+      await updateMenuItem(ingTarget.id, { ingredients: ingList });
+      toast.success("Ingredients saved");
+      void qc.invalidateQueries({ queryKey: ["admin", "menu-items"] });
+      setIngDialogOpen(false);
+    } catch (e) {
+      toast.error((e as Error).message);
+    } finally {
+      setIngDialogSaving(false);
+    }
+  };
+
+  // ─── Render ─────────────────────────────────────────────────────────────────
 
   return (
     <div className="space-y-6">
@@ -333,7 +788,9 @@ const AdminMenuItems = () => {
                       <TableCell>
                         <div className="font-medium">{row.name}</div>
                         <div className="text-xs text-muted-foreground">
-                          {[row.name_i18n?.hi, row.name_i18n?.gu].filter(Boolean).join(" · ")}
+                          {[row.name_i18n?.hi, row.name_i18n?.gu]
+                            .filter(Boolean)
+                            .join(" · ")}
                         </div>
                       </TableCell>
                       <TableCell>{row.category_name}</TableCell>
@@ -353,7 +810,21 @@ const AdminMenuItems = () => {
                         )}
                       </TableCell>
                       <TableCell className="text-right space-x-2">
-                        <Button size="sm" variant="outline" onClick={() => openEdit(row)}>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => openIngDialog(row)}
+                        >
+                          Ingredients
+                          {row.ingredients?.length
+                            ? ` (${row.ingredients.length})`
+                            : ""}
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => openEdit(row)}
+                        >
                           Edit
                         </Button>
                         <Button
@@ -377,6 +848,7 @@ const AdminMenuItems = () => {
         </CardContent>
       </Card>
 
+      {/* ── Full create / edit dialog ── */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader>
@@ -412,7 +884,10 @@ const AdminMenuItems = () => {
                 <Select
                   value={form.business_id || "__none__"}
                   onValueChange={(v) =>
-                    setForm((f) => ({ ...f, business_id: v === "__none__" ? "" : v }))
+                    setForm((f) => ({
+                      ...f,
+                      business_id: v === "__none__" ? "" : v,
+                    }))
                   }
                 >
                   <SelectTrigger>
@@ -507,55 +982,115 @@ const AdminMenuItems = () => {
               <Label>Description (optional)</Label>
               <Input
                 value={form.description}
-                onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, description: e.target.value }))
+                }
               />
             </div>
             <div className="grid gap-1">
               <Label>Image URL (optional)</Label>
               <Input
                 value={form.image_url}
-                onChange={(e) => setForm((f) => ({ ...f, image_url: e.target.value }))}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, image_url: e.target.value }))
+                }
               />
             </div>
+
+            {/* Ingredient section */}
             <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label>Ingredients (optional)</Label>
-                <Button type="button" size="sm" variant="outline" onClick={addIngredient}>
-                  Add row
-                </Button>
-              </div>
-              {form.ingredients.map((ing, i) => (
-                <div key={i} className="flex gap-2 items-end">
-                  <Input
-                    className="flex-1"
-                    placeholder="Name"
-                    value={ing.name}
-                    onChange={(e) => updateIngredient(i, { name: e.target.value })}
-                  />
-                  <Input
-                    className="w-20"
-                    placeholder="Qty"
-                    value={ing.qty ?? ""}
-                    onChange={(e) => updateIngredient(i, { qty: e.target.value })}
-                  />
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => removeIngredient(i)}
-                  >
-                    Remove
-                  </Button>
-                </div>
-              ))}
+              <Label>Ingredients (optional)</Label>
+              <SupplyItemPicker
+                items={supplyIngredients}
+                alreadyAdded={
+                  new Set(
+                    form.ingredients
+                      .map((i) => i.supply_item_id)
+                      .filter((id): id is string => Boolean(id)),
+                  )
+                }
+                supplyCategories={supplyCategories}
+                onAdd={addToDlgIngredients}
+                onItemCreated={onSupplyItemCreated}
+              />
+              <IngredientList
+                ingredients={form.ingredients}
+                supplyIngredients={supplyIngredients}
+                onUpdate={updateDlgIngredient}
+                onRemove={removeDlgIngredient}
+              />
             </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDialogOpen(false)}>
               Cancel
             </Button>
-            <Button onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending}>
+            <Button
+              onClick={() => saveMutation.mutate()}
+              disabled={saveMutation.isPending}
+            >
               {editing ? "Update" : "Save"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* ── Dedicated ingredient editor dialog ── */}
+      <Dialog open={ingDialogOpen} onOpenChange={setIngDialogOpen}>
+        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              Ingredients —{" "}
+              <span className="font-normal">{ingTarget?.name}</span>
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <SupplyItemPicker
+              items={supplyIngredients}
+              alreadyAdded={
+                new Set(
+                  ingList
+                    .map((i) => i.supply_item_id)
+                    .filter((id): id is string => Boolean(id)),
+                )
+              }
+              supplyCategories={supplyCategories}
+              onAdd={addToIngList}
+              onItemCreated={onSupplyItemCreated}
+            />
+            {ingList.length > 0 && (
+              <div className="space-y-1">
+                <p className="text-sm font-medium">Added ingredients</p>
+                <IngredientList
+                  ingredients={ingList}
+                  supplyIngredients={supplyIngredients}
+                  onUpdate={updateIngListItem}
+                  onRemove={removeIngListItem}
+                />
+              </div>
+            )}
+            {ingList.length === 0 && (
+              <p className="text-sm text-muted-foreground">
+                No ingredients added yet. Use the list above to select supply items.
+              </p>
+            )}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIngDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={() => void saveIngredients()}
+              disabled={ingDialogSaving}
+            >
+              {ingDialogSaving ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Saving…
+                </>
+              ) : (
+                "Save"
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>

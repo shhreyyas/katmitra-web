@@ -898,6 +898,7 @@ export type BusinessOption = {
 };
 
 export type MenuItemIngredient = {
+  supply_item_id?: string;
   name: string;
   qty?: string;
   unit?: string;
