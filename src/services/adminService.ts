@@ -534,6 +534,8 @@ export type AppSettingsRow = {
   support_email: string;
   payment_upi: string;
   payment_bank: string;
+  default_service_charge_pct: number;
+  default_tax_pct: number;
   updated_at: string;
 };
 
@@ -545,6 +547,8 @@ export const updateAdminSettings = (body: {
   support_email?: string;
   payment_upi?: string;
   payment_bank?: string;
+  default_service_charge_pct?: number;
+  default_tax_pct?: number;
 }) =>
   adminFetch<{ settings: AppSettingsRow }>("/admin/v1/settings", {
     method: "PUT",

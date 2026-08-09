@@ -14,6 +14,8 @@ const AdminSettings = () => {
   const [supportEmail, setSupportEmail] = useState("");
   const [paymentUpi, setPaymentUpi] = useState("");
   const [paymentBank, setPaymentBank] = useState("");
+  const [serviceChargePct, setServiceChargePct] = useState("");
+  const [taxPct, setTaxPct] = useState("");
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["admin", "settings"],
@@ -26,6 +28,8 @@ const AdminSettings = () => {
       setSupportEmail(data.support_email);
       setPaymentUpi(data.payment_upi);
       setPaymentBank(data.payment_bank);
+      setServiceChargePct(String(data.default_service_charge_pct));
+      setTaxPct(String(data.default_tax_pct));
     }
   }, [data]);
 
@@ -36,6 +40,8 @@ const AdminSettings = () => {
         support_email: supportEmail.trim(),
         payment_upi: paymentUpi.trim(),
         payment_bank: paymentBank.trim(),
+        default_service_charge_pct: Number(serviceChargePct),
+        default_tax_pct: Number(taxPct),
       }),
     onSuccess: () => {
       toast.success("Settings saved");
@@ -92,6 +98,48 @@ const AdminSettings = () => {
                   onChange={(e) => setSupportEmail(e.target.value)}
                   placeholder="support@katmitra.com"
                 />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="glass-card">
+            <CardHeader>
+              <CardTitle className="text-base">Booking defaults</CardTitle>
+              <p className="text-xs text-muted-foreground">
+                Applied to new businesses at signup. Existing businesses are
+                unaffected — owners can edit their own values in-app.
+              </p>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="default-service-charge-pct">
+                    Service charge %
+                  </Label>
+                  <Input
+                    id="default-service-charge-pct"
+                    type="number"
+                    min={0}
+                    max={100}
+                    step="0.01"
+                    value={serviceChargePct}
+                    onChange={(e) => setServiceChargePct(e.target.value)}
+                    placeholder="10"
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="default-tax-pct">Tax %</Label>
+                  <Input
+                    id="default-tax-pct"
+                    type="number"
+                    min={0}
+                    max={100}
+                    step="0.01"
+                    value={taxPct}
+                    onChange={(e) => setTaxPct(e.target.value)}
+                    placeholder="5"
+                  />
+                </div>
               </div>
             </CardContent>
           </Card>
