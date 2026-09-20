@@ -419,8 +419,8 @@ function IngredientList({
               type="number"
               min={0}
               step="any"
-              className="w-20 h-7 text-sm"
-              placeholder="Qty"
+              className="w-24 h-7 text-sm"
+              placeholder="Qty /100"
               value={ing.qty ?? ""}
               onChange={(e) => onUpdate(i, { qty: e.target.value })}
             />
@@ -1000,6 +1000,9 @@ const AdminMenuItems = () => {
             {/* Ingredient section */}
             <div className="space-y-2">
               <Label>Ingredients (optional)</Label>
+              <p className="text-xs text-muted-foreground -mt-1">
+                Quantities are the amount needed to prepare this dish for 100 guests.
+              </p>
               <SupplyItemPicker
                 items={supplyIngredients}
                 alreadyAdded={
@@ -1045,6 +1048,9 @@ const AdminMenuItems = () => {
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-2">
+            <p className="text-xs text-muted-foreground -mt-2">
+              Quantities are the amount needed to prepare this dish for 100 guests.
+            </p>
             <SupplyItemPicker
               items={supplyIngredients}
               alreadyAdded={
