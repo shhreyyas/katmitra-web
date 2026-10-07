@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
+import LanguageStrip from "@/components/LanguageStrip";
 import BenefitsSection from "@/components/BenefitsSection";
 import FeaturesSection from "@/components/FeaturesSection";
 import HowItWorksSection from "@/components/HowItWorksSection";
@@ -39,6 +40,7 @@ const Index = () => {
     <main className="min-h-screen bg-background overflow-x-hidden scroll-smooth">
       <Header />
       <HeroSection />
+      <LanguageStrip />
       <BenefitsSection />
       <FeaturesSection />
       <HowItWorksSection />

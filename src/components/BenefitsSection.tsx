@@ -1,8 +1,7 @@
 import { motion, useReducedMotion } from "framer-motion";
-import { Clock, FileText, Smile, Settings } from "lucide-react";
+import { CalendarRange, FileText, Languages, ShoppingCart } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { ScrollReveal } from "@/components/motion/scroll-reveal";
-import { Tilt3D } from "@/components/motion/tilt-3d";
 import {
   revealViewport,
   staggerContainerVariants,
@@ -11,10 +10,10 @@ import {
 import { useI18n } from "@/contexts/I18nContext";
 
 const benefitCards = [
-  { id: "timeCost" as const, icon: Clock },
-  { id: "orderMgmt" as const, icon: Settings },
-  { id: "invoicing" as const, icon: FileText },
-  { id: "customer" as const, icon: Smile },
+  { id: "quotation" as const, icon: FileText },
+  { id: "grocery" as const, icon: ShoppingCart },
+  { id: "multiEvent" as const, icon: CalendarRange },
+  { id: "language" as const, icon: Languages },
 ];
 
 const BenefitsSection = () => {
@@ -40,7 +39,7 @@ const BenefitsSection = () => {
         </ScrollReveal>
 
         <motion.div
-          className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 [perspective:1100px]"
+          className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8"
           variants={staggerContainerVariants(reduce, 0.12, 0.08)}
           initial="hidden"
           whileInView="visible"
@@ -52,9 +51,9 @@ const BenefitsSection = () => {
               <motion.div
                 key={benefit.id}
                 variants={staggerItemVariants(reduce, { y: 36 })}
-                className="group [transform-style:preserve-3d]"
+                className="group"
               >
-                <Tilt3D className="h-full" maxTilt={9}>
+                <div className="h-full">
                   <div
                     className={`glass-card-gold rounded-2xl p-6 lg:p-7 h-full transition-all duration-300 hover:border-gold/55 hover:glow-gold-sm ${
                       theme === "light" ? "bg-card/80" : ""
@@ -70,7 +69,7 @@ const BenefitsSection = () => {
                       {t(`benefits.${benefit.id}.description`)}
                     </p>
                   </div>
-                </Tilt3D>
+                </div>
               </motion.div>
             );
           })}

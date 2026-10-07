@@ -11,7 +11,6 @@ import {
   ClipboardList,
 } from "lucide-react";
 import { ScrollReveal } from "@/components/motion/scroll-reveal";
-import { Tilt3D } from "@/components/motion/tilt-3d";
 import {
   revealViewport,
   staggerContainerVariants,
@@ -54,7 +53,7 @@ const FeaturesSection = () => {
         </ScrollReveal>
 
         <motion.div
-          className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10 [perspective:1100px]"
+          className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10"
           variants={staggerContainerVariants(reduce, 0.1, 0.06)}
           initial="hidden"
           whileInView="visible"
@@ -66,12 +65,12 @@ const FeaturesSection = () => {
               <motion.div
                 key={feature.id}
                 variants={staggerItemVariants(reduce, { y: 40 })}
-                className="group relative [transform-style:preserve-3d]"
+                className="group relative"
               >
-                <Tilt3D className="h-full" maxTilt={8}>
-                  <div className="rounded-2xl p-8 h-full border border-[#E5E7EB] dark:border-border bg-white dark:bg-card shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-lg relative overflow-hidden [transform-style:preserve-3d]">
+                <div className="h-full">
+                  <div className="rounded-2xl p-8 h-full border border-[#E5E7EB] dark:border-border bg-white dark:bg-card shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-lg relative overflow-hidden">
                     <motion.div
-                      className="w-16 h-16 rounded-2xl bg-gold/10 flex items-center justify-center mb-6 transition-all duration-300 [transform-style:preserve-3d]"
+                      className="w-16 h-16 rounded-2xl bg-gold/10 flex items-center justify-center mb-6 transition-all duration-300"
                       whileHover={
                         reduce
                           ? undefined
@@ -100,7 +99,7 @@ const FeaturesSection = () => {
                       <div className="absolute inset-0 rounded-2xl border border-gold/30" />
                     </motion.div>
                   </div>
-                </Tilt3D>
+                </div>
               </motion.div>
             );
           })}

@@ -10,7 +10,6 @@ import {
 } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { ScrollReveal } from "@/components/motion/scroll-reveal";
-import { Tilt3D } from "@/components/motion/tilt-3d";
 import { revealViewport, staggerContainerVariants } from "@/lib/motion";
 import { useI18n } from "@/contexts/I18nContext";
 
@@ -81,9 +80,9 @@ const HowItWorksSection = () => {
                 }}
                 className="group relative"
               >
-                <Tilt3D className="h-full" maxTilt={8}>
+                <div className="h-full">
                   <article
-                    className="rounded-2xl border border-gold/20 bg-gradient-to-br from-card/95 to-card/85 backdrop-blur-xl p-8 h-full transition-all duration-300 hover:-translate-y-1.5 hover:border-gold/45 [transform-style:preserve-3d]"
+                    className="rounded-2xl border border-gold/20 bg-gradient-to-br from-card/95 to-card/85 backdrop-blur-xl p-8 h-full transition-all duration-300 hover:-translate-y-1.5 hover:border-gold/45"
                     style={{
                       boxShadow: `0 12px 40px rgba(0,0,0,${theme === "dark" ? "0.24" : "0.08"}), 0 0 44px ${shadowColor}`,
                     }}
@@ -111,7 +110,7 @@ const HowItWorksSection = () => {
                       </div>
                     ) : null}
                   </article>
-                </Tilt3D>
+                </div>
               </motion.div>
             );
           })}

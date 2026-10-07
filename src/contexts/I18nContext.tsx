@@ -22,10 +22,11 @@ const translations: Record<Language, Record<string, TranslationValue>> = {
     "header.selectLanguage": "Choose language",
     "header.darkMode": "Dark mode",
     "hero.badge": "Built for Catering Business Owners",
+    "languages.label": "Available in 3 languages",
     "hero.titleTop": "Manage Your Entire Catering",
     "hero.titleBottom": "Business in One App",
     "hero.description":
-      "From order booking to final invoice - manage events, payments, staff, utensils, and menus without Excel or paperwork.",
+      "Take the booking, send the quotation on WhatsApp and get the grocery list worked out for the guest count — all from your phone, in your own language.",
     "footer.ctaTitle": "Start Managing Your Catering Business Today",
     "download.heading": "Get the KatMitra app",
     "download.subtitle": "Run your bookings, menus, quotations and payments from your phone.",
@@ -42,34 +43,34 @@ const translations: Record<Language, Record<string, TranslationValue>> = {
     "notfound.action": "Return to Home",
     "features.heading": "Everything You Need to Run Your Catering Business",
     "features.subtitle":
-      "From order booking to final invoice — manage every part of your catering operations in one place.",
-    "features.eventOrder.title": "Event & Order Management",
+      "Everything from the booking to the last payment, in one app on your phone.",
+    "features.eventOrder.title": "Bookings & Multi-Event Orders",
     "features.eventOrder.description":
-      "Create and manage all your catering events with date, time, and location. Track past and upcoming bookings easily.",
+      "Record each booking with date, time, venue and guest count. One order can hold several functions.",
     "features.payment.title": "Smart Payment Tracking",
     "features.payment.description":
-      "Track partial payments effortlessly. Record every payment entry and always know how much is pending.",
+      "Record advances and part payments, see the balance due at a glance and share a payment statement.",
     "features.menu.title": "Menu Management",
     "features.menu.description":
-      "Create and manage your catering menus. Show menu options to customers with full item details.",
+      "Build your own menu by category with per-plate prices, or start from the ready-made catalog.",
     "features.grocery.title": "Auto Grocery List",
     "features.grocery.description":
-      "Automatically generate shopping lists based on selected menu items. Never miss any ingredient.",
+      "Get the ingredient list for an event worked out from its menu and guest count. Save it or share it with your vendor.",
     "features.utensil.title": "Utensil (Vasan) Management",
     "features.utensil.description":
       "Track utensils used in each event. Know what is available, in use, or damaged.",
     "features.staff.title": "Staff Management",
     "features.staff.description":
-      "Assign staff to events and manage your workforce efficiently across multiple functions.",
-    "features.estimation.title": "Instant Estimation",
+      "Keep your staff list with roles and contact numbers in one place.",
+    "features.estimation.title": "Quotations on WhatsApp",
     "features.estimation.description":
-      "Generate quick cost estimates based on menu selection. Help customers decide faster.",
-    "features.invoice.title": "Invoice Generation",
+      "Prepare a quotation with menu, extra services and taxes, and send it to the customer as a PDF.",
+    "features.invoice.title": "Booking Invoice PDF",
     "features.invoice.description":
-      "Generate professional invoices automatically after completing events.",
-    "features.calendar.title": "Calendar Overview",
+      "Create a booking invoice with your business name, logo and terms, ready to share or print.",
+    "features.calendar.title": "Schedule & Reminders",
     "features.calendar.description":
-      "Get a complete view of all your events in one calendar. Never miss a booking.",
+      "See upcoming events by date and get reminders before each event and for pending payments.",
     "pricing.heading": "Simple, Transparent Pricing",
     "pricing.subtitle":
       "Start for free today. Upgrade anytime as your business grows.",
@@ -141,21 +142,21 @@ const translations: Record<Language, Record<string, TranslationValue>> = {
       "Simple & easy to use",
     ],
     "clients.eventsBadge": "500+ Events Managed",
-    "benefits.heading": "Why choose KatMitra?",
+    "benefits.heading": "Why caterers choose KatMitra",
     "benefits.subtitle":
-      "Everything you need to run a successful catering business, all in one platform.",
-    "benefits.timeCost.title": "Saves Time & Cost",
-    "benefits.timeCost.description":
-      "Automate repetitive tasks and reduce operational overhead significantly.",
-    "benefits.orderMgmt.title": "Easy Order Management",
-    "benefits.orderMgmt.description":
-      "Handle multiple orders seamlessly with our intuitive dashboard.",
-    "benefits.invoicing.title": "Professional Invoicing",
-    "benefits.invoicing.description":
-      "Generate beautiful invoices and quotations in seconds.",
-    "benefits.customer.title": "Better Customer Experience",
-    "benefits.customer.description":
-      "Delight your clients with smooth communication and delivery.",
+      "Built around how a catering order really runs — from the first phone call to the final payment.",
+    "benefits.quotation.title": "Quotation in minutes",
+    "benefits.quotation.description":
+      "Pick the menu, enter the guest count and share a clean PDF quotation on WhatsApp.",
+    "benefits.grocery.title": "Grocery list done for you",
+    "benefits.grocery.description":
+      "Ingredient quantities are worked out from the menu and the number of guests.",
+    "benefits.multiEvent.title": "One order, many functions",
+    "benefits.multiEvent.description":
+      "Keep a wedding's haldi, lunch and reception together in a single order.",
+    "benefits.language.title": "In your language",
+    "benefits.language.description":
+      "Use the app in Gujarati, Hindi or English.",
     "terms.pageTitle": "Terms & Conditions",
     "terms.welcome": "Welcome to KatMitra",
     "terms.intro":
@@ -307,10 +308,11 @@ const translations: Record<Language, Record<string, TranslationValue>> = {
     "header.selectLanguage": "भाषा चुनें",
     "header.darkMode": "डार्क मोड",
     "hero.badge": "कैटरिंग बिज़नेस मालिकों के लिए बनाया गया",
+    "languages.label": "3 भाषाओं में उपलब्ध",
     "hero.titleTop": "अपने पूरे कैटरिंग बिज़नेस को",
     "hero.titleBottom": "एक ही ऐप में संभालें",
     "hero.description":
-      "ऑर्डर बुकिंग से अंतिम इनवॉइस तक - इवेंट्स, पेमेंट्स, स्टाफ, बर्तन और मेनू बिना एक्सेल या कागज़ी काम के मैनेज करें।",
+      "बुकिंग लें, कोटेशन WhatsApp पर भेजें और मेहमानों की संख्या के हिसाब से किराना सूची अपने आप पाएं — सब कुछ अपने फ़ोन से, अपनी भाषा में।",
     "footer.ctaTitle": "आज ही अपना कैटरिंग बिज़नेस मैनेज करना शुरू करें",
     "download.heading": "KatMitra ऐप डाउनलोड करें",
     "download.subtitle": "अपनी बुकिंग, मेन्यू, कोटेशन और पेमेंट सीधे फ़ोन से संभालें।",
@@ -327,34 +329,34 @@ const translations: Record<Language, Record<string, TranslationValue>> = {
     "notfound.action": "होम पर वापस जाएं",
     "features.heading": "आपके कैटरिंग बिज़नेस के लिए ज़रूरी हर सुविधा",
     "features.subtitle":
-      "ऑर्डर बुकिंग से अंतिम इनवॉइस तक — अपने कैटरिंग ऑपरेशंस को एक जगह मैनेज करें।",
-    "features.eventOrder.title": "इवेंट और ऑर्डर मैनेजमेंट",
+      "बुकिंग से आख़िरी पेमेंट तक सब कुछ, आपके फ़ोन के एक ही ऐप में।",
+    "features.eventOrder.title": "बुकिंग और मल्टी-इवेंट ऑर्डर",
     "features.eventOrder.description":
-      "तारीख, समय और स्थान के साथ अपने सभी कैटरिंग इवेंट्स बनाएं और मैनेज करें। पिछली और आगामी बुकिंग आसानी से ट्रैक करें।",
+      "हर बुकिंग तारीख़, समय, स्थान और मेहमानों की संख्या के साथ दर्ज करें। एक ऑर्डर में कई फंक्शन रखे जा सकते हैं।",
     "features.payment.title": "स्मार्ट पेमेंट ट्रैकिंग",
     "features.payment.description":
-      "आंशिक भुगतान आसानी से ट्रैक करें। हर भुगतान दर्ज करें और हमेशा जानें कितना बाकी है।",
+      "एडवांस और आंशिक भुगतान दर्ज करें, बाकी रकम एक नज़र में देखें और पेमेंट स्टेटमेंट शेयर करें।",
     "features.menu.title": "मेनू मैनेजमेंट",
     "features.menu.description":
-      "अपने कैटरिंग मेनू बनाएं और मैनेज करें। ग्राहकों को पूरी आइटम जानकारी के साथ मेनू विकल्प दिखाएं।",
+      "कैटेगरी के अनुसार प्रति-प्लेट कीमत के साथ अपना मेनू बनाएं, या तैयार कैटलॉग से शुरू करें।",
     "features.grocery.title": "ऑटो किराना सूची",
     "features.grocery.description":
-      "चुने गए मेनू आइटम के आधार पर खरीदारी सूची स्वचालित बनाएं। कोई सामग्री न छूटे।",
+      "किसी इवेंट की सामग्री सूची उसके मेनू और मेहमानों की संख्या से अपने आप बनती है। उसे सेव करें या अपने वेंडर को भेजें।",
     "features.utensil.title": "बर्तन (वासन) मैनेजमेंट",
     "features.utensil.description":
       "हर इवेंट में उपयोग किए बर्तन ट्रैक करें। जानें क्या उपलब्ध है, उपयोग में है या खराब है।",
     "features.staff.title": "स्टाफ मैनेजमेंट",
     "features.staff.description":
-      "इवेंट्स में स्टाफ असाइन करें और कई फंक्शनों में अपने कार्यबल को कुशलता से मैनेज करें।",
-    "features.estimation.title": "तुरंत अनुमान",
+      "अपने स्टाफ की सूची, उनकी भूमिका और संपर्क नंबर एक ही जगह रखें।",
+    "features.estimation.title": "WhatsApp पर कोटेशन",
     "features.estimation.description":
-      "मेनू चयन के आधार पर त्वरित लागत अनुमान बनाएं। ग्राहकों को तेजी से निर्णय लेने में मदद करें।",
-    "features.invoice.title": "इनवॉइस जेनरेशन",
+      "मेनू, अतिरिक्त सेवाओं और टैक्स के साथ कोटेशन तैयार करें और ग्राहक को PDF के रूप में भेजें।",
+    "features.invoice.title": "बुकिंग इनवॉइस PDF",
     "features.invoice.description":
-      "इवेंट पूर्ण होने के बाद स्वचालित रूप से प्रोफेशनल इनवॉइस बनाएं।",
-    "features.calendar.title": "कैलेंडर ओवरव्यू",
+      "अपने बिज़नेस के नाम, लोगो और शर्तों के साथ बुकिंग इनवॉइस बनाएं — शेयर या प्रिंट के लिए तैयार।",
+    "features.calendar.title": "शेड्यूल और रिमाइंडर",
     "features.calendar.description":
-      "एक कैलेंडर में अपने सभी इवेंट्स का पूरा दृश्य पाएं। कोई बुकिंग न छूटे।",
+      "आने वाले इवेंट तारीख़ के अनुसार देखें और हर इवेंट से पहले तथा बाकी भुगतान के लिए रिमाइंडर पाएं।",
     "pricing.heading": "सरल और पारदर्शी प्राइसिंग",
     "pricing.subtitle":
       "आज ही मुफ्त में शुरू करें। आपका बिज़नेस बढ़े तो कभी भी अपग्रेड करें।",
@@ -426,21 +428,21 @@ const translations: Record<Language, Record<string, TranslationValue>> = {
       "सरल और आसान उपयोग",
     ],
     "clients.eventsBadge": "500+ इवेंट मैनेज किए गए",
-    "benefits.heading": "KatMitra क्यों चुनें?",
+    "benefits.heading": "कैटरर्स KatMitra क्यों चुनते हैं",
     "benefits.subtitle":
-      "सफल कैटरिंग बिज़नेस चलाने के लिए जरूरी सब कुछ, एक ही प्लेटफॉर्म में।",
-    "benefits.timeCost.title": "समय और लागत की बचत",
-    "benefits.timeCost.description":
-      "दोहराए जाने वाले कामों को ऑटोमेट करें और परिचालन लागत काफी कम करें।",
-    "benefits.orderMgmt.title": "आसान ऑर्डर मैनेजमेंट",
-    "benefits.orderMgmt.description":
-      "हमारे सहज डैशबोर्ड के साथ कई ऑर्डर आसानी से संभालें।",
-    "benefits.invoicing.title": "प्रोफेशनल इनवॉयसिंग",
-    "benefits.invoicing.description":
-      "सेकंडों में सुंदर इनवॉइस और कोटेशन बनाएं।",
-    "benefits.customer.title": "बेहतर ग्राहक अनुभव",
-    "benefits.customer.description":
-      "सुचारू संवाद और डिलिवरी से अपने ग्राहकों को खुश रखें।",
+      "कैटरिंग ऑर्डर असल में जैसे चलता है, उसी के हिसाब से बना — पहली कॉल से आख़िरी पेमेंट तक।",
+    "benefits.quotation.title": "मिनटों में कोटेशन",
+    "benefits.quotation.description":
+      "मेनू चुनें, मेहमानों की संख्या डालें और साफ़-सुथरा PDF कोटेशन WhatsApp पर भेजें।",
+    "benefits.grocery.title": "किराना सूची अपने आप तैयार",
+    "benefits.grocery.description":
+      "सामग्री की मात्रा मेनू और मेहमानों की संख्या के हिसाब से निकलती है।",
+    "benefits.multiEvent.title": "एक ऑर्डर, कई फंक्शन",
+    "benefits.multiEvent.description":
+      "शादी की हल्दी, लंच और रिसेप्शन — सब एक ही ऑर्डर में साथ रखें।",
+    "benefits.language.title": "आपकी भाषा में",
+    "benefits.language.description":
+      "ऐप का इस्तेमाल गुजराती, हिंदी या अंग्रेज़ी में करें।",
     "terms.pageTitle": "नियम और शर्तें",
     "terms.welcome": "KatMitra में आपका स्वागत है",
     "terms.intro":
@@ -592,10 +594,11 @@ const translations: Record<Language, Record<string, TranslationValue>> = {
     "header.selectLanguage": "ભાષા પસંદ કરો",
     "header.darkMode": "ડાર્ક મોડ",
     "hero.badge": "કેટરિંગ બિઝનેસ માલિકો માટે બનાવેલ",
+    "languages.label": "3 ભાષાઓમાં ઉપલબ્ધ",
     "hero.titleTop": "તમારો સમગ્ર કેટરિંગ બિઝનેસ",
     "hero.titleBottom": "એક જ એપમાં મેનેજ કરો",
     "hero.description":
-      "ઓર્ડર બુકિંગથી અંતિમ ઇન્વોઇસ સુધી - કાર્યક્રમ, પેમેન્ટ, સ્ટાફ, વાસણ અને મેનુ Excel કે પેપરવર્ક વગર મેનેજ કરો.",
+      "બુકિંગ લો, ક્વોટેશન WhatsApp પર મોકલો અને મહેમાનોની સંખ્યા પ્રમાણે કરિયાણાની યાદી આપમેળે મેળવો — બધું તમારા ફોનથી, તમારી ભાષામાં.",
     "footer.ctaTitle": "આજે જ તમારો કેટરિંગ બિઝનેસ મેનેજ કરવાનું શરૂ કરો",
     "download.heading": "KatMitra એપ ડાઉનલોડ કરો",
     "download.subtitle": "તમારા બુકિંગ, મેનૂ, ક્વોટેશન અને પેમેન્ટ સીધા ફોનથી સંભાળો.",
@@ -612,34 +615,34 @@ const translations: Record<Language, Record<string, TranslationValue>> = {
     "notfound.action": "હોમ પર પાછા જાઓ",
     "features.heading": "તમારા કેટરિંગ બિઝનેસ માટે જરૂરી દરેક સુવિધા",
     "features.subtitle":
-      "ઓર્ડર બુકિંગથી અંતિમ ઇન્વોઇસ સુધી — તમારું કેટરિંગ ઓપરેશન એક જ જગ્યાએ મેનેજ કરો.",
-    "features.eventOrder.title": "કાર્યક્રમ અને ઓર્ડર મેનેજમેન્ટ",
+      "બુકિંગથી છેલ્લા પેમેન્ટ સુધી બધું, તમારા ફોનની એક જ એપમાં.",
+    "features.eventOrder.title": "બુકિંગ અને મલ્ટી-કાર્યક્રમ ઓર્ડર",
     "features.eventOrder.description":
-      "તારીખ, સમય અને સ્થળ સાથે તમારા બધા કેટરિંગ કાર્યક્રમો બનાવો અને મેનેજ કરો. ભૂતકાળ અને આગામી બુકિંગ સરળતાથી ટ્રૅક કરો.",
+      "દરેક બુકિંગ તારીખ, સમય, સ્થળ અને મહેમાનોની સંખ્યા સાથે નોંધો. એક ઓર્ડરમાં અનેક કાર્યક્રમ રાખી શકાય છે.",
     "features.payment.title": "સ્માર્ટ પેમેન્ટ ટ્રૅકિંગ",
     "features.payment.description":
-      "આંશિક ચુકવણી સરળતાથી ટ્રૅક કરો. દરેક ચુકવણી નોંધો અને બાકી રકમ હંમેશા જાણો.",
+      "એડવાન્સ અને આંશિક ચુકવણી નોંધો, બાકી રકમ એક નજરમાં જુઓ અને પેમેન્ટ સ્ટેટમેન્ટ શેર કરો.",
     "features.menu.title": "મેનૂ મેનેજમેન્ટ",
     "features.menu.description":
-      "તમારા કેટરિંગ મેનૂ બનાવો અને મેનેજ કરો. ગ્રાહકોને સંપૂર્ણ આઇટમ વિગતો સાથે મેનૂ વિકલ્પો બતાવો.",
+      "કેટેગરી પ્રમાણે પ્લેટ દીઠ ભાવ સાથે તમારું મેનૂ બનાવો, અથવા તૈયાર કેટલોગથી શરૂ કરો.",
     "features.grocery.title": "ઑટો કિરાણા યાદી",
     "features.grocery.description":
-      "પસંદ કરેલા મેનૂ આઇટમ પરથી ખરીદી યાદી આપમેળે બનાવો. કોઈ સામગ્રી ચૂકી ન જાય.",
+      "કાર્યક્રમની સામગ્રીની યાદી તેના મેનૂ અને મહેમાનોની સંખ્યા પરથી આપમેળે બને છે. તેને સેવ કરો અથવા તમારા વેપારીને મોકલો.",
     "features.utensil.title": "વાસણ મેનેજમેન્ટ",
     "features.utensil.description":
       "દરેક કાર્યક્રમમાં વપરાતા વાસણ ટ્રૅક કરો. શું ઉપલબ્ધ, વપરાશમાં અથવા નુકસાન થયું તે જાણો.",
     "features.staff.title": "સ્ટાફ મેનેજમેન્ટ",
     "features.staff.description":
-      "કાર્યક્રમમાં સ્ટાફ સોંપો અને અનેક ફંક્શનમાં તમારા કાર્યબળને કાર્યક્ષમતાથી મેનેજ કરો.",
-    "features.estimation.title": "ત્વરિત અંદાજ",
+      "તમારા સ્ટાફની યાદી, તેમની ભૂમિકા અને સંપર્ક નંબર એક જ જગ્યાએ રાખો.",
+    "features.estimation.title": "WhatsApp પર ક્વોટેશન",
     "features.estimation.description":
-      "મેનૂ પસંદગી પરથી ઝડપી ખર્ચ અંદાજ બનાવો. ગ્રાહકોને ઝડપી નિર્ણય લેવામાં મદદ કરો.",
-    "features.invoice.title": "ઇન્વૉઇસ જનરેશન",
+      "મેનૂ, વધારાની સેવાઓ અને ટેક્સ સાથે ક્વોટેશન તૈયાર કરો અને ગ્રાહકને PDF તરીકે મોકલો.",
+    "features.invoice.title": "બુકિંગ ઇન્વૉઇસ PDF",
     "features.invoice.description":
-      "કાર્યક્રમ પૂર્ણ થયા પછી આપમેળે પ્રોફેશનલ ઇન્વૉઇસ બનાવો.",
-    "features.calendar.title": "કૅલેન્ડર ઓવરવ્યૂ",
+      "તમારા બિઝનેસના નામ, લોગો અને શરતો સાથે બુકિંગ ઇન્વૉઇસ બનાવો — શેર અથવા પ્રિન્ટ માટે તૈયાર.",
+    "features.calendar.title": "શેડ્યૂલ અને રિમાઇન્ડર",
     "features.calendar.description":
-      "એક કૅલેન્ડરમાં તમારા બધા કાર્યક્રમોનો સંપૂર્ણ દૃશ્ય મેળવો. કોઈ બુકિંગ ચૂકી ન જાય.",
+      "આવનારા કાર્યક્રમો તારીખ પ્રમાણે જુઓ અને દરેક કાર્યક્રમ પહેલાં તથા બાકી ચુકવણી માટે રિમાઇન્ડર મેળવો.",
     "pricing.heading": "સરળ અને પારદર્શક પ્રાઇસિંગ",
     "pricing.subtitle":
       "આજે જ મફતમાં શરૂ કરો. તમારો બિઝનેસ વધે ત્યારે ક્યારેય અપગ્રેડ કરો.",
@@ -711,21 +714,21 @@ const translations: Record<Language, Record<string, TranslationValue>> = {
       "સરળ અને વપરવામાં સરળ",
     ],
     "clients.eventsBadge": "500+ કાર્યક્રમ મેનેજ કર્યા",
-    "benefits.heading": "KatMitra કેમ પસંદ કરશો?",
+    "benefits.heading": "કેટરર્સ KatMitra કેમ પસંદ કરે છે",
     "benefits.subtitle":
-      "સફળ કેટરિંગ બિઝનેસ ચલાવવા માટે જરૂરી બધું, એક જ પ્લેટફોર્મ પર.",
-    "benefits.timeCost.title": "સમય અને ખર્ચ બચત",
-    "benefits.timeCost.description":
-      "પુનરાવર્તિત કામો આપમેળે કરો અને ઓપરેશનલ ખર્ચ નોંધપાત્ર રીતે ઘટાડો.",
-    "benefits.orderMgmt.title": "સરળ ઓર્ડર મેનેજમેન્ટ",
-    "benefits.orderMgmt.description":
-      "અમારા સાહજિક ડેશબોર્ડ સાથે અનેક ઓર્ડર સરળતાથી સંભાળો.",
-    "benefits.invoicing.title": "વ્યવસાયિક ઇન્વૉઇસિંગ",
-    "benefits.invoicing.description":
-      "સેકન્ડોમાં સુંદર ઇન્વૉઇસ અને ક્વોટેશન બનાવો.",
-    "benefits.customer.title": "વધુ સારો ગ્રાહક અનુભવ",
-    "benefits.customer.description":
-      "સરળ સંચાર અને ડિલિવરી સાથે તમારા ગ્રાહકોને રાજી રાખો.",
+      "કેટરિંગ ઓર્ડર ખરેખર જે રીતે ચાલે છે તે પ્રમાણે બનાવેલ — પહેલા ફોનથી છેલ્લા પેમેન્ટ સુધી.",
+    "benefits.quotation.title": "મિનિટોમાં ક્વોટેશન",
+    "benefits.quotation.description":
+      "મેનૂ પસંદ કરો, મહેમાનોની સંખ્યા લખો અને સ્વચ્છ PDF ક્વોટેશન WhatsApp પર મોકલો.",
+    "benefits.grocery.title": "કરિયાણાની યાદી આપમેળે તૈયાર",
+    "benefits.grocery.description":
+      "સામગ્રીનું પ્રમાણ મેનૂ અને મહેમાનોની સંખ્યા પ્રમાણે ગણાય છે.",
+    "benefits.multiEvent.title": "એક ઓર્ડર, અનેક કાર્યક્રમ",
+    "benefits.multiEvent.description":
+      "લગ્નની હળદી, જમણવાર અને રિસેપ્શન — બધું એક જ ઓર્ડરમાં સાથે રાખો.",
+    "benefits.language.title": "તમારી ભાષામાં",
+    "benefits.language.description":
+      "એપનો ઉપયોગ ગુજરાતી, હિન્દી અથવા અંગ્રેજીમાં કરો.",
     "terms.pageTitle": "નિયમો અને શરતો",
     "terms.welcome": "KatMitra માં આપનું સ્વાગત છે",
     "terms.intro":
