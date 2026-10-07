@@ -1,9 +1,14 @@
 import { useState } from "react";
+import type { PaymentRow } from "@/services/adminService";
+import ExportCsvButton from "@/components/admin/ExportCsvButton";
+import { useDebouncedValue, useUrlPage, useUrlParam } from "@/hooks/useUrlState";
+import { AdminTableSkeleton } from "@/components/admin/AdminStates";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import ConfirmButton from "@/components/admin/ConfirmButton";
 import { Badge } from "@/components/ui/badge";
 import {
   Select,
@@ -39,12 +44,13 @@ const methodLabel: Record<string, string> = {
 
 const AdminPayments = () => {
   const qc = useQueryClient();
-  const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [methodFilter, setMethodFilter] = useState("all");
-  const [fromDate, setFromDate] = useState("");
-  const [toDate, setToDate] = useState("");
-  const [page, setPage] = useState(1);
+  const [searchInput, setSearch] = useUrlParam("q", "");
+  const search = useDebouncedValue(searchInput);
+  const [statusFilter, setStatusFilter] = useUrlParam("status", "all");
+  const [methodFilter, setMethodFilter] = useUrlParam("method", "all");
+  const [fromDate, setFromDate] = useUrlParam("from", "");
+  const [toDate, setToDate] = useUrlParam("to", "");
+  const [page, setPage] = useUrlPage();
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: [
@@ -84,11 +90,36 @@ const AdminPayments = () => {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gradient-gold">Payments</h1>
-        <p className="text-sm text-muted-foreground">
-          Platform (Razorpay) and offline payments recorded for businesses.
-        </p>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold text-gradient-gold">Payments</h1>
+          <p className="text-sm text-muted-foreground">
+            Platform (Razorpay) and offline payments recorded for businesses.
+          </p>
+        </div>
+        <ExportCsvButton<PaymentRow>
+          name="payments"
+          columns={[
+            { header: "Date", value: (p) => p.created_at },
+            { header: "Business", value: (p) => p.business_name },
+            { header: "Amount", value: (p) => p.amount },
+            { header: "Method", value: (p) => p.method },
+            { header: "Status", value: (p) => p.status },
+            { header: "Transaction ID", value: (p) => p.transaction_id },
+            { header: "Notes", value: (p) => p.notes },
+          ]}
+          fetchPage={(page, limit) =>
+            fetchPayments({
+              q: search.trim() || undefined,
+              status: statusFilter,
+              method: methodFilter,
+              from_date: fromDate || undefined,
+              to_date: toDate || undefined,
+              page,
+              limit,
+            }).then((d) => ({ rows: d.payments, totalPages: d.pagination.total_pages }))
+          }
+        />
       </div>
 
       <Card className="glass-card border-primary/20">
@@ -104,7 +135,7 @@ const AdminPayments = () => {
         <Input
           className="w-56"
           placeholder="Search business, transaction id…"
-          value={search}
+          value={searchInput}
           onChange={(e) => {
             setSearch(e.target.value);
             setPage(1);
@@ -169,7 +200,7 @@ const AdminPayments = () => {
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <p className="text-sm text-muted-foreground">Loading…</p>
+            <AdminTableSkeleton columns={7} />
           ) : isError ? (
             <p className="text-sm text-destructive">
               {(error as Error)?.message || "Failed to load payments"}
@@ -214,14 +245,17 @@ const AdminPayments = () => {
                       </TableCell>
                       <TableCell className="text-right">
                         {!isPaid(p.status) && (
-                          <Button
+                          <ConfirmButton
                             size="sm"
                             variant="outline"
+                            title="Mark this payment as paid?"
+                            description="Use this only after confirming the money was received."
+                            confirmLabel="Mark paid"
                             disabled={markPaidMutation.isPending}
-                            onClick={() => markPaidMutation.mutate(p.id)}
+                            onConfirm={() => markPaidMutation.mutate(p.id)}
                           >
                             Mark paid
-                          </Button>
+                          </ConfirmButton>
                         )}
                       </TableCell>
                     </TableRow>

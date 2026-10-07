@@ -1,4 +1,6 @@
 import { Link, useParams } from "react-router-dom";
+import { AdminDetailSkeleton } from "@/components/admin/AdminStates";
+import { humanizeLabel } from "@/lib/adminFormat";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -66,7 +68,7 @@ const AdminBookingDetail = () => {
   });
 
   if (isLoading) {
-    return <p className="text-sm text-muted-foreground">Loading booking…</p>;
+    return <AdminDetailSkeleton />;
   }
 
   if (isError || !data) {
@@ -100,7 +102,7 @@ const AdminBookingDetail = () => {
             {data.booking_code || data.id}
           </p>
         </div>
-        <Badge>{data.status}</Badge>
+        <Badge>{humanizeLabel(data.status)}</Badge>
         {data.payment_status && <Badge variant="outline">{data.payment_status}</Badge>}
       </div>
 
@@ -112,7 +114,16 @@ const AdminBookingDetail = () => {
           <CardContent className="text-sm space-y-1">
             <p>
               <span className="text-muted-foreground">Business: </span>
-              {data.business?.name ?? "—"}
+              {data.business?.name ? (
+                <Link
+                  to={`/admin/users?q=${encodeURIComponent(data.business.name)}`}
+                  className="text-gold underline-offset-4 hover:underline"
+                >
+                  {data.business.name}
+                </Link>
+              ) : (
+                "—"
+              )}
             </p>
             <p>
               <span className="text-muted-foreground">Owner: </span>
@@ -188,7 +199,7 @@ const AdminBookingDetail = () => {
                 {events.map((ev, i) => (
                   <TableRow key={ev.id ?? i}>
                     <TableCell className="text-sm">{fmt(ev.event_at)}</TableCell>
-                    <TableCell>{ev.function_type ?? "—"}</TableCell>
+                    <TableCell>{humanizeLabel(ev.function_type)}</TableCell>
                     <TableCell className="max-w-[200px] truncate">
                       {ev.event_location ?? "—"}
                     </TableCell>

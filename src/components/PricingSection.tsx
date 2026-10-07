@@ -12,17 +12,17 @@ const PricingSection = () => {
   return (
     <section
       id="pricing"
-      className="relative py-28 sm:py-32 lg:py-40 bg-background overflow-hidden"
+      className="relative py-20 lg:py-28 bg-background overflow-hidden"
     >
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
       <div className="absolute inset-0 bg-gradient-radial from-primary/5 via-transparent to-transparent" />
 
       <div className="container mx-auto px-4 lg:px-8 relative z-10">
-        <ScrollReveal className="text-center mb-16 lg:mb-24 max-w-3xl mx-auto">
-          <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold mb-5 leading-tight">
+        <ScrollReveal className="text-center mb-12 lg:mb-16 max-w-3xl mx-auto">
+          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 leading-tight">
             {t("pricing.heading")}
           </h2>
-          <p className="text-muted-foreground text-lg sm:text-xl max-w-xl mx-auto leading-relaxed">
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto leading-relaxed">
             {t("pricing.subtitle")}
           </p>
         </ScrollReveal>
@@ -71,7 +71,7 @@ const PricingSection = () => {
             </ul>
 
             <a
-              href="#contact"
+              href="#download"
               className="inline-flex w-full justify-center rounded-xl bg-primary px-6 py-3 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/20 hover:brightness-95 transition-all"
             >
               {t("footer.startFreeNow")}

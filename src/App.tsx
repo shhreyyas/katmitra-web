@@ -9,6 +9,7 @@ import { I18nProvider } from "@/contexts/I18nContext";
 import Index from "./pages/Index";
 import PricingEntry from "./pages/PricingEntry";
 import FAQs from "./pages/FAQs";
+import Download from "./pages/Download";
 import Support from "./pages/Support";
 import TermsAndConditions from "./pages/TermsAndConditions";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
@@ -40,8 +41,20 @@ import AdminBulkImport from "./pages/admin/AdminBulkImport";
 import AdminComingSoon from "./pages/admin/AdminComingSoon";
 import AdminLayout from "./components/admin/AdminLayout";
 import AdminProtectedRoute from "./components/admin/AdminProtectedRoute";
+import { AdminApiError } from "./lib/adminApi";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: (failureCount, error) => {
+        const status = error instanceof AdminApiError ? error.status : undefined;
+        if (status && status >= 400 && status < 500) return false;
+        return failureCount < 1;
+      },
+    },
+  },
+});
 
 const ScrollToTop = () => {
   const location = useLocation();
@@ -153,6 +166,7 @@ const AppRoutes = () => (
       <Route path="/pricing" element={<PricingEntry />} />
       <Route path="/clients" element={<Index />} />
       <Route path="/contact" element={<Index />} />
+      <Route path="/download" element={<Download />} />
       <Route path="/faqs" element={<FAQs />} />
       <Route path="/support" element={<Support />} />
       <Route path="/privacy-policy" element={<PrivacyPolicy />} />

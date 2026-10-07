@@ -3,7 +3,7 @@ import { useReducedMotion } from "framer-motion";
 import { Mail, Phone, Clock, CheckCircle2, HelpCircle, X } from "lucide-react";
 import Footer from "@/components/Footer";
 import { useI18n } from "@/contexts/I18nContext";
-import HeaderControls from "@/components/HeaderControls";
+import PageTopBar from "@/components/PageTopBar";
 
 const supportServices = [
   "Technical assistance",
@@ -97,9 +97,7 @@ const Support = () => {
         <div className="absolute inset-0 bg-gradient-radial from-gold/10 via-transparent to-transparent" />
 
         <div className="container mx-auto px-4 lg:px-8 relative z-10">
-          <div className="mb-6 flex justify-center">
-            <HeaderControls />
-          </div>
+          <PageTopBar />
           {/* Header Section */}
           <motion.div
             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}

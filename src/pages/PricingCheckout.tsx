@@ -33,6 +33,25 @@ declare global {
   }
 }
 
+const INVALID_LINK_MESSAGE =
+  "This payment link is invalid or has expired. Open the upgrade screen in the Katmitra app again to get a new link.";
+
+/** The API answers with JSON; anything else (HTML error page, proxy failure) is treated as a failed request. */
+type ApiReply = {
+  success?: boolean;
+  message?: string;
+  error?: { message?: string };
+  data?: Record<string, unknown>;
+};
+
+async function readJson(res: Response): Promise<ApiReply | null> {
+  try {
+    return (await res.json()) as ApiReply;
+  } catch {
+    return null;
+  }
+}
+
 function formatInrPaise(paise: number) {
   const rupees = paise / 100;
   return new Intl.NumberFormat("en-IN", {
@@ -91,12 +110,12 @@ export default function PricingCheckout() {
         const res = await fetch(
           `${API_BASE}/billing/session/validate?session_id=${encodeURIComponent(sessionId)}`,
         );
-        const json = await res.json();
-        if (!res.ok || !json.success) {
-          throw new Error(json?.error?.message || json?.message || "Validation failed");
+        const json = await readJson(res);
+        if (!res.ok || !json?.success) {
+          throw new Error(json?.error?.message || json?.message || INVALID_LINK_MESSAGE);
         }
         if (!cancelled) {
-          setValidated(json.data as ValidatePayload);
+          setValidated(json.data as unknown as ValidatePayload);
         }
       } catch (e) {
         if (!cancelled) {
@@ -138,8 +157,8 @@ export default function PricingCheckout() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ session_id: sessionId, plan_type: planType }),
       });
-      const json = await res.json();
-      if (!res.ok || !json.success) {
+      const json = await readJson(res);
+      if (!res.ok || !json?.success) {
         throw new Error(json?.error?.message || json?.message || "Could not start subscription");
       }
       const subId = json.data?.subscription_id as string;
@@ -185,7 +204,7 @@ export default function PricingCheckout() {
       <div className="min-h-screen flex flex-col items-center justify-center gap-4 p-6 bg-background">
         <p className="text-center text-destructive max-w-md">{error}</p>
         <Button variant="outline" onClick={() => window.location.assign("/")}>
-          Back to pricing
+          Go to Katmitra home
         </Button>
       </div>
     );

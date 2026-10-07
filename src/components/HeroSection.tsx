@@ -556,9 +556,9 @@ const HeroSection = () => {
               >
               <div className="space-y-3">
                 {[
-                  { name: "Coere Strie", status: "Active", avatar: "CS" },
-                  { name: "Asa Rocks", status: "Active", avatar: "AR" },
-                  { name: "Aan Romts", status: "Pending", avatar: "AR" },
+                  { name: "Shree Caterers", status: "Active", avatar: "SC" },
+                  { name: "Annapurna Events", status: "Active", avatar: "AE" },
+                  { name: "Rasoi Banquets", status: "Pending", avatar: "RB" },
                 ].map((client, i) => (
                   <div
                     key={i}

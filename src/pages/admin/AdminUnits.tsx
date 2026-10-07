@@ -1,8 +1,13 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
+import { useDebouncedValue, useUrlParam } from "@/hooks/useUrlState";
+import { AdminTableSkeleton } from "@/components/admin/AdminStates";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import RowActions from "@/components/admin/RowActions";
+import { useAdminPagedList } from "@/hooks/useAdminPagedList";
+import AdminPager from "@/components/admin/AdminPager";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -23,7 +28,7 @@ import {
 import {
   createUnit,
   deleteUnit,
-  fetchUnits,
+  fetchUnitsPage,
   type UnitRow,
   updateUnit,
 } from "@/services/adminService";
@@ -43,17 +48,23 @@ const rowToForm = (row: UnitRow): FormState => ({
 
 const AdminUnits = () => {
   const qc = useQueryClient();
-  const [search, setSearch] = useState("");
+  const [searchInput, setSearch] = useUrlParam("q", "");
+  const search = useDebouncedValue(searchInput);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<UnitRow | null>(null);
   const [form, setForm] = useState<FormState>(emptyForm);
 
-  const { data: units = [], isLoading, isError, error } = useQuery({
-    queryKey: ["admin", "units", search],
-    queryFn: () => fetchUnits(search.trim() || undefined),
-  });
-
-  const filtered = useMemo(() => units, [units]);
+  const {
+    rows: filtered,
+    pagination,
+    setPage,
+    isLoading,
+    isPlaceholderData,
+    isError,
+    error,
+  } = useAdminPagedList(["admin", "units", search.trim()], (page) =>
+    fetchUnitsPage({ q: search.trim() || undefined, page }),
+  );
 
   const saveMutation = useMutation({
     mutationFn: async () => {
@@ -119,19 +130,22 @@ const AdminUnits = () => {
           <Input
             className="w-56"
             placeholder="Search…"
-            value={search}
+            value={searchInput}
             onChange={(e) => setSearch(e.target.value)}
           />
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <p className="text-sm text-muted-foreground">Loading…</p>
+            <AdminTableSkeleton columns={3} />
           ) : isError ? (
             <p className="text-sm text-destructive">
               {(error as Error)?.message || "Failed to load units"}
             </p>
           ) : (
-            <Table>
+            <Table
+              className={isPlaceholderData ? "opacity-50 transition-opacity" : "transition-opacity"}
+              aria-busy={isPlaceholderData}
+            >
               <TableHeader>
                 <TableRow>
                   <TableHead>Name</TableHead>
@@ -151,21 +165,19 @@ const AdminUnits = () => {
                     <TableRow key={row.id}>
                       <TableCell className="font-medium">{row.name}</TableCell>
                       <TableCell className="font-mono text-xs">{row.slug}</TableCell>
-                      <TableCell className="text-right space-x-2">
-                        <Button size="sm" variant="outline" onClick={() => openEdit(row)}>
-                          Edit
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="destructive"
-                          onClick={() => {
-                            if (window.confirm(`Delete unit "${row.name}"?`)) {
-                              deleteMutation.mutate(row.id);
-                            }
-                          }}
-                        >
-                          Delete
-                        </Button>
+                      <TableCell className="text-right">
+                        <RowActions
+                          name={row.name}
+                          actions={[
+                            { label: "Edit", onSelect: () => openEdit(row) },
+                            {
+                              label: "Delete",
+                              destructive: true,
+                              confirm: { title: `Delete unit "${row.name}"?` },
+                              onSelect: () => deleteMutation.mutate(row.id),
+                            },
+                          ]}
+                        />
                       </TableCell>
                     </TableRow>
                   ))
@@ -173,6 +185,7 @@ const AdminUnits = () => {
               </TableBody>
             </Table>
           )}
+          <AdminPager pagination={pagination} onPageChange={setPage} noun="units" />
         </CardContent>
       </Card>
 

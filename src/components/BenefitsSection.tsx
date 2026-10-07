@@ -25,16 +25,16 @@ const BenefitsSection = () => {
   return (
     <section
       id="benefits"
-      className="relative py-28 sm:py-32 lg:py-40 bg-background overflow-hidden"
+      className="relative py-20 lg:py-28 bg-background overflow-hidden"
     >
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[min(100vw,720px)] h-[min(100vw,720px)] max-h-[900px] bg-gold/5 rounded-full blur-3xl" />
 
       <div className="container mx-auto px-4 lg:px-8 relative z-10">
-        <ScrollReveal className="text-center mb-16 lg:mb-24 max-w-3xl mx-auto">
-          <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold mb-5 leading-tight">
+        <ScrollReveal className="text-center mb-12 lg:mb-16 max-w-3xl mx-auto">
+          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 leading-tight">
             {t("benefits.heading")}
           </h2>
-          <p className="text-muted-foreground text-lg sm:text-xl max-w-xl mx-auto leading-relaxed">
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto leading-relaxed">
             {t("benefits.subtitle")}
           </p>
         </ScrollReveal>

@@ -1,8 +1,11 @@
 import { useState } from "react";
+import { useDebouncedValue, useUrlPage, useUrlParam } from "@/hooks/useUrlState";
+import { AdminTableSkeleton } from "@/components/admin/AdminStates";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import ConfirmButton from "@/components/admin/ConfirmButton";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -23,6 +26,7 @@ import {
 import {
   createAccessCodes,
   fetchAccessCodes,
+  deleteAccessCode,
   updateAccessCodeStatus,
 } from "@/services/adminService";
 
@@ -37,10 +41,12 @@ const AdminAccessCodes = () => {
   const qc = useQueryClient();
   const [planType, setPlanType] = useState("1M");
   const [count, setCount] = useState(5);
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [planFilter, setPlanFilter] = useState("all");
-  const [search, setSearch] = useState("");
-  const [page, setPage] = useState(1);
+  const countValid = Number.isInteger(count) && count >= 1 && count <= 100;
+  const [statusFilter, setStatusFilter] = useUrlParam("status", "all");
+  const [planFilter, setPlanFilter] = useUrlParam("plan", "all");
+  const [searchInput, setSearch] = useUrlParam("q", "");
+  const search = useDebouncedValue(searchInput);
+  const [page, setPage] = useUrlPage();
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["admin", "access-codes", statusFilter, planFilter, search, page],
@@ -50,7 +56,7 @@ const AdminAccessCodes = () => {
         plan: planFilter,
         q: search.trim() || undefined,
         page,
-        limit: 50,
+        limit: 20,
       }),
   });
 
@@ -58,6 +64,15 @@ const AdminAccessCodes = () => {
     mutationFn: () => createAccessCodes({ plan_type: planType, count }),
     onSuccess: (created) => {
       toast.success(`Generated ${created.length} code(s)`);
+      qc.invalidateQueries({ queryKey: ["admin", "access-codes"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => deleteAccessCode(id),
+    onSuccess: () => {
+      toast.success("Access code deleted");
       qc.invalidateQueries({ queryKey: ["admin", "access-codes"] });
     },
     onError: (e: Error) => toast.error(e.message),
@@ -110,10 +125,13 @@ const AdminAccessCodes = () => {
               max={100}
               className="w-24"
               value={count}
-              onChange={(e) => setCount(Number(e.target.value) || 1)}
+              onChange={(e) => setCount(Number(e.target.value))}
             />
           </div>
-          <Button onClick={() => createMutation.mutate()} disabled={createMutation.isPending}>
+          <Button
+            onClick={() => createMutation.mutate()}
+            disabled={createMutation.isPending || !countValid}
+          >
             {createMutation.isPending ? "Generating…" : "Generate"}
           </Button>
         </CardContent>
@@ -123,7 +141,7 @@ const AdminAccessCodes = () => {
         <Input
           className="w-48"
           placeholder="Search code or user…"
-          value={search}
+          value={searchInput}
           onChange={(e) => {
             setSearch(e.target.value);
             setPage(1);
@@ -169,7 +187,7 @@ const AdminAccessCodes = () => {
       <Card className="glass-card">
         <CardContent className="pt-6">
           {isLoading ? (
-            <p className="text-sm text-muted-foreground">Loading…</p>
+            <AdminTableSkeleton columns={6} />
           ) : isError ? (
             <p className="text-sm text-destructive">
               {(error as Error)?.message || "Failed to load access codes"}
@@ -212,14 +230,31 @@ const AdminAccessCodes = () => {
                         </TableCell>
                         <TableCell className="text-right">
                           {r.status === "unused" && (
-                            <Button
+                            <ConfirmButton
                               size="sm"
                               variant="outline"
+                              title="Disable this access code?"
+                              description="The code can no longer be used to activate a plan."
+                              confirmLabel="Disable"
                               disabled={disableMutation.isPending}
-                              onClick={() => disableMutation.mutate(r.id)}
+                              onConfirm={() => disableMutation.mutate(r.id)}
                             >
                               Disable
-                            </Button>
+                            </ConfirmButton>
+                          )}
+                          {r.status !== "used" && (
+                            <ConfirmButton
+                              size="sm"
+                              variant="ghost"
+                              className="ml-1 text-destructive"
+                              title="Delete this access code?"
+                              description="The code is removed permanently. Codes that were already used cannot be deleted."
+                              confirmLabel="Delete"
+                              disabled={deleteMutation.isPending}
+                              onConfirm={() => deleteMutation.mutate(r.id)}
+                            >
+                              Delete
+                            </ConfirmButton>
                           )}
                         </TableCell>
                       </TableRow>

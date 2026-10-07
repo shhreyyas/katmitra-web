@@ -1,5 +1,6 @@
 const ADMIN_TOKEN_KEY = "katmitra_admin_token";
 
+// Kept local (not imported from adminApi) to avoid a circular import.
 const getApiBaseUrl = () => {
   const base = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, "");
   return base || "/api";
@@ -48,16 +49,21 @@ export async function adminLogin(
   email: string,
   password: string,
 ): Promise<{ ok: true } | { ok: false; message: string }> {
-  const res = await fetch(`${getApiBaseUrl()}/v1/signin`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      email: email.trim(),
-      password,
-      device_type: ADMIN_DEVICE_TYPE,
-      fcm_token: null,
-    }),
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${getApiBaseUrl()}/v1/signin`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: email.trim(),
+        password,
+        device_type: ADMIN_DEVICE_TYPE,
+        fcm_token: null,
+      }),
+    });
+  } catch {
+    return { ok: false, message: "Could not reach server" };
+  }
 
   let json: {
     success?: boolean;

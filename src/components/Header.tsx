@@ -207,6 +207,8 @@ const Header = () => {
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="text-foreground p-2"
+              aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={isMobileMenuOpen}
             >
               {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>

@@ -536,6 +536,8 @@ export type AppSettingsRow = {
   payment_bank: string;
   default_service_charge_pct: number;
   default_tax_pct: number;
+  android_app_url: string;
+  ios_app_url: string;
   updated_at: string;
 };
 
@@ -549,6 +551,8 @@ export const updateAdminSettings = (body: {
   payment_bank?: string;
   default_service_charge_pct?: number;
   default_tax_pct?: number;
+  android_app_url?: string;
+  ios_app_url?: string;
 }) =>
   adminFetch<{ settings: AppSettingsRow }>("/admin/v1/settings", {
     method: "PUT",
@@ -809,8 +813,31 @@ export const updateExtraService = (
     body: JSON.stringify(body),
   });
 
+/** Deactivate: reversible, the service stays under the Inactive filter. */
 export const deleteExtraService = (id: string) =>
   adminFetch<{ id: string }>(`/admin/v1/extra-services/${id}`, { method: "DELETE" });
+
+/** Where a menu item or extra service is referenced. Sent with each row of the paged lists. */
+export type CatalogUsage = { bookings: number; quotations: number; dishes?: number; total: number };
+
+/** Removes the service for good. The server refuses while a booking or quotation uses it. */
+export const permanentlyDeleteExtraService = (id: string) =>
+  adminFetch<{ id: string }>(`/admin/v1/extra-services/${id}/permanent`, { method: "DELETE" });
+
+/** Removes the service from the catalog and pickers; existing bookings and quotations keep it. */
+export const forceDeleteExtraService = (id: string) =>
+  adminFetch<{ id: string }>(`/admin/v1/extra-services/${id}/force-delete`, { method: "POST" });
+
+/** Removes the menu item from the catalog and pickers; existing bookings, quotations and dishes keep it. */
+export const forceDeleteMenuItem = (id: string) =>
+  adminFetch<{ id: string }>(`/admin/v1/menu-items/${id}/force-delete`, { method: "POST" });
+
+export const deleteSupportMessage = (id: string) =>
+  adminFetch<{ id: string }>(`/admin/v1/support/${id}`, { method: "DELETE" });
+
+/** Only unused or disabled codes; the server refuses a code that was redeemed. */
+export const deleteAccessCode = (id: string) =>
+  adminFetch<{ id: string }>(`/admin/v1/access-codes/${id}`, { method: "DELETE" });
 
 export type SupplyItemRow = {
   id: string;
@@ -892,8 +919,29 @@ export const updateSupplyItem = (
     body: JSON.stringify(body),
   });
 
+/** Deactivate: reversible, the item stays under the Inactive filter. */
 export const deleteSupplyItem = (id: string) =>
   adminFetch<{ id: string }>(`/admin/v1/supply-items/${id}`, { method: "DELETE" });
+
+/** Where a supply item is referenced. Sent with each row of the paged list. */
+export type SupplyItemUsage = {
+  bookings: number;
+  booking_events: number;
+  saved_lists: number;
+  menu_items: number;
+  dishes: number;
+  total: number;
+};
+
+/** Removes the item for good. The server refuses while anything references it. */
+export const permanentlyDeleteSupplyItem = (id: string) =>
+  adminFetch<{ id: string }>(`/admin/v1/supply-items/${id}/permanent`, { method: "DELETE" });
+
+/** Removes the item from the catalog and pickers; existing bookings, lists and menus keep it. */
+export const forceDeleteSupplyItem = (id: string) =>
+  adminFetch<{ id: string; usage: SupplyItemUsage }>(`/admin/v1/supply-items/${id}/force-delete`, {
+    method: "POST",
+  });
 
 export type BusinessOption = {
   id: string;
@@ -1048,3 +1096,115 @@ export const downloadBulkImportTemplate = async (type: string) => {
   a.remove();
   URL.revokeObjectURL(url);
 };
+
+// ─── Paged lists ─────────────────────────────────────────────────────────────
+// The catalog list endpoints page only when `page` is sent; the unpaged
+// fetchers above stay as they are for dropdowns and pickers.
+
+export const ADMIN_PAGE_SIZE = 20;
+
+export type Pagination = { page: number; limit: number; total: number; total_pages: number };
+export type Paged<T> = { rows: T[]; pagination: Pagination };
+
+type PageParams = Record<string, string | number | undefined>;
+
+function fetchPaged<T>(path: string, listKey: string, params: PageParams, page: number): Promise<Paged<T>> {
+  const qs = new URLSearchParams();
+  Object.entries(params).forEach(([k, v]) => {
+    if (v !== undefined && v !== "" && v !== "all") qs.set(k, String(v));
+  });
+  qs.set("page", String(page));
+  qs.set("limit", String(ADMIN_PAGE_SIZE));
+  return adminFetch<Record<string, unknown>>(`${path}?${qs.toString()}`).then((d) => ({
+    rows: (d[listKey] as T[]) ?? [],
+    pagination: d.pagination as Pagination,
+  }));
+}
+
+type StatusFilter = "all" | "active" | "inactive";
+type ScopeFilter = "all" | "global" | "business";
+
+export const fetchMenuCategoriesPage = (f: { status?: StatusFilter; q?: string; page: number }) =>
+  fetchPaged<MenuCategoryRow>("/admin/v1/menu-categories", "categories", { status: f.status, q: f.q }, f.page);
+
+export const fetchSupplyCategoriesPage = (f: { status?: StatusFilter; q?: string; page: number }) =>
+  fetchPaged<SupplyCategoryRow>("/admin/v1/supply-categories", "categories", { status: f.status, q: f.q }, f.page);
+
+export const fetchUnitsPage = (f: { q?: string; page: number }) =>
+  fetchPaged<UnitRow>("/admin/v1/units", "units", { q: f.q }, f.page);
+
+export const fetchServiceTypesPage = (f: { status?: StatusFilter; q?: string; page: number }) =>
+  fetchPaged<ServiceTypeRow>("/admin/v1/service-types", "service_types", { status: f.status, q: f.q }, f.page);
+
+export const fetchExtraServicesPage = (f: {
+  scope?: ScopeFilter;
+  business_id?: string;
+  pricing_type?: string;
+  status?: StatusFilter;
+  q?: string;
+  page: number;
+}) => {
+  const { page, ...params } = f;
+  return fetchPaged<ExtraServiceRow & { usage?: CatalogUsage }>(
+    "/admin/v1/extra-services",
+    "items",
+    params,
+    page,
+  );
+};
+
+export const fetchSupplyItemsPage = (f: {
+  scope?: ScopeFilter;
+  business_id?: string;
+  category_slug?: string;
+  type?: string;
+  status?: StatusFilter;
+  q?: string;
+  page: number;
+}) => {
+  const { page, ...params } = f;
+  return fetchPaged<SupplyItemRow & { usage?: SupplyItemUsage }>(
+    "/admin/v1/supply-items",
+    "items",
+    params,
+    page,
+  );
+};
+
+export const fetchMenuItemsPage = (f: {
+  scope?: ScopeFilter;
+  business_id?: string;
+  category_slug?: string;
+  food_type?: string;
+  q?: string;
+  page: number;
+}) => {
+  const { page, ...params } = f;
+  return fetchPaged<MenuItemRow & { usage?: CatalogUsage }>(
+    "/admin/v1/menu-items",
+    "items",
+    params,
+    page,
+  );
+};
+
+// ─── Permanent user deletion ─────────────────────────────────────────────────
+
+export const DELETE_CONFIRM_WORD = "DELETE";
+
+export const deleteAdminUser = (id: string) =>
+  adminFetch<{ id: string; business_deleted: boolean }>(`/admin/v1/users/${id}`, {
+    method: "DELETE",
+    body: JSON.stringify({ confirm: DELETE_CONFIRM_WORD }),
+  });
+
+export type BulkDeleteUsersResult = {
+  deleted: { id: string; name: string }[];
+  failed: { id: string; code: string; message: string }[];
+};
+
+export const bulkDeleteAdminUsers = (ids: string[]) =>
+  adminFetch<BulkDeleteUsersResult>("/admin/v1/users/bulk-delete", {
+    method: "POST",
+    body: JSON.stringify({ ids, confirm: DELETE_CONFIRM_WORD }),
+  });

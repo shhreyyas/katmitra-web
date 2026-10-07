@@ -91,7 +91,7 @@ const ContactSection = () => {
               "અમે તમારા કેટરિંગ બિઝનેસને ડિજિટલ રીતે મજબૂત બનાવવા અહીં છીએ.",
             addressLabel: "સરનામું",
             addressVal:
-              "353, મારુતિ પ્લાઝા, વિજય પાર્ક સોસાયટી, કૃષ્ણનગર, અમદાવાદ, ગુજરાતી 382345",
+              "353, મારુતિ પ્લાઝા, વિજય પાર્ક સોસાયટી, કૃષ્ણનગર, અમદાવાદ, ગુજરાત 382345",
             viewOnMaps: "ગૂગલ મેપ્સ પર જુઓ",
             whatsappTitle: "વોટ્સએપ સપોર્ટ",
             whatsappDesc: "ઝડપી પ્રશ્ન છે? ત્વરિત મદદ માટે વોટ્સએપ પર મેસેજ કરો.",
@@ -189,7 +189,7 @@ const ContactSection = () => {
   };
 
   return (
-    <section id="contact" className="relative py-24 bg-card/30 overflow-hidden">
+    <section id="contact" className="relative py-20 lg:py-28 bg-background overflow-hidden">
       {/* Background decoration */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
 
@@ -203,12 +203,12 @@ const ContactSection = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-12 lg:mb-16 max-w-3xl mx-auto"
         >
-          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
+          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 leading-tight">
             {content.title}
           </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto leading-relaxed">
             {content.subtitle}
           </p>
         </motion.div>

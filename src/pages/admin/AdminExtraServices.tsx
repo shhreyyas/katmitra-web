@@ -1,8 +1,14 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
+import { describeCatalogUsage } from "@/lib/adminFormat";
+import { useDebouncedValue, useUrlParam } from "@/hooks/useUrlState";
+import { AdminTableSkeleton } from "@/components/admin/AdminStates";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import RowActions from "@/components/admin/RowActions";
+import { useAdminPagedList } from "@/hooks/useAdminPagedList";
+import AdminPager from "@/components/admin/AdminPager";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -35,8 +41,11 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   createExtraService,
   deleteExtraService,
+  forceDeleteExtraService,
+  permanentlyDeleteExtraService,
+  type CatalogUsage,
   fetchBusinesses,
-  fetchExtraServices,
+  fetchExtraServicesPage,
   type ExtraServiceRow,
   updateExtraService,
 } from "@/services/adminService";
@@ -84,13 +93,16 @@ const rowToForm = (row: ExtraServiceRow): FormState => ({
   is_active: row.is_active,
 });
 
+const usedIn = (row: { usage?: CatalogUsage }) => row.usage?.total ?? 0;
+
 const AdminExtraServices = () => {
   const qc = useQueryClient();
-  const [scopeFilter, setScopeFilter] = useState<ScopeFilter>("all");
-  const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive">("active");
-  const [businessFilter, setBusinessFilter] = useState("");
-  const [pricingFilter, setPricingFilter] = useState<PricingFilter>("");
-  const [search, setSearch] = useState("");
+  const [scopeFilter, setScopeFilter] = useUrlParam<ScopeFilter>("scope", "all");
+  const [statusFilter, setStatusFilter] = useUrlParam<"all" | "active" | "inactive">("status", "active");
+  const [businessFilter, setBusinessFilter] = useUrlParam("business", "");
+  const [pricingFilter, setPricingFilter] = useUrlParam<PricingFilter>("pricing", "");
+  const [searchInput, setSearch] = useUrlParam("q", "");
+  const search = useDebouncedValue(searchInput);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<ExtraServiceRow | null>(null);
   const [form, setForm] = useState<FormState>(emptyForm);
@@ -100,28 +112,20 @@ const AdminExtraServices = () => {
     queryFn: () => fetchBusinesses(),
   });
 
-  const listQuery = useQuery({
-    queryKey: [
-      "admin",
-      "extra-services",
-      scopeFilter,
-      statusFilter,
-      businessFilter,
-      pricingFilter,
-      search,
-    ],
-    queryFn: () =>
-      fetchExtraServices({
+  const listQuery = useAdminPagedList(
+    ["admin", "extra-services", scopeFilter, statusFilter, businessFilter, pricingFilter, search.trim()],
+    (page) =>
+      fetchExtraServicesPage({
         scope: scopeFilter,
         status: statusFilter,
         business_id: scopeFilter === "business" ? businessFilter || undefined : undefined,
         pricing_type: pricingFilter || undefined,
         q: search.trim() || undefined,
+        page,
       }),
-  });
+  );
 
-  const items = listQuery.data ?? [];
-  const filtered = useMemo(() => items, [items]);
+  const filtered = listQuery.rows;
 
   const saveMutation = useMutation({
     mutationFn: async () => {
@@ -170,6 +174,24 @@ const AdminExtraServices = () => {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const permanentDeleteMutation = useMutation({
+    mutationFn: (id: string) => permanentlyDeleteExtraService(id),
+    onSuccess: () => {
+      toast.success("Extra service deleted");
+      qc.invalidateQueries({ queryKey: ["admin", "extra-services"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const forceDeleteMutation = useMutation({
+    mutationFn: (id: string) => forceDeleteExtraService(id),
+    onSuccess: () => {
+      toast.success("Extra service deleted. Existing bookings and quotations were not changed.");
+      qc.invalidateQueries({ queryKey: ["admin", "extra-services"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
   const openCreate = () => {
     setEditing(null);
     setForm(emptyForm());
@@ -201,7 +223,7 @@ const AdminExtraServices = () => {
             <Input
               className="w-44"
               placeholder="Search…"
-              value={search}
+              value={searchInput}
               onChange={(e) => setSearch(e.target.value)}
             />
             <Select
@@ -260,13 +282,16 @@ const AdminExtraServices = () => {
         </CardHeader>
         <CardContent>
           {listQuery.isLoading ? (
-            <p className="text-sm text-muted-foreground">Loading…</p>
+            <AdminTableSkeleton columns={7} />
           ) : listQuery.isError ? (
             <p className="text-sm text-destructive">
               {(listQuery.error as Error)?.message || "Failed to load extra services"}
             </p>
           ) : (
-            <Table>
+            <Table
+              className={listQuery.isPlaceholderData ? "opacity-50 transition-opacity" : "transition-opacity"}
+              aria-busy={listQuery.isPlaceholderData}
+            >
               <TableHeader>
                 <TableRow>
                   <TableHead>Title</TableHead>
@@ -275,13 +300,14 @@ const AdminExtraServices = () => {
                   <TableHead>Optional</TableHead>
                   <TableHead>Scope</TableHead>
                   <TableHead>Status</TableHead>
+                  <TableHead>Used in</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filtered.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center text-muted-foreground">
+                    <TableCell colSpan={8} className="text-center text-muted-foreground">
                       No extra services found
                     </TableCell>
                   </TableRow>
@@ -315,23 +341,53 @@ const AdminExtraServices = () => {
                           {row.is_active ? "Active" : "Inactive"}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-right space-x-2">
-                        <Button size="sm" variant="outline" onClick={() => openEdit(row)}>
-                          Edit
-                        </Button>
-                        {row.is_active && (
-                          <Button
-                            size="sm"
-                            variant="destructive"
-                            onClick={() => {
-                              if (window.confirm(`Deactivate "${row.title}"?`)) {
-                                deleteMutation.mutate(row.id);
-                              }
-                            }}
-                          >
-                            Deactivate
-                          </Button>
-                        )}
+                      <TableCell
+                        className="text-sm text-muted-foreground"
+                        title={usedIn(row) ? describeCatalogUsage(row.usage) : undefined}
+                      >
+                        {usedIn(row) ? `${usedIn(row)} place${usedIn(row) === 1 ? "" : "s"}` : "Not used"}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <RowActions
+                          name={row.title}
+                          actions={[
+                            { label: "Edit", onSelect: () => openEdit(row) },
+                            ...(row.is_active
+                            ? [
+                                {
+                              label: "Deactivate",
+                              destructive: true,
+                              confirm: { title: `Deactivate "${row.title}"?` },
+                              onSelect: () => deleteMutation.mutate(row.id),
+                            },
+                              ]
+                            : []),
+                            {
+                              label: "Delete",
+                              destructive: true,
+                              disabled: usedIn(row) > 0,
+                              disabledReason: `Used in ${usedIn(row)} place${usedIn(row) === 1 ? "" : "s"}`,
+                              confirm: {
+                                title: `Delete "${row.title}" permanently?`,
+                                description:
+                                  "No booking or quotation uses this service, so it is removed completely. This cannot be undone.",
+                              },
+                              onSelect: () => permanentDeleteMutation.mutate(row.id),
+                            },
+                            {
+                              label: "Force delete",
+                              destructive: true,
+                              confirm: {
+                                title: `Force delete "${row.title}"?`,
+                                description:
+                                  usedIn(row) > 0
+                                    ? `It disappears from the catalog and every picker. Everything that already uses it (${describeCatalogUsage(row.usage)}) keeps it and is not changed. This cannot be undone from the admin panel.`
+                                    : "It disappears from the catalog and every picker. This cannot be undone from the admin panel.",
+                              },
+                              onSelect: () => forceDeleteMutation.mutate(row.id),
+                            },
+                          ]}
+                        />
                       </TableCell>
                     </TableRow>
                   ))
@@ -339,6 +395,7 @@ const AdminExtraServices = () => {
               </TableBody>
             </Table>
           )}
+          <AdminPager pagination={listQuery.pagination} onPageChange={listQuery.setPage} noun="extra services" />
         </CardContent>
       </Card>
 

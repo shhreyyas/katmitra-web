@@ -1,5 +1,9 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import BusinessPicker from "@/components/admin/BusinessPicker";
+import { useDebouncedValue, useUrlPage, useUrlParam } from "@/hooks/useUrlState";
+import { AdminTableSkeleton } from "@/components/admin/AdminStates";
+import { humanizeLabel } from "@/lib/adminFormat";
+import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -35,11 +39,13 @@ const formatEventDate = (iso: string | null) => {
 };
 
 const AdminQuotations = () => {
-  const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [eventDate, setEventDate] = useState("");
-  const [businessId, setBusinessId] = useState("");
-  const [page, setPage] = useState(1);
+  const navigate = useNavigate();
+  const [searchInput, setSearch] = useUrlParam("q", "");
+  const search = useDebouncedValue(searchInput);
+  const [statusFilter, setStatusFilter] = useUrlParam("status", "all");
+  const [eventDate, setEventDate] = useUrlParam("date", "");
+  const [businessId, setBusinessId] = useUrlParam("business", "");
+  const [page, setPage] = useUrlPage();
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["admin", "quotations", search, statusFilter, eventDate, businessId, page],
@@ -70,7 +76,7 @@ const AdminQuotations = () => {
         <Input
           className="w-64"
           placeholder="Search client, business…"
-          value={search}
+          value={searchInput}
           onChange={(e) => {
             setSearch(e.target.value);
             setPage(1);
@@ -85,12 +91,10 @@ const AdminQuotations = () => {
             setPage(1);
           }}
         />
-        <Input
-          className="w-56"
-          placeholder="Business ID (optional)"
+        <BusinessPicker
           value={businessId}
-          onChange={(e) => {
-            setBusinessId(e.target.value);
+          onChange={(id) => {
+            setBusinessId(id);
             setPage(1);
           }}
         />
@@ -120,7 +124,7 @@ const AdminQuotations = () => {
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <p className="text-sm text-muted-foreground">Loading…</p>
+            <AdminTableSkeleton columns={6} />
           ) : isError ? (
             <p className="text-sm text-destructive">
               {(error as Error)?.message || "Failed to load quotations"}
@@ -147,7 +151,11 @@ const AdminQuotations = () => {
                     </TableRow>
                   ) : (
                     quotations.map((q) => (
-                      <TableRow key={q.id}>
+                      <TableRow
+                        key={q.id}
+                        className="cursor-pointer"
+                        onClick={() => navigate(`/admin/quotations/${q.id}`)}
+                      >
                         <TableCell>
                           <div className="font-medium">{q.client_name}</div>
                           {q.client_phone && (
@@ -157,20 +165,20 @@ const AdminQuotations = () => {
                         <TableCell className="text-sm">
                           <div>{formatEventDate(q.event_date)}</div>
                           <div className="text-muted-foreground">
-                            {q.function_type ?? "—"}
+                            {humanizeLabel(q.function_type)}
                             {q.guest_count > 0 ? ` · ${q.guest_count} guests` : ""}
                           </div>
                         </TableCell>
                         <TableCell className="text-sm">{q.business_name}</TableCell>
                         <TableCell>
-                          <Badge variant={statusVariant(q.status)}>{q.status}</Badge>
+                          <Badge variant={statusVariant(q.status)}>{humanizeLabel(q.status)}</Badge>
                         </TableCell>
                         <TableCell className="text-sm">
                           ₹{q.total.toLocaleString("en-IN")}
                         </TableCell>
                         <TableCell className="text-right">
                           <Button size="sm" variant="outline" asChild>
-                            <Link to={`/admin/quotations/${q.id}`}>Details</Link>
+                            <Link to={`/admin/quotations/${q.id}`} onClick={(e) => e.stopPropagation()}>Details</Link>
                           </Button>
                         </TableCell>
                       </TableRow>

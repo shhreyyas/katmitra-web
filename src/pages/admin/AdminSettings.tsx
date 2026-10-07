@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { AdminFormSkeleton } from "@/components/admin/AdminStates";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,6 +17,8 @@ const AdminSettings = () => {
   const [paymentBank, setPaymentBank] = useState("");
   const [serviceChargePct, setServiceChargePct] = useState("");
   const [taxPct, setTaxPct] = useState("");
+  const [androidUrl, setAndroidUrl] = useState("");
+  const [iosUrl, setIosUrl] = useState("");
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["admin", "settings"],
@@ -30,6 +33,8 @@ const AdminSettings = () => {
       setPaymentBank(data.payment_bank);
       setServiceChargePct(String(data.default_service_charge_pct));
       setTaxPct(String(data.default_tax_pct));
+      setAndroidUrl(data.android_app_url ?? "");
+      setIosUrl(data.ios_app_url ?? "");
     }
   }, [data]);
 
@@ -42,6 +47,8 @@ const AdminSettings = () => {
         payment_bank: paymentBank.trim(),
         default_service_charge_pct: Number(serviceChargePct),
         default_tax_pct: Number(taxPct),
+        android_app_url: androidUrl.trim(),
+        ios_app_url: iosUrl.trim(),
       }),
     onSuccess: () => {
       toast.success("Settings saved");
@@ -68,7 +75,7 @@ const AdminSettings = () => {
       </div>
 
       {isLoading ? (
-        <p className="text-sm text-muted-foreground">Loading…</p>
+        <AdminFormSkeleton />
       ) : isError ? (
         <p className="text-sm text-destructive">
           {(error as Error)?.message || "Failed to load settings"}
@@ -169,6 +176,41 @@ const AdminSettings = () => {
                   value={paymentBank}
                   onChange={(e) => setPaymentBank(e.target.value)}
                   placeholder="Account name, number, IFSC…"
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="glass-card lg:col-span-2">
+            <CardHeader>
+              <CardTitle className="text-base">App download links</CardTitle>
+              <p className="text-xs text-muted-foreground">
+                Shown on the website as store buttons and a QR code. The QR code opens{" "}
+                <span className="font-mono">/download</span>, which sends Android phones to Google
+                Play and iPhones to the App Store. Leave a link empty until that app is published.
+              </p>
+            </CardHeader>
+            <CardContent className="grid gap-4 md:grid-cols-2">
+              <div className="grid gap-2">
+                <Label htmlFor="android-url">Android (Google Play) link</Label>
+                <Input
+                  id="android-url"
+                  type="url"
+                  inputMode="url"
+                  value={androidUrl}
+                  onChange={(e) => setAndroidUrl(e.target.value)}
+                  placeholder="https://play.google.com/store/apps/details?id=…"
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="ios-url">iOS (App Store) link</Label>
+                <Input
+                  id="ios-url"
+                  type="url"
+                  inputMode="url"
+                  value={iosUrl}
+                  onChange={(e) => setIosUrl(e.target.value)}
+                  placeholder="https://apps.apple.com/app/…"
                 />
               </div>
             </CardContent>

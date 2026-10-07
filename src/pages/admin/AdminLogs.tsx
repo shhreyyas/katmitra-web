@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { useDebouncedValue, useUrlPage, useUrlParam } from "@/hooks/useUrlState";
+import { AdminTableSkeleton } from "@/components/admin/AdminStates";
+import { humanizeLabel } from "@/lib/adminFormat";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -27,6 +30,10 @@ const typeLabel: Record<string, string> = {
   payment: "Payment",
   offline_payment: "Offline payment",
   notification: "Notification",
+  user_deleted: "User deleted",
+  supply_item_deleted: "Supply item deleted",
+  menu_item_deleted: "Menu item deleted",
+  extra_service_deleted: "Extra service deleted",
 };
 
 const typeVariant = (type: string) => {
@@ -37,9 +44,10 @@ const typeVariant = (type: string) => {
 };
 
 const AdminLogs = () => {
-  const [search, setSearch] = useState("");
-  const [typeFilter, setTypeFilter] = useState("all");
-  const [page, setPage] = useState(1);
+  const [searchInput, setSearch] = useUrlParam("q", "");
+  const search = useDebouncedValue(searchInput);
+  const [typeFilter, setTypeFilter] = useUrlParam("type", "all");
+  const [page, setPage] = useUrlPage();
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["admin", "logs", search, typeFilter, page],
@@ -48,7 +56,7 @@ const AdminLogs = () => {
         q: search.trim() || undefined,
         type: typeFilter,
         page,
-        limit: 30,
+        limit: 20,
       }),
   });
 
@@ -69,7 +77,7 @@ const AdminLogs = () => {
         <Input
           className="w-72"
           placeholder="Search messages…"
-          value={search}
+          value={searchInput}
           onChange={(e) => {
             setSearch(e.target.value);
             setPage(1);
@@ -101,7 +109,7 @@ const AdminLogs = () => {
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <p className="text-sm text-muted-foreground">Loading…</p>
+            <AdminTableSkeleton columns={3} />
           ) : isError ? (
             <p className="text-sm text-destructive">
               {(error as Error)?.message || "Failed to load logs"}
@@ -131,7 +139,7 @@ const AdminLogs = () => {
                         </TableCell>
                         <TableCell>
                           <Badge variant={typeVariant(log.type)}>
-                            {typeLabel[log.type] ?? log.type}
+                            {typeLabel[log.type] ?? humanizeLabel(log.type)}
                           </Badge>
                         </TableCell>
                         <TableCell className="text-sm">{log.message}</TableCell>

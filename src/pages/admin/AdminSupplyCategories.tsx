@@ -1,8 +1,13 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
+import { useDebouncedValue, useUrlParam } from "@/hooks/useUrlState";
+import { AdminTableSkeleton } from "@/components/admin/AdminStates";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import RowActions from "@/components/admin/RowActions";
+import { useAdminPagedList } from "@/hooks/useAdminPagedList";
+import AdminPager from "@/components/admin/AdminPager";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -26,7 +31,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   createSupplyCategory,
   deleteSupplyCategory,
-  fetchSupplyCategories,
+  fetchSupplyCategoriesPage,
   type LocalizedNameInput,
   type SupplyCategoryRow,
   updateSupplyCategory,
@@ -62,28 +67,24 @@ const rowToForm = (row: SupplyCategoryRow): FormState => ({
 
 const AdminSupplyCategories = () => {
   const qc = useQueryClient();
-  const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive">("all");
-  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useUrlParam<"all" | "active" | "inactive">("status", "all");
+  const [searchInput, setSearch] = useUrlParam("q", "");
+  const search = useDebouncedValue(searchInput);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<SupplyCategoryRow | null>(null);
   const [form, setForm] = useState<FormState>(emptyForm);
 
-  const { data: categories = [], isLoading, isError, error } = useQuery({
-    queryKey: ["admin", "supply-categories", statusFilter],
-    queryFn: () => fetchSupplyCategories(statusFilter),
-  });
-
-  const filtered = useMemo(() => {
-    const q = search.trim().toLowerCase();
-    if (!q) return categories;
-    return categories.filter(
-      (c) =>
-        c.name.toLowerCase().includes(q) ||
-        c.slug.toLowerCase().includes(q) ||
-        c.name_i18n?.hi?.toLowerCase().includes(q) ||
-        c.name_i18n?.gu?.toLowerCase().includes(q),
-    );
-  }, [categories, search]);
+  const {
+    rows: filtered,
+    pagination,
+    setPage,
+    isLoading,
+    isPlaceholderData,
+    isError,
+    error,
+  } = useAdminPagedList(["admin", "supply-categories", statusFilter, search.trim()], (page) =>
+    fetchSupplyCategoriesPage({ status: statusFilter, q: search.trim() || undefined, page }),
+  );
 
   const saveMutation = useMutation({
     mutationFn: async () => {
@@ -156,7 +157,7 @@ const AdminSupplyCategories = () => {
             <Input
               className="w-56"
               placeholder="Search…"
-              value={search}
+              value={searchInput}
               onChange={(e) => setSearch(e.target.value)}
             />
             <Tabs
@@ -173,13 +174,16 @@ const AdminSupplyCategories = () => {
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <p className="text-sm text-muted-foreground">Loading…</p>
+            <AdminTableSkeleton columns={6} />
           ) : isError ? (
             <p className="text-sm text-destructive">
               {(error as Error)?.message || "Failed to load categories"}
             </p>
           ) : (
-            <Table>
+            <Table
+              className={isPlaceholderData ? "opacity-50 transition-opacity" : "transition-opacity"}
+              aria-busy={isPlaceholderData}
+            >
               <TableHeader>
                 <TableRow>
                   <TableHead>Name</TableHead>
@@ -191,6 +195,13 @@ const AdminSupplyCategories = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
+                {filtered.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center text-muted-foreground">
+                      No categories found
+                    </TableCell>
+                  </TableRow>
+                ) : null}
                 {filtered.map((row) => (
                   <TableRow key={row.id}>
                     <TableCell>
@@ -207,28 +218,28 @@ const AdminSupplyCategories = () => {
                         {row.is_active ? "Active" : "Inactive"}
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-right space-x-2">
-                      <Button size="sm" variant="outline" onClick={() => openEdit(row)}>
-                        Edit
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        disabled={row.supply_items_count > 0}
-                        onClick={() => {
-                          if (window.confirm(`Delete "${row.name}"?`)) {
-                            deleteMutation.mutate(row.id);
-                          }
-                        }}
-                      >
-                        Delete
-                      </Button>
-                    </TableCell>
+                    <TableCell className="text-right">
+                        <RowActions
+                          name={row.name}
+                          actions={[
+                            { label: "Edit", onSelect: () => openEdit(row) },
+                            {
+                              label: "Delete",
+                              destructive: true,
+                              disabled: row.supply_items_count > 0,
+                              disabledReason: "Still in use",
+                              confirm: { title: `Delete "${row.name}"?` },
+                              onSelect: () => deleteMutation.mutate(row.id),
+                            },
+                          ]}
+                        />
+                      </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
           )}
+          <AdminPager pagination={pagination} onPageChange={setPage} noun="categories" />
         </CardContent>
       </Card>
 

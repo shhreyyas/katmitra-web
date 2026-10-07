@@ -1,8 +1,11 @@
 import { useState } from "react";
+import { useUrlPage } from "@/hooks/useUrlState";
+import { AdminTableSkeleton } from "@/components/admin/AdminStates";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import ConfirmButton from "@/components/admin/ConfirmButton";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -50,10 +53,10 @@ const AdminNotifications = () => {
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
   const [priority, setPriority] = useState<Priority>("normal");
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useUrlPage();
 
   // Reminder test state
-  const [reminderPage, setReminderPage] = useState(1);
+  const [reminderPage, setReminderPage] = useUrlPage("rpage");
   const [testEventId, setTestEventId] = useState("");
 
   const { data, isLoading, isError, error } = useQuery({
@@ -152,12 +155,15 @@ const AdminNotifications = () => {
               </SelectContent>
             </Select>
           </div>
-          <Button
-            onClick={() => sendMutation.mutate()}
+          <ConfirmButton
+            title="Send this notification to all users?"
+            description="Every active caterer account receives it immediately. This cannot be undone."
+            confirmLabel="Send to all users"
+            onConfirm={() => sendMutation.mutate()}
             disabled={!canSend || sendMutation.isPending}
           >
             {sendMutation.isPending ? "Sending…" : "Send to all users"}
-          </Button>
+          </ConfirmButton>
           <p className="text-xs text-muted-foreground">
             Records audience size (active caterers and FCM token count). Configure Firebase Admin
             on the backend to deliver push notifications to devices.
@@ -171,7 +177,7 @@ const AdminNotifications = () => {
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <p className="text-sm text-muted-foreground">Loading…</p>
+            <AdminTableSkeleton columns={7} />
           ) : isError ? (
             <p className="text-sm text-destructive">
               {(error as Error)?.message || "Failed to load notifications"}
@@ -266,13 +272,16 @@ const AdminNotifications = () => {
             Trigger the reminder cron right now (processes all events in the current 15-min window),
             or send a test reminder for a specific booking event ID immediately.
           </p>
-          <Button
+          <ConfirmButton
             variant="outline"
-            onClick={() => triggerMutation.mutate()}
+            title="Run the reminder cron now?"
+            description="Real reminder notifications go out to caterers for every event in the current 15-minute window."
+            confirmLabel="Run cron now"
+            onConfirm={() => triggerMutation.mutate()}
             disabled={triggerMutation.isPending}
           >
             {triggerMutation.isPending ? "Triggering…" : "Run cron now"}
-          </Button>
+          </ConfirmButton>
 
           <div className="flex gap-2 items-center">
             <Input
@@ -298,7 +307,7 @@ const AdminNotifications = () => {
         </CardHeader>
         <CardContent>
           {remindersLoading ? (
-            <p className="text-sm text-muted-foreground">Loading…</p>
+            <AdminTableSkeleton columns={7} />
           ) : remindersError ? (
             <p className="text-sm text-destructive">Failed to load reminder log</p>
           ) : (

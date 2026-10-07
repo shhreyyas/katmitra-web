@@ -206,4 +206,4 @@ function CreativePricing({
   );
 }
 
-export { CreativePricing, type PricingTier };
+export { CreativePricing };

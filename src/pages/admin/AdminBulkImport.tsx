@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { AdminFormSkeleton } from "@/components/admin/AdminStates";
 import { Link, Route, Routes, useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -225,9 +226,9 @@ const BulkImportWizard = () => {
     if (!schema) return;
     const initial: Record<string, string> = {};
     schema.fields.forEach((f) => {
-      const match = headers.find(
-        (h) => h.toLowerCase().replace(/\s+/g, "_") === f.key.toLowerCase(),
-      );
+      const norm = (v: string) => v.trim().toLowerCase().replace(/[\s-]+/g, "_");
+      const wanted = new Set([norm(f.key), norm(f.key).replace(/^is_/, ""), norm(f.label)]);
+      const match = headers.find((h) => wanted.has(norm(h)));
       if (match) initial[f.key] = match;
     });
     setMapping((prev) => ({ ...initial, ...prev }));
@@ -295,7 +296,7 @@ const BulkImportWizard = () => {
   };
 
   if (!importType || !schema) {
-    return <p className="text-sm text-muted-foreground">Loading…</p>;
+    return <AdminFormSkeleton />;
   }
 
   const steps: { id: WizardStep; label: string }[] = [

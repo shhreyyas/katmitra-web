@@ -6,7 +6,7 @@ import { useI18n } from "@/contexts/I18nContext";
 const Footer = () => {
   const { t } = useI18n();
   return (
-    <footer className="bg-background text-foreground mt-16 border-t border-border/50">
+    <footer className="bg-background text-foreground border-t border-border/50">
       <div className="container mx-auto px-4 lg:px-8 py-14 lg:py-16">
         <div className="rounded-2xl border border-border bg-card px-6 py-6 sm:px-8 sm:py-7 mb-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-sm">
           <div>
@@ -16,7 +16,7 @@ const Footer = () => {
             <p className="text-muted-foreground">{t("footer.ctaDesc")}</p>
           </div>
           <a
-            href="#pricing"
+            href="#download"
             className="inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground hover:brightness-95 transition-all"
           >
             {t("footer.startFreeNow")}

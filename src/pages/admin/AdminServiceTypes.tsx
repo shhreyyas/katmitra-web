@@ -1,8 +1,13 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
+import { useDebouncedValue, useUrlParam } from "@/hooks/useUrlState";
+import { AdminTableSkeleton } from "@/components/admin/AdminStates";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import RowActions from "@/components/admin/RowActions";
+import { useAdminPagedList } from "@/hooks/useAdminPagedList";
+import AdminPager from "@/components/admin/AdminPager";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -26,7 +31,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   createServiceType,
   deleteServiceType,
-  fetchServiceTypes,
+  fetchServiceTypesPage,
   type LocalizedNameInput,
   type ServiceTypeRow,
   updateServiceType,
@@ -62,28 +67,24 @@ const rowToForm = (row: ServiceTypeRow): FormState => ({
 
 const AdminServiceTypes = () => {
   const qc = useQueryClient();
-  const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive">("all");
-  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useUrlParam<"all" | "active" | "inactive">("status", "all");
+  const [searchInput, setSearch] = useUrlParam("q", "");
+  const search = useDebouncedValue(searchInput);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<ServiceTypeRow | null>(null);
   const [form, setForm] = useState<FormState>(emptyForm);
 
-  const { data: items = [], isLoading, isError, error } = useQuery({
-    queryKey: ["admin", "service-types", statusFilter],
-    queryFn: () => fetchServiceTypes(statusFilter),
-  });
-
-  const filtered = useMemo(() => {
-    const q = search.trim().toLowerCase();
-    if (!q) return items;
-    return items.filter(
-      (c) =>
-        c.name.toLowerCase().includes(q) ||
-        c.slug.toLowerCase().includes(q) ||
-        c.name_i18n?.hi?.toLowerCase().includes(q) ||
-        c.name_i18n?.gu?.toLowerCase().includes(q),
-    );
-  }, [items, search]);
+  const {
+    rows: filtered,
+    pagination,
+    setPage,
+    isLoading,
+    isPlaceholderData,
+    isError,
+    error,
+  } = useAdminPagedList(["admin", "service-types", statusFilter, search.trim()], (page) =>
+    fetchServiceTypesPage({ status: statusFilter, q: search.trim() || undefined, page }),
+  );
 
   const saveMutation = useMutation({
     mutationFn: async () => {
@@ -156,7 +157,7 @@ const AdminServiceTypes = () => {
             <Input
               className="w-56"
               placeholder="Search…"
-              value={search}
+              value={searchInput}
               onChange={(e) => setSearch(e.target.value)}
             />
             <Tabs
@@ -173,13 +174,16 @@ const AdminServiceTypes = () => {
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <p className="text-sm text-muted-foreground">Loading…</p>
+            <AdminTableSkeleton columns={6} />
           ) : isError ? (
             <p className="text-sm text-destructive">
               {(error as Error)?.message || "Failed to load service types"}
             </p>
           ) : (
-            <Table>
+            <Table
+              className={isPlaceholderData ? "opacity-50 transition-opacity" : "transition-opacity"}
+              aria-busy={isPlaceholderData}
+            >
               <TableHeader>
                 <TableRow>
                   <TableHead>Name</TableHead>
@@ -216,22 +220,21 @@ const AdminServiceTypes = () => {
                           {row.is_active ? "Active" : "Inactive"}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-right space-x-2">
-                        <Button size="sm" variant="outline" onClick={() => openEdit(row)}>
-                          Edit
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="destructive"
-                          disabled={row.businesses_count > 0}
-                          onClick={() => {
-                            if (window.confirm(`Delete "${row.name}"?`)) {
-                              deleteMutation.mutate(row.id);
-                            }
-                          }}
-                        >
-                          Delete
-                        </Button>
+                      <TableCell className="text-right">
+                        <RowActions
+                          name={row.name}
+                          actions={[
+                            { label: "Edit", onSelect: () => openEdit(row) },
+                            {
+                              label: "Delete",
+                              destructive: true,
+                              disabled: row.businesses_count > 0,
+                              disabledReason: "Still in use",
+                              confirm: { title: `Delete "${row.name}"?` },
+                              onSelect: () => deleteMutation.mutate(row.id),
+                            },
+                          ]}
+                        />
                       </TableCell>
                     </TableRow>
                   ))
@@ -239,6 +242,7 @@ const AdminServiceTypes = () => {
               </TableBody>
             </Table>
           )}
+          <AdminPager pagination={pagination} onPageChange={setPage} noun="service types" />
         </CardContent>
       </Card>
 

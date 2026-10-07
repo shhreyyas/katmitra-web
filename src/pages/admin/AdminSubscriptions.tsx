@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useDebouncedValue, useUrlPage, useUrlParam } from "@/hooks/useUrlState";
+import { AdminTableSkeleton } from "@/components/admin/AdminStates";
 import { Link } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -33,10 +35,11 @@ const statusVariant = (status: string) => {
 
 const AdminSubscriptions = () => {
   const qc = useQueryClient();
-  const [search, setSearch] = useState("");
-  const [planFilter, setPlanFilter] = useState("all");
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [page, setPage] = useState(1);
+  const [searchInput, setSearch] = useUrlParam("q", "");
+  const search = useDebouncedValue(searchInput);
+  const [planFilter, setPlanFilter] = useUrlParam("plan", "all");
+  const [statusFilter, setStatusFilter] = useUrlParam("status", "all");
+  const [page, setPage] = useUrlPage();
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["admin", "subscriptions", search, planFilter, statusFilter, page],
@@ -82,7 +85,7 @@ const AdminSubscriptions = () => {
         <Input
           className="w-64"
           placeholder="Search business, owner, Razorpay id…"
-          value={search}
+          value={searchInput}
           onChange={(e) => {
             setSearch(e.target.value);
             setPage(1);
@@ -130,7 +133,7 @@ const AdminSubscriptions = () => {
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <p className="text-sm text-muted-foreground">Loading…</p>
+            <AdminTableSkeleton columns={7} />
           ) : isError ? (
             <p className="text-sm text-destructive">
               {(error as Error)?.message || "Failed to load subscriptions"}

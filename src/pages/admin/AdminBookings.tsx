@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import type { BookingListRow } from "@/services/adminService";
+import ExportCsvButton from "@/components/admin/ExportCsvButton";
+import BusinessPicker from "@/components/admin/BusinessPicker";
+import { useDebouncedValue, useUrlPage, useUrlParam } from "@/hooks/useUrlState";
+import { AdminTableSkeleton } from "@/components/admin/AdminStates";
+import { humanizeLabel } from "@/lib/adminFormat";
+import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -37,11 +43,13 @@ const formatEventDate = (iso: string | null) => {
 };
 
 const AdminBookings = () => {
-  const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [eventDate, setEventDate] = useState("");
-  const [businessId, setBusinessId] = useState("");
-  const [page, setPage] = useState(1);
+  const navigate = useNavigate();
+  const [searchInput, setSearch] = useUrlParam("q", "");
+  const search = useDebouncedValue(searchInput);
+  const [statusFilter, setStatusFilter] = useUrlParam("status", "all");
+  const [eventDate, setEventDate] = useUrlParam("date", "");
+  const [businessId, setBusinessId] = useUrlParam("business", "");
+  const [page, setPage] = useUrlPage();
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["admin", "bookings", search, statusFilter, eventDate, businessId, page],
@@ -61,18 +69,48 @@ const AdminBookings = () => {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gradient-gold">Bookings</h1>
-        <p className="text-sm text-muted-foreground">
-          Read-only view of caterer bookings across the platform.
-        </p>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold text-gradient-gold">Bookings</h1>
+          <p className="text-sm text-muted-foreground">
+            Read-only view of caterer bookings across the platform.
+          </p>
+        </div>
+        <ExportCsvButton<BookingListRow>
+          name="bookings"
+          columns={[
+            { header: "Booking code", value: (b) => b.booking_code },
+            { header: "Client", value: (b) => b.customer_name },
+            { header: "Client phone", value: (b) => b.customer_phone },
+            { header: "Business", value: (b) => b.business_name },
+            { header: "Event at", value: (b) => b.event_at },
+            { header: "Function", value: (b) => b.function_type },
+            { header: "Location", value: (b) => b.event_location },
+            { header: "Guests", value: (b) => b.guest_count },
+            { header: "Status", value: (b) => b.status },
+            { header: "Payment status", value: (b) => b.payment_status },
+            { header: "Total due", value: (b) => b.total_due },
+            { header: "Amount paid", value: (b) => b.amount_paid },
+            { header: "Created", value: (b) => b.created_at },
+          ]}
+          fetchPage={(page, limit) =>
+            fetchAdminBookings({
+              q: search.trim() || undefined,
+              status: statusFilter,
+              event_date: eventDate || undefined,
+              business_id: businessId.trim() || undefined,
+              page,
+              limit,
+            }).then((d) => ({ rows: d.bookings, totalPages: d.pagination.total_pages }))
+          }
+        />
       </div>
 
       <div className="flex flex-wrap gap-2">
         <Input
           className="w-64"
           placeholder="Search client, code, business…"
-          value={search}
+          value={searchInput}
           onChange={(e) => {
             setSearch(e.target.value);
             setPage(1);
@@ -87,12 +125,10 @@ const AdminBookings = () => {
             setPage(1);
           }}
         />
-        <Input
-          className="w-56"
-          placeholder="Business ID (optional)"
+        <BusinessPicker
           value={businessId}
-          onChange={(e) => {
-            setBusinessId(e.target.value);
+          onChange={(id) => {
+            setBusinessId(id);
             setPage(1);
           }}
         />
@@ -121,7 +157,7 @@ const AdminBookings = () => {
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <p className="text-sm text-muted-foreground">Loading…</p>
+            <AdminTableSkeleton columns={6} />
           ) : isError ? (
             <p className="text-sm text-destructive">
               {(error as Error)?.message || "Failed to load bookings"}
@@ -148,7 +184,11 @@ const AdminBookings = () => {
                     </TableRow>
                   ) : (
                     bookings.map((b) => (
-                      <TableRow key={b.id}>
+                      <TableRow
+                        key={b.id}
+                        className="cursor-pointer"
+                        onClick={() => navigate(`/admin/bookings/${b.id}`)}
+                      >
                         <TableCell>
                           <div className="font-medium">{b.customer_name}</div>
                           {b.booking_code && (
@@ -160,19 +200,19 @@ const AdminBookings = () => {
                         <TableCell className="text-sm">
                           <div>{formatEventDate(b.event_at)}</div>
                           <div className="text-muted-foreground truncate max-w-[200px]">
-                            {b.function_type ?? b.event_location ?? "—"}
+                            {b.function_type ? humanizeLabel(b.function_type) : (b.event_location ?? "—")}
                           </div>
                         </TableCell>
                         <TableCell className="text-sm">{b.business_name}</TableCell>
                         <TableCell>
-                          <Badge variant={statusVariant(b.status)}>{b.status}</Badge>
+                          <Badge variant={statusVariant(b.status)}>{humanizeLabel(b.status)}</Badge>
                         </TableCell>
                         <TableCell className="text-sm">
                           ₹{b.total_due.toLocaleString("en-IN")}
                         </TableCell>
                         <TableCell className="text-right">
                           <Button size="sm" variant="outline" asChild>
-                            <Link to={`/admin/bookings/${b.id}`}>Details</Link>
+                            <Link to={`/admin/bookings/${b.id}`} onClick={(e) => e.stopPropagation()}>Details</Link>
                           </Button>
                         </TableCell>
                       </TableRow>

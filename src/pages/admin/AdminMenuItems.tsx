@@ -1,9 +1,15 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
+import { describeCatalogUsage } from "@/lib/adminFormat";
+import { useDebouncedValue, useUrlParam } from "@/hooks/useUrlState";
+import { AdminTableSkeleton } from "@/components/admin/AdminStates";
 import { Check, Loader2 } from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import RowActions from "@/components/admin/RowActions";
+import { useAdminPagedList } from "@/hooks/useAdminPagedList";
+import AdminPager from "@/components/admin/AdminPager";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -36,11 +42,14 @@ import {
   createMenuItem,
   createSupplyItem,
   deleteMenuItem,
+  forceDeleteMenuItem,
+  type CatalogUsage,
   fetchBusinesses,
   fetchMenuCategories,
-  fetchMenuItems,
+  fetchMenuItemsPage,
   fetchSupplyCategories,
   fetchSupplyItems,
+  fetchUnits,
   type LocalizedNameInput,
   type MenuItemIngredient,
   type MenuItemRow,
@@ -67,7 +76,7 @@ type FormState = {
 };
 
 const ALL_UNITS = ["kg", "g", "mg", "L", "ml", "pcs", "dozen", "tbsp", "tsp", "cup"] as const;
-type Unit = (typeof ALL_UNITS)[number];
+type Unit = string;
 const FALLBACK_UNITS: Unit[] = [...ALL_UNITS];
 
 const emptyForm = (): FormState => ({
@@ -114,6 +123,10 @@ function SupplyItemPicker({
 }) {
   type FoundResult = { item: SupplyItemRow; checked: boolean };
   type CreateForm = { term: string; en: string; hi: string; gu: string; category: string; units: Set<Unit> };
+
+  // Offer the units that exist in the Units catalog; the built-in list is only a fallback while it loads.
+  const { data: unitRows = [] } = useQuery({ queryKey: ["admin", "units"], queryFn: () => fetchUnits() });
+  const unitChoices: Unit[] = unitRows.length ? unitRows.map((u) => u.slug) : [...ALL_UNITS];
 
   const [bulkInput, setBulkInput] = useState("");
   const [searched, setSearched] = useState(false);
@@ -184,7 +197,7 @@ function SupplyItemPicker({
 
       const created: SupplyItemRow[] = [];
       for (const form of createForms) {
-        const unitList = ALL_UNITS.filter((u) => form.units.has(u));
+        const unitList = unitChoices.filter((u) => form.units.has(u));
         if (!form.en.trim() || !form.hi.trim() || !form.gu.trim() || !form.category || !unitList.length)
           continue;
         try {
@@ -325,7 +338,7 @@ function SupplyItemPicker({
                   <div className="space-y-1">
                     <p className="text-xs font-medium">Units (first = default)</p>
                     <div className="flex flex-wrap gap-2">
-                      {ALL_UNITS.map((u) => (
+                      {unitChoices.map((u) => (
                         <label
                           key={u}
                           className="flex items-center gap-1.5 cursor-pointer select-none"
@@ -340,7 +353,7 @@ function SupplyItemPicker({
                     </div>
                     {form.units.size > 0 && (
                       <p className="text-xs text-muted-foreground">
-                        Default: <strong>{ALL_UNITS.find((u) => form.units.has(u))}</strong>
+                        Default: <strong>{unitChoices.find((u) => form.units.has(u))}</strong>
                       </p>
                     )}
                   </div>
@@ -455,13 +468,16 @@ function IngredientList({
   );
 }
 
+const usedIn = (row: { usage?: CatalogUsage }) => row.usage?.total ?? 0;
+
 const AdminMenuItems = () => {
   const qc = useQueryClient();
-  const [scopeFilter, setScopeFilter] = useState<ScopeFilter>("all");
-  const [businessFilter, setBusinessFilter] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState("");
-  const [foodFilter, setFoodFilter] = useState("");
-  const [search, setSearch] = useState("");
+  const [scopeFilter, setScopeFilter] = useUrlParam<ScopeFilter>("scope", "all");
+  const [businessFilter, setBusinessFilter] = useUrlParam("business", "");
+  const [categoryFilter, setCategoryFilter] = useUrlParam("category", "");
+  const [foodFilter, setFoodFilter] = useUrlParam("food", "");
+  const [searchInput, setSearch] = useUrlParam("q", "");
+  const search = useDebouncedValue(searchInput);
 
   // Full edit / create dialog
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -484,28 +500,20 @@ const AdminMenuItems = () => {
     queryFn: () => fetchBusinesses(),
   });
 
-  const listQuery = useQuery({
-    queryKey: [
-      "admin",
-      "menu-items",
-      scopeFilter,
-      businessFilter,
-      categoryFilter,
-      foodFilter,
-      search,
-    ],
-    queryFn: () =>
-      fetchMenuItems({
+  const listQuery = useAdminPagedList(
+    ["admin", "menu-items", scopeFilter, businessFilter, categoryFilter, foodFilter, search.trim()],
+    (page) =>
+      fetchMenuItemsPage({
         scope: scopeFilter,
         business_id: scopeFilter === "business" ? businessFilter || undefined : undefined,
         category_slug: categoryFilter || undefined,
         food_type: foodFilter || undefined,
         q: search.trim() || undefined,
+        page,
       }),
-  });
+  );
 
-  const items = listQuery.data ?? [];
-  const filtered = useMemo(() => items, [items]);
+  const filtered = listQuery.rows;
 
   // Load INGREDIENT supply items when either dialog is open
   const { data: supplyIngredients = [] } = useQuery({
@@ -577,6 +585,15 @@ const AdminMenuItems = () => {
     mutationFn: (id: string) => deleteMenuItem(id),
     onSuccess: () => {
       toast.success("Menu item deleted");
+      void qc.invalidateQueries({ queryKey: ["admin", "menu-items"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const forceDeleteMutation = useMutation({
+    mutationFn: (id: string) => forceDeleteMenuItem(id),
+    onSuccess: () => {
+      toast.success("Menu item deleted. Existing bookings and quotations were not changed.");
       void qc.invalidateQueries({ queryKey: ["admin", "menu-items"] });
     },
     onError: (e: Error) => toast.error(e.message),
@@ -694,7 +711,7 @@ const AdminMenuItems = () => {
             <Input
               className="w-48"
               placeholder="Search…"
-              value={search}
+              value={searchInput}
               onChange={(e) => setSearch(e.target.value)}
             />
             <Select
@@ -758,13 +775,16 @@ const AdminMenuItems = () => {
         </CardHeader>
         <CardContent>
           {listQuery.isLoading ? (
-            <p className="text-sm text-muted-foreground">Loading…</p>
+            <AdminTableSkeleton columns={6} />
           ) : listQuery.isError ? (
             <p className="text-sm text-destructive">
               {(listQuery.error as Error)?.message || "Failed to load menu items"}
             </p>
           ) : (
-            <Table>
+            <Table
+              className={listQuery.isPlaceholderData ? "opacity-50 transition-opacity" : "transition-opacity"}
+              aria-busy={listQuery.isPlaceholderData}
+            >
               <TableHeader>
                 <TableRow>
                   <TableHead>Name</TableHead>
@@ -772,13 +792,14 @@ const AdminMenuItems = () => {
                   <TableHead>Price / person</TableHead>
                   <TableHead>Type</TableHead>
                   <TableHead>Scope</TableHead>
+                  <TableHead>Used in</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filtered.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center text-muted-foreground">
+                    <TableCell colSpan={7} className="text-center text-muted-foreground">
                       No menu items found
                     </TableCell>
                   </TableRow>
@@ -809,35 +830,47 @@ const AdminMenuItems = () => {
                           </Badge>
                         )}
                       </TableCell>
-                      <TableCell className="text-right space-x-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => openIngDialog(row)}
-                        >
-                          Ingredients
-                          {row.ingredients?.length
-                            ? ` (${row.ingredients.length})`
-                            : ""}
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => openEdit(row)}
-                        >
-                          Edit
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="destructive"
-                          onClick={() => {
-                            if (window.confirm(`Delete "${row.name}"?`)) {
-                              deleteMutation.mutate(row.id);
-                            }
-                          }}
-                        >
-                          Delete
-                        </Button>
+                      <TableCell
+                        className="text-sm text-muted-foreground"
+                        title={usedIn(row) ? describeCatalogUsage(row.usage) : undefined}
+                      >
+                        {usedIn(row) ? `${usedIn(row)} place${usedIn(row) === 1 ? "" : "s"}` : "Not used"}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <RowActions
+                          name={row.name}
+                          actions={[
+                            {
+                              label: `Ingredients${row.ingredients?.length ? ` (${row.ingredients.length})` : ""}`,
+                              onSelect: () => openIngDialog(row),
+                            },
+                            { label: "Edit", onSelect: () => openEdit(row) },
+                            {
+                              label: "Delete",
+                              destructive: true,
+                              disabled: usedIn(row) > 0,
+                              disabledReason: `Used in ${usedIn(row)} place${usedIn(row) === 1 ? "" : "s"}`,
+                              confirm: {
+                                title: `Delete "${row.name}" permanently?`,
+                                description:
+                                  "No booking, quotation or dish uses this item, so it is removed completely. This cannot be undone.",
+                              },
+                              onSelect: () => deleteMutation.mutate(row.id),
+                            },
+                            {
+                              label: "Force delete",
+                              destructive: true,
+                              confirm: {
+                                title: `Force delete "${row.name}"?`,
+                                description:
+                                  usedIn(row) > 0
+                                    ? `It disappears from the catalog and every picker. Everything that already uses it (${describeCatalogUsage(row.usage)}) keeps it and is not changed. This cannot be undone from the admin panel.`
+                                    : "It disappears from the catalog and every picker. This cannot be undone from the admin panel.",
+                              },
+                              onSelect: () => forceDeleteMutation.mutate(row.id),
+                            },
+                          ]}
+                        />
                       </TableCell>
                     </TableRow>
                   ))
@@ -845,6 +878,7 @@ const AdminMenuItems = () => {
               </TableBody>
             </Table>
           )}
+          <AdminPager pagination={listQuery.pagination} onPageChange={listQuery.setPage} noun="menu items" />
         </CardContent>
       </Card>
 

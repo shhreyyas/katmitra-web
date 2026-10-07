@@ -1,4 +1,9 @@
 import { useState } from "react";
+import type { SupportMessageRow } from "@/services/adminService";
+import ExportCsvButton from "@/components/admin/ExportCsvButton";
+import { useDebouncedValue, useUrlPage, useUrlParam } from "@/hooks/useUrlState";
+import { AdminTableSkeleton } from "@/components/admin/AdminStates";
+import { humanizeLabel } from "@/lib/adminFormat";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -22,8 +27,10 @@ import {
 } from "@/components/ui/table";
 import {
   fetchAdminSupportMessages,
+  deleteSupportMessage,
   updateSupportMessageStatus,
 } from "@/services/adminService";
+import ConfirmButton from "@/components/admin/ConfirmButton";
 
 const statusVariant = (status: string) => {
   if (status === "open") return "destructive" as const;
@@ -32,9 +39,10 @@ const statusVariant = (status: string) => {
 
 const AdminSupport = () => {
   const qc = useQueryClient();
-  const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState("open");
-  const [page, setPage] = useState(1);
+  const [searchInput, setSearch] = useUrlParam("q", "");
+  const search = useDebouncedValue(searchInput);
+  const [statusFilter, setStatusFilter] = useUrlParam("status", "open");
+  const [page, setPage] = useUrlPage();
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["admin", "support", search, statusFilter, page],
@@ -58,23 +66,55 @@ const AdminSupport = () => {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => deleteSupportMessage(id),
+    onSuccess: () => {
+      toast.success("Inquiry deleted");
+      qc.invalidateQueries({ queryKey: ["admin", "support"] });
+      qc.invalidateQueries({ queryKey: ["admin", "dashboard"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
   const rows = data?.support_messages ?? [];
   const pagination = data?.pagination;
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gradient-gold">Support</h1>
-        <p className="text-sm text-muted-foreground">
-          Contact-us inquiries from the website and app. Mark resolved when handled.
-        </p>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold text-gradient-gold">Support</h1>
+          <p className="text-sm text-muted-foreground">
+            Contact-us inquiries from the website and app. Mark resolved when handled.
+          </p>
+        </div>
+        <ExportCsvButton<SupportMessageRow>
+          name="support"
+          columns={[
+            { header: "Date", value: (r) => r.created_at },
+            { header: "Name", value: (r) => r.customer_name },
+            { header: "Email", value: (r) => r.email },
+            { header: "Phone", value: (r) => r.phone },
+            { header: "Business", value: (r) => r.business_name },
+            { header: "Message", value: (r) => r.description },
+            { header: "Status", value: (r) => r.status },
+          ]}
+          fetchPage={(page, limit) =>
+            fetchAdminSupportMessages({
+              q: search.trim() || undefined,
+              status: statusFilter,
+              page,
+              limit,
+            }).then((d) => ({ rows: d.support_messages, totalPages: d.pagination.total_pages }))
+          }
+        />
       </div>
 
       <div className="flex flex-wrap gap-2">
         <Input
           className="w-72"
           placeholder="Search name, email, phone, message…"
-          value={search}
+          value={searchInput}
           onChange={(e) => {
             setSearch(e.target.value);
             setPage(1);
@@ -104,7 +144,7 @@ const AdminSupport = () => {
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <p className="text-sm text-muted-foreground">Loading…</p>
+            <AdminTableSkeleton columns={5} />
           ) : isError ? (
             <p className="text-sm text-destructive">
               {(error as Error)?.message || "Failed to load support messages"}
@@ -145,7 +185,7 @@ const AdminSupport = () => {
                           {r.business_name ?? r.user_name ?? "—"}
                         </TableCell>
                         <TableCell>
-                          <Badge variant={statusVariant(r.status)}>{r.status}</Badge>
+                          <Badge variant={statusVariant(r.status)}>{humanizeLabel(r.status)}</Badge>
                         </TableCell>
                         <TableCell className="text-right">
                           {r.status === "open" ? (
@@ -171,6 +211,18 @@ const AdminSupport = () => {
                               Reopen
                             </Button>
                           )}
+                          <ConfirmButton
+                            size="sm"
+                            variant="ghost"
+                            className="ml-1 text-destructive"
+                            title="Delete this inquiry?"
+                            description={`The message from ${r.customer_name} is removed permanently.`}
+                            confirmLabel="Delete"
+                            disabled={deleteMutation.isPending}
+                            onConfirm={() => deleteMutation.mutate(r.id)}
+                          >
+                            Delete
+                          </ConfirmButton>
                         </TableCell>
                       </TableRow>
                     ))

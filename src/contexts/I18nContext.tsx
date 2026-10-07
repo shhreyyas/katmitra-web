@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 export type Language = "en" | "hi" | "gu";
 
@@ -27,6 +27,15 @@ const translations: Record<Language, Record<string, TranslationValue>> = {
     "hero.description":
       "From order booking to final invoice - manage events, payments, staff, utensils, and menus without Excel or paperwork.",
     "footer.ctaTitle": "Start Managing Your Catering Business Today",
+    "download.heading": "Get the KatMitra app",
+    "download.subtitle": "Run your bookings, menus, quotations and payments from your phone.",
+    "download.scan": "Scan with your phone camera to download",
+    "download.storesLabel": "Available on",
+    "download.getItOn": "GET IT ON",
+    "download.downloadOn": "Download on the",
+    "download.iosSoon": "Coming soon",
+    "download.iosNotYet": "The iPhone app is not available yet. The Android app is on Google Play.",
+    "download.redirecting": "Taking you to the store…",
     "footer.ctaDesc": "Simple, powerful, and built for catering owners.",
     "footer.startFreeNow": "Start Free Now",
     "notfound.title": "Oops! Page not found",
@@ -303,6 +312,15 @@ const translations: Record<Language, Record<string, TranslationValue>> = {
     "hero.description":
       "ऑर्डर बुकिंग से अंतिम इनवॉइस तक - इवेंट्स, पेमेंट्स, स्टाफ, बर्तन और मेनू बिना एक्सेल या कागज़ी काम के मैनेज करें।",
     "footer.ctaTitle": "आज ही अपना कैटरिंग बिज़नेस मैनेज करना शुरू करें",
+    "download.heading": "KatMitra ऐप डाउनलोड करें",
+    "download.subtitle": "अपनी बुकिंग, मेन्यू, कोटेशन और पेमेंट सीधे फ़ोन से संभालें।",
+    "download.scan": "डाउनलोड करने के लिए फ़ोन के कैमरे से स्कैन करें",
+    "download.storesLabel": "यहाँ उपलब्ध है",
+    "download.getItOn": "यहाँ उपलब्ध",
+    "download.downloadOn": "डाउनलोड करें",
+    "download.iosSoon": "जल्द आ रहा है",
+    "download.iosNotYet": "iPhone ऐप अभी उपलब्ध नहीं है। Android ऐप Google Play पर उपलब्ध है।",
+    "download.redirecting": "आपको स्टोर पर ले जा रहे हैं…",
     "footer.ctaDesc": "साधारण, शक्तिशाली, और खास कैटरिंग मालिकों के लिए।",
     "footer.startFreeNow": "अभी फ्री शुरू करें",
     "notfound.title": "ओह! पेज नहीं मिला",
@@ -577,8 +595,17 @@ const translations: Record<Language, Record<string, TranslationValue>> = {
     "hero.titleTop": "તમારો સમગ્ર કેટરિંગ બિઝનેસ",
     "hero.titleBottom": "એક જ એપમાં મેનેજ કરો",
     "hero.description":
-      "ઓર્ડર બુકિંગથી અંતિમ ઇન્વોઇસ સુધી - ઇવેન્ટ, પેમેન્ટ, સ્ટાફ, વાસણ અને મેનુ Excel કે પેપરવર્ક વગર મેનેજ કરો.",
+      "ઓર્ડર બુકિંગથી અંતિમ ઇન્વોઇસ સુધી - કાર્યક્રમ, પેમેન્ટ, સ્ટાફ, વાસણ અને મેનુ Excel કે પેપરવર્ક વગર મેનેજ કરો.",
     "footer.ctaTitle": "આજે જ તમારો કેટરિંગ બિઝનેસ મેનેજ કરવાનું શરૂ કરો",
+    "download.heading": "KatMitra એપ ડાઉનલોડ કરો",
+    "download.subtitle": "તમારા બુકિંગ, મેનૂ, ક્વોટેશન અને પેમેન્ટ સીધા ફોનથી સંભાળો.",
+    "download.scan": "ડાઉનલોડ કરવા ફોનના કેમેરાથી સ્કેન કરો",
+    "download.storesLabel": "અહીં ઉપલબ્ધ છે",
+    "download.getItOn": "અહીં ઉપલબ્ધ",
+    "download.downloadOn": "ડાઉનલોડ કરો",
+    "download.iosSoon": "ટૂંક સમયમાં",
+    "download.iosNotYet": "iPhone એપ હજી ઉપલબ્ધ નથી. Android એપ Google Play પર ઉપલબ્ધ છે.",
+    "download.redirecting": "તમને સ્ટોર પર લઈ જઈએ છીએ…",
     "footer.ctaDesc": "સરળ, શક્તિશાળી અને કેટરિંગ માલિકો માટે બનાવેલ.",
     "footer.startFreeNow": "હવે ફ્રી શરૂ કરો",
     "notfound.title": "અરે! પેજ મળ્યો નથી",
@@ -586,9 +613,9 @@ const translations: Record<Language, Record<string, TranslationValue>> = {
     "features.heading": "તમારા કેટરિંગ બિઝનેસ માટે જરૂરી દરેક સુવિધા",
     "features.subtitle":
       "ઓર્ડર બુકિંગથી અંતિમ ઇન્વોઇસ સુધી — તમારું કેટરિંગ ઓપરેશન એક જ જગ્યાએ મેનેજ કરો.",
-    "features.eventOrder.title": "ઇવેન્ટ અને ઓર્ડર મેનેજમેન્ટ",
+    "features.eventOrder.title": "કાર્યક્રમ અને ઓર્ડર મેનેજમેન્ટ",
     "features.eventOrder.description":
-      "તારીખ, સમય અને સ્થળ સાથે તમારા બધા કેટરિંગ ઇવેન્ટ્સ બનાવો અને મેનેજ કરો. ભૂતકાળ અને આગામી બુકિંગ સરળતાથી ટ્રૅક કરો.",
+      "તારીખ, સમય અને સ્થળ સાથે તમારા બધા કેટરિંગ કાર્યક્રમો બનાવો અને મેનેજ કરો. ભૂતકાળ અને આગામી બુકિંગ સરળતાથી ટ્રૅક કરો.",
     "features.payment.title": "સ્માર્ટ પેમેન્ટ ટ્રૅકિંગ",
     "features.payment.description":
       "આંશિક ચુકવણી સરળતાથી ટ્રૅક કરો. દરેક ચુકવણી નોંધો અને બાકી રકમ હંમેશા જાણો.",
@@ -600,19 +627,19 @@ const translations: Record<Language, Record<string, TranslationValue>> = {
       "પસંદ કરેલા મેનૂ આઇટમ પરથી ખરીદી યાદી આપમેળે બનાવો. કોઈ સામગ્રી ચૂકી ન જાય.",
     "features.utensil.title": "વાસણ મેનેજમેન્ટ",
     "features.utensil.description":
-      "દરેક ઇવેન્ટમાં વપરાતા વાસણ ટ્રૅક કરો. શું ઉપલબ્ધ, વપરાશમાં અથવા નુકસાન થયું તે જાણો.",
+      "દરેક કાર્યક્રમમાં વપરાતા વાસણ ટ્રૅક કરો. શું ઉપલબ્ધ, વપરાશમાં અથવા નુકસાન થયું તે જાણો.",
     "features.staff.title": "સ્ટાફ મેનેજમેન્ટ",
     "features.staff.description":
-      "ઇવેન્ટ્સમાં સ્ટાફ સોંપો અને અનેક ફંક્શનમાં તમારા કાર્યબળને કાર્યક્ષમતાથી મેનેજ કરો.",
+      "કાર્યક્રમમાં સ્ટાફ સોંપો અને અનેક ફંક્શનમાં તમારા કાર્યબળને કાર્યક્ષમતાથી મેનેજ કરો.",
     "features.estimation.title": "ત્વરિત અંદાજ",
     "features.estimation.description":
       "મેનૂ પસંદગી પરથી ઝડપી ખર્ચ અંદાજ બનાવો. ગ્રાહકોને ઝડપી નિર્ણય લેવામાં મદદ કરો.",
     "features.invoice.title": "ઇન્વૉઇસ જનરેશન",
     "features.invoice.description":
-      "ઇવેન્ટ પૂર્ણ થયા પછી આપમેળે પ્રોફેશનલ ઇન્વૉઇસ બનાવો.",
+      "કાર્યક્રમ પૂર્ણ થયા પછી આપમેળે પ્રોફેશનલ ઇન્વૉઇસ બનાવો.",
     "features.calendar.title": "કૅલેન્ડર ઓવરવ્યૂ",
     "features.calendar.description":
-      "એક કૅલેન્ડરમાં તમારા બધા ઇવેન્ટ્સનો સંપૂર્ણ દૃશ્ય મેળવો. કોઈ બુકિંગ ચૂકી ન જાય.",
+      "એક કૅલેન્ડરમાં તમારા બધા કાર્યક્રમોનો સંપૂર્ણ દૃશ્ય મેળવો. કોઈ બુકિંગ ચૂકી ન જાય.",
     "pricing.heading": "સરળ અને પારદર્શક પ્રાઇસિંગ",
     "pricing.subtitle":
       "આજે જ મફતમાં શરૂ કરો. તમારો બિઝનેસ વધે ત્યારે ક્યારેય અપગ્રેડ કરો.",
@@ -627,7 +654,7 @@ const translations: Record<Language, Record<string, TranslationValue>> = {
       "પ્લાન લોન્ચ થાય ત્યારે અર્લી યુઝર્સને વિશેષ પ્રાઇસિંગ મળશે.",
     "pricing.paidPlansNote": "ભવિષ્યમાં પેઇડ પ્લાન પ્રસ્તુત કરવામાં આવશે.",
     "pricing.planFeatures": [
-      "ઇવેન્ટ અને ઓર્ડર મેનેજમેન્ટ",
+      "કાર્યક્રમ અને ઓર્ડર મેનેજમેન્ટ",
       "સ્માર્ટ પેમેન્ટ ટ્રૅકિંગ (આંશિક ચુકવણી)",
       "મેનૂ મેનેજમેન્ટ",
       "ઑટો કિરાણા યાદી",
@@ -641,29 +668,30 @@ const translations: Record<Language, Record<string, TranslationValue>> = {
     "howItWorks.heading": "6 સરળ સ્ટેપ્સમાં તમારો કેટરિંગ બિઝનેસ ચલાવો",
     "howItWorks.subtitle":
       "ઓર્ડર બનાવવાથી અંતિમ ઇન્વોઇસ સુધી — બધું એક સરળ વર્કફ્લોમાં મેનેજ કરો.",
-    "howItWorks.createEvent.title": "ઇવેન્ટ બનાવો",
+    "howItWorks.createEvent.title": "કાર્યક્રમ બનાવો",
     "howItWorks.createEvent.description":
-      "તારીખ, સમય, સ્થળ અને ગ્રાહક વિગતો સાથે નવું કેટરિંગ ઇવેન્ટ ઉમેરો.",
+      "તારીખ, સમય, સ્થળ અને ગ્રાહક વિગતો સાથે નવો કેટરિંગ કાર્યક્રમ ઉમેરો.",
     "howItWorks.selectMenu.title": "મેનૂ પસંદ કરો",
     "howItWorks.selectMenu.description":
-      "ઇવેન્ટ માટે મેનૂ આઇટમ પસંદ કરો અને ગ્રાહકની જરૂરિયાત મુજબ કસ્ટમાઇઝ કરો.",
+      "કાર્યક્રમ માટે મેનૂ આઇટમ પસંદ કરો અને ગ્રાહકની જરૂરિયાત મુજબ કસ્ટમાઇઝ કરો.",
     "howItWorks.groceryList.title": "ઑટો કિરાણા યાદી બનાવો",
     "howItWorks.groceryList.description":
       "પસંદ કરેલા મેનૂ આઇટમ પરથી સંપૂર્ણ ખરીદી યાદી આપમેળે મેળવો.",
     "howItWorks.assignStaff.title": "સ્ટાફ અને વાસણ સોંપો",
     "howItWorks.assignStaff.description":
-      "ઇવેન્ટ માટે સ્ટાફ ફાળવો અને વાસણ ટ્રૅક કરો.",
+      "કાર્યક્રમ માટે સ્ટાફ ફાળવો અને વાસણ ટ્રૅક કરો.",
     "howItWorks.trackPayments.title": "ચુકવણી ટ્રૅક કરો",
     "howItWorks.trackPayments.description":
       "આંશિક ચુકવણી નોંધો અને બાકી રકમ સરળતાથી ટ્રૅક કરો.",
     "howItWorks.generateInvoice.title": "ઇન્વૉઇસ બનાવો",
     "howItWorks.generateInvoice.description":
-      "ઇવેન્ટ પૂર્ણ થયા પછી ત્વરિત પ્રોફેશનલ ઇન્વૉઇસ બનાવો.",
+      "કાર્યક્રમ પૂર્ણ થયા પછી ત્વરિત પ્રોફેશનલ ઇન્વૉઇસ બનાવો.",
     "footer.brandDescription":
-      "ઓર્ડર, ઇવેન્ટ, ચુકવણી, સ્ટાફ અને ઓપરેશન્સ મેનેજ કરવા માટે ઓલ-ઇન-વન કેટરિંગ મેનેજમેન્ટ સૉફ્ટવેયર.",
+      "ઓર્ડર, કાર્યક્રમ, ચુકવણી, સ્ટાફ અને ઓપરેશન્સ મેનેજ કરવા માટે ઓલ-ઇન-વન કેટરિંગ મેનેજમેન્ટ સૉફ્ટવેયર.",
     "footer.builtForOwners": "કેટરિંગ બિઝનેસ માલિકો માટે બનાવેલ",
     "footer.colProduct": "પ્રોડક્ટ",
     "footer.colCompany": "કંપની",
+    "footer.aboutUs": "અમારા વિશે",
     "footer.colSupport": "સપોર્ટ",
     "footer.faq": "વારંવાર પૂછાતા પ્રશ્નો",
     "footer.privacyPolicy": "પ્રાઇવસી પોલિસી",
@@ -682,7 +710,7 @@ const translations: Record<Language, Record<string, TranslationValue>> = {
       "વાસ્તવિક વપરાશ માટે ડિઝાઇન",
       "સરળ અને વપરવામાં સરળ",
     ],
-    "clients.eventsBadge": "500+ ઇવેન્ટ મેનેજ કર્યા",
+    "clients.eventsBadge": "500+ કાર્યક્રમ મેનેજ કર્યા",
     "benefits.heading": "KatMitra કેમ પસંદ કરશો?",
     "benefits.subtitle":
       "સફળ કેટરિંગ બિઝનેસ ચલાવવા માટે જરૂરી બધું, એક જ પ્લેટફોર્મ પર.",
@@ -777,7 +805,7 @@ const translations: Record<Language, Record<string, TranslationValue>> = {
     "privacy.collect.title": "2. અમે કઈ માહિતી ભેગી કરીએ છીએ",
     "privacy.collect.items": [
       "ઓળખકર્તાઓ અને એકાઉન્ટ ડેટા: નામ, ઇમેઇલ, ફોન, ક્રેડેન્શિયલ (જ્યાં લાગુ હોય ઉદ્યોગ-માનક હેશિંગ સાથે પાસવર્ડ), અને નોંધણી અથવા પ્રોફાઇલ અપડેટ પર વ્યવસાય વિગતો.",
-      "તમે બનાવેલી સામગ્રી: ઇવેન્ટ્સ, ઓર્ડર્સ, ક્વોટેશન્સ, મેનુ આઇટમ્સ, ઇન્વેન્ટરી સંબંધિત માહિતી, તમે નોંધેલી ચુકવણી ટ્રૅકિંગ, સ્ટાફ સોંપણી, તમે સંગ્રહિત કરો છો તે ગ્રાહકના નામ અને સંપર્ક, અપલોડ કરેલી ફાઇલો અથવા છબીઓ, અને સપોર્ટ સંદેશાઓ.",
+      "તમે બનાવેલી સામગ્રી: કાર્યક્રમો, ઓર્ડર્સ, ક્વોટેશન્સ, મેનુ આઇટમ્સ, ઇન્વેન્ટરી સંબંધિત માહિતી, તમે નોંધેલી ચુકવણી ટ્રૅકિંગ, સ્ટાફ સોંપણી, તમે સંગ્રહિત કરો છો તે ગ્રાહકના નામ અને સંપર્ક, અપલોડ કરેલી ફાઇલો અથવા છબીઓ, અને સપોર્ટ સંદેશાઓ.",
       "તકનીકી અને સુરક્ષા ડેટા: ડિવાઇસ પ્રકાર, OS સંસ્કરણ, એપ સંસ્કરણ, IP સરનામું, વિનંતીઓના અંદાજી સમય, પ્રમાણીકરણ ટોકન, અને એકાઉન્ટ સુરક્ષિત રાખવા અને સમસ્યા ઉકેલ માટે જરૂરી નિદાન અથવા ભૂલ માહિતી.",
       "વેબસાઇટ સંપર્ક ફોર્મ: નામ, ઇમેઇલ, ફોન અને સંદેશ.",
     ],
@@ -851,6 +879,10 @@ export const I18nProvider = ({ children }: { children: React.ReactNode }) => {
     if (saved === "en" || saved === "hi" || saved === "gu") return saved;
     return "en";
   });
+
+  useEffect(() => {
+    document.documentElement.lang = language;
+  }, [language]);
 
   const value = useMemo<I18nContextValue>(
     () => ({

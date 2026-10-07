@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Lock, Mail, Phone } from "lucide-react";
 import Footer from "@/components/Footer";
-import HeaderControls from "@/components/HeaderControls";
+import PageTopBar from "@/components/PageTopBar";
 import { useI18n } from "@/contexts/I18nContext";
 
 const PRIVACY_SECTION_IDS = [
@@ -35,9 +35,7 @@ const PrivacyPolicy = () => {
         <div className="absolute inset-0 bg-gradient-radial from-gold/10 via-transparent to-transparent" />
 
         <div className="relative z-10 container mx-auto px-4 lg:px-8">
-          <div className="mb-6 flex justify-center">
-            <HeaderControls />
-          </div>
+          <PageTopBar />
 
           <motion.div
             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 28 }}

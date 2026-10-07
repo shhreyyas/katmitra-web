@@ -41,20 +41,17 @@ const HowItWorksSection = () => {
   return (
     <section
       id="how-it-works"
-      className="relative py-28 sm:py-32 lg:py-40 bg-muted/25 overflow-hidden border-y border-border/25"
+      className="relative py-20 lg:py-28 bg-muted/25 overflow-hidden border-y border-border/25"
     >
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-gold/[0.04] to-transparent pointer-events-none" />
       <div className="absolute top-1/2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/15 to-transparent pointer-events-none" />
 
       <div className="container mx-auto px-4 md:px-6 lg:px-8 relative z-10">
-        <ScrollReveal className="max-w-3xl mb-14 lg:mb-24">
-          <p className="text-xs sm:text-sm font-semibold uppercase tracking-[0.2em] text-gold mb-4">
-            {t("howItWorks.eyebrow")}
-          </p>
-          <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-[1.08] text-foreground">
+        <ScrollReveal className="text-center mb-12 lg:mb-16 max-w-3xl mx-auto">
+          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 leading-tight text-foreground">
             {t("howItWorks.heading")}
           </h2>
-          <p className="text-muted-foreground text-lg sm:text-xl max-w-xl leading-relaxed">
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto leading-relaxed">
             {t("howItWorks.subtitle")}
           </p>
         </ScrollReveal>

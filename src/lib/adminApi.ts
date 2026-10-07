@@ -1,4 +1,22 @@
-import { getAdminToken } from "@/lib/adminAuth";
+import { adminLogout, getAdminToken } from "@/lib/adminAuth";
+
+/** Set before redirecting so the login page can explain why the admin was signed out. */
+export const ADMIN_SESSION_NOTICE_KEY = "katmitra_admin_session_notice";
+
+const handleSessionEnded = (code?: string) => {
+  adminLogout();
+  try {
+    sessionStorage.setItem(
+      ADMIN_SESSION_NOTICE_KEY,
+      code === "SESSION_DISPLACED" ? "displaced" : "expired",
+    );
+  } catch {
+    // sessionStorage unavailable — the redirect still happens
+  }
+  if (window.location.pathname !== "/admin/login") {
+    window.location.assign("/admin/login");
+  }
+};
 
 export const getApiBaseUrl = () => {
   const base = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, "");
@@ -39,12 +57,27 @@ export async function adminFetch<T>(
   headers.set("X-Language", "en");
   headers.set("ngrok-skip-browser-warning", "true");
 
-  const res = await fetch(`${getApiBaseUrl()}${path}`, { ...init, headers });
+  let res: Response;
+  try {
+    res = await fetch(`${getApiBaseUrl()}${path}`, { ...init, headers });
+  } catch {
+    throw new AdminApiError("Could not reach the server. Check your connection.", 0, "NETWORK");
+  }
   let json: ApiEnvelope<T> | null = null;
   try {
     json = await res.json();
   } catch {
+    if (res.status === 401) handleSessionEnded();
     throw new AdminApiError("Invalid server response", res.status);
+  }
+
+  if (res.status === 401 || json?.error?.code === "SESSION_DISPLACED") {
+    handleSessionEnded(json?.error?.code);
+    throw new AdminApiError(
+      "Your session has ended. Please sign in again.",
+      401,
+      json?.error?.code,
+    );
   }
 
   if (!res.ok || !json?.success) {

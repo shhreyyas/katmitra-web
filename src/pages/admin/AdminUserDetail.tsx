@@ -1,9 +1,12 @@
 import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { AdminDetailSkeleton } from "@/components/admin/AdminStates";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import DeleteUsersDialog from "@/components/admin/DeleteUsersDialog";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import ConfirmButton from "@/components/admin/ConfirmButton";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -24,6 +27,8 @@ import {
 
 const AdminUserDetail = () => {
   const { userId } = useParams();
+  const navigate = useNavigate();
+  const [deleteOpen, setDeleteOpen] = useState(false);
   const qc = useQueryClient();
   const [extendMonths, setExtendMonths] = useState("12");
   const [paymentAmount, setPaymentAmount] = useState("");
@@ -87,7 +92,7 @@ const AdminUserDetail = () => {
   if (!userId) return null;
 
   if (isLoading) {
-    return <p className="text-sm text-muted-foreground">Loading…</p>;
+    return <AdminDetailSkeleton />;
   }
 
   if (isError || !data) {
@@ -126,14 +131,38 @@ const AdminUserDetail = () => {
           </div>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Button
+          <ConfirmButton
             variant={isSuspended ? "default" : "destructive"}
             size="sm"
-            onClick={() => suspendMutation.mutate(!isSuspended)}
+            title={isSuspended ? "Reactivate this account?" : "Suspend this account?"}
+            description={
+              isSuspended
+                ? "The caterer will be able to sign in and use the app again."
+                : "The caterer is blocked from using the app until the account is reactivated."
+            }
+            confirmLabel={isSuspended ? "Reactivate" : "Suspend"}
+            onConfirm={() => suspendMutation.mutate(!isSuspended)}
             disabled={suspendMutation.isPending}
           >
             {isSuspended ? "Reactivate" : "Suspend"}
+          </ConfirmButton>
+          <Button variant="outline" size="sm" className="text-destructive" onClick={() => setDeleteOpen(true)}>
+            Delete permanently
           </Button>
+          <DeleteUsersDialog
+            users={
+              deleteOpen
+                ? [{ id: user.id, label: `${business?.business_name ?? user.name} — ${user.name}` }]
+                : []
+            }
+            onClose={() => setDeleteOpen(false)}
+            onDone={(result) => {
+              if (!result.deleted.length) return;
+              void qc.invalidateQueries({ queryKey: ["admin", "users"] });
+              void qc.invalidateQueries({ queryKey: ["admin", "dashboard"] });
+              navigate("/admin/users", { replace: true });
+            }}
+          />
           <div className="flex items-center gap-2">
             <Input
               className="w-16 h-9"

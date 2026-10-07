@@ -1,4 +1,6 @@
 import { Link, useParams } from "react-router-dom";
+import { AdminDetailSkeleton } from "@/components/admin/AdminStates";
+import { humanizeLabel } from "@/lib/adminFormat";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -49,7 +51,7 @@ const AdminQuotationDetail = () => {
   });
 
   if (isLoading) {
-    return <p className="text-sm text-muted-foreground">Loading quotation…</p>;
+    return <AdminDetailSkeleton />;
   }
 
   if (isError || !data) {
@@ -77,7 +79,7 @@ const AdminQuotationDetail = () => {
           <h1 className="text-2xl font-bold text-gradient-gold">{data.client_name}</h1>
           <p className="text-sm text-muted-foreground font-mono">{data.id}</p>
         </div>
-        <Badge>{data.status}</Badge>
+        <Badge>{humanizeLabel(data.status)}</Badge>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
@@ -88,7 +90,16 @@ const AdminQuotationDetail = () => {
           <CardContent className="text-sm space-y-1">
             <p>
               <span className="text-muted-foreground">Business: </span>
-              {data.business?.name ?? "—"}
+              {data.business?.name ? (
+                <Link
+                  to={`/admin/users?q=${encodeURIComponent(data.business.name)}`}
+                  className="text-gold underline-offset-4 hover:underline"
+                >
+                  {data.business.name}
+                </Link>
+              ) : (
+                "—"
+              )}
             </p>
             <p>
               <span className="text-muted-foreground">Owner: </span>
@@ -114,7 +125,7 @@ const AdminQuotationDetail = () => {
             </p>
             <p>
               <span className="text-muted-foreground">Function: </span>
-              {data.function_type ?? "—"}
+              {humanizeLabel(data.function_type)}
             </p>
             <p>
               <span className="text-muted-foreground">Guests: </span>

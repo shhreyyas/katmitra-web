@@ -1,8 +1,13 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
+import { useDebouncedValue, useUrlParam } from "@/hooks/useUrlState";
+import { AdminTableSkeleton } from "@/components/admin/AdminStates";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import RowActions from "@/components/admin/RowActions";
+import { useAdminPagedList } from "@/hooks/useAdminPagedList";
+import AdminPager from "@/components/admin/AdminPager";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -35,9 +40,12 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   createSupplyItem,
   deleteSupplyItem,
+  forceDeleteSupplyItem,
+  permanentlyDeleteSupplyItem,
+  type SupplyItemUsage,
   fetchBusinesses,
   fetchSupplyCategories,
-  fetchSupplyItems,
+  fetchSupplyItemsPage,
   fetchUnits,
   type LocalizedNameInput,
   type SupplyItemRow,
@@ -96,14 +104,32 @@ const rowToForm = (row: SupplyItemRow): FormState => ({
   is_active: row.is_active,
 });
 
+const usedIn = (row: { usage?: SupplyItemUsage }) => row.usage?.total ?? 0;
+
+/** "3 booking lists, 11 menu items" — only the places that actually use the item. */
+function describeUsage(u?: SupplyItemUsage): string {
+  if (!u) return "records";
+  const part = (n: number, one: string, many: string) => (n ? `${n} ${n === 1 ? one : many}` : "");
+  return [
+    part(u.bookings, "booking list", "booking lists"),
+    part(u.booking_events, "event list", "event lists"),
+    part(u.saved_lists, "saved list", "saved lists"),
+    part(u.menu_items, "menu item", "menu items"),
+    part(u.dishes, "dish", "dishes"),
+  ]
+    .filter(Boolean)
+    .join(", ");
+}
+
 const AdminSupplyItems = () => {
   const qc = useQueryClient();
-  const [scopeFilter, setScopeFilter] = useState<ScopeFilter>("all");
-  const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive">("active");
-  const [businessFilter, setBusinessFilter] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState("");
-  const [typeFilter, setTypeFilter] = useState("");
-  const [search, setSearch] = useState("");
+  const [scopeFilter, setScopeFilter] = useUrlParam<ScopeFilter>("scope", "all");
+  const [statusFilter, setStatusFilter] = useUrlParam<"all" | "active" | "inactive">("status", "active");
+  const [businessFilter, setBusinessFilter] = useUrlParam("business", "");
+  const [categoryFilter, setCategoryFilter] = useUrlParam("category", "");
+  const [typeFilter, setTypeFilter] = useUrlParam("type", "");
+  const [searchInput, setSearch] = useUrlParam("q", "");
+  const search = useDebouncedValue(searchInput);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<SupplyItemRow | null>(null);
   const [form, setForm] = useState<FormState>(emptyForm);
@@ -123,30 +149,21 @@ const AdminSupplyItems = () => {
     queryFn: () => fetchUnits(),
   });
 
-  const listQuery = useQuery({
-    queryKey: [
-      "admin",
-      "supply-items",
-      scopeFilter,
-      statusFilter,
-      businessFilter,
-      categoryFilter,
-      typeFilter,
-      search,
-    ],
-    queryFn: () =>
-      fetchSupplyItems({
+  const listQuery = useAdminPagedList(
+    ["admin", "supply-items", scopeFilter, statusFilter, businessFilter, categoryFilter, typeFilter, search.trim()],
+    (page) =>
+      fetchSupplyItemsPage({
         scope: scopeFilter,
         status: statusFilter,
         business_id: scopeFilter === "business" ? businessFilter || undefined : undefined,
         category_slug: categoryFilter || undefined,
         type: typeFilter || undefined,
         q: search.trim() || undefined,
+        page,
       }),
-  });
+  );
 
-  const items = listQuery.data ?? [];
-  const filtered = useMemo(() => items, [items]);
+  const filtered = listQuery.rows;
 
   const toggleUnit = (slug: string, checked: boolean) => {
     setForm((f) => {
@@ -221,6 +238,29 @@ const AdminSupplyItems = () => {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const afterDelete = () => {
+    qc.invalidateQueries({ queryKey: ["admin", "supply-items"] });
+    qc.invalidateQueries({ queryKey: ["admin", "supply-categories"] });
+  };
+
+  const permanentDeleteMutation = useMutation({
+    mutationFn: (id: string) => permanentlyDeleteSupplyItem(id),
+    onSuccess: () => {
+      toast.success("Supply item deleted");
+      afterDelete();
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const forceDeleteMutation = useMutation({
+    mutationFn: (id: string) => forceDeleteSupplyItem(id),
+    onSuccess: () => {
+      toast.success("Supply item deleted. Existing bookings and lists were not changed.");
+      afterDelete();
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
   const openCreate = () => {
     setEditing(null);
     setForm(emptyForm());
@@ -252,7 +292,7 @@ const AdminSupplyItems = () => {
             <Input
               className="w-44"
               placeholder="Search…"
-              value={search}
+              value={searchInput}
               onChange={(e) => setSearch(e.target.value)}
             />
             <Select
@@ -326,13 +366,16 @@ const AdminSupplyItems = () => {
         </CardHeader>
         <CardContent>
           {listQuery.isLoading ? (
-            <p className="text-sm text-muted-foreground">Loading…</p>
+            <AdminTableSkeleton columns={7} />
           ) : listQuery.isError ? (
             <p className="text-sm text-destructive">
               {(listQuery.error as Error)?.message || "Failed to load supply items"}
             </p>
           ) : (
-            <Table>
+            <Table
+              className={listQuery.isPlaceholderData ? "opacity-50 transition-opacity" : "transition-opacity"}
+              aria-busy={listQuery.isPlaceholderData}
+            >
               <TableHeader>
                 <TableRow>
                   <TableHead>Name</TableHead>
@@ -341,13 +384,14 @@ const AdminSupplyItems = () => {
                   <TableHead>Default unit</TableHead>
                   <TableHead>Scope</TableHead>
                   <TableHead>Status</TableHead>
+                  <TableHead>Used in</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filtered.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center text-muted-foreground">
+                    <TableCell colSpan={8} className="text-center text-muted-foreground">
                       No supply items found
                     </TableCell>
                   </TableRow>
@@ -381,23 +425,53 @@ const AdminSupplyItems = () => {
                           {row.is_active ? "Active" : "Inactive"}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-right space-x-2">
-                        <Button size="sm" variant="outline" onClick={() => openEdit(row)}>
-                          Edit
-                        </Button>
-                        {row.is_active && (
-                          <Button
-                            size="sm"
-                            variant="destructive"
-                            onClick={() => {
-                              if (window.confirm(`Deactivate "${row.name}"?`)) {
-                                deleteMutation.mutate(row.id);
-                              }
-                            }}
-                          >
-                            Deactivate
-                          </Button>
-                        )}
+                      <TableCell
+                        className="text-sm text-muted-foreground"
+                        title={usedIn(row) ? describeUsage(row.usage) : undefined}
+                      >
+                        {usedIn(row) ? `${usedIn(row)} place${usedIn(row) === 1 ? "" : "s"}` : "Not used"}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <RowActions
+                          name={row.name}
+                          actions={[
+                            { label: "Edit", onSelect: () => openEdit(row) },
+                            ...(row.is_active
+                            ? [
+                                {
+                              label: "Deactivate",
+                              destructive: true,
+                              confirm: { title: `Deactivate "${row.name}"?` },
+                              onSelect: () => deleteMutation.mutate(row.id),
+                            },
+                              ]
+                            : []),
+                            {
+                              label: "Delete",
+                              destructive: true,
+                              disabled: usedIn(row) > 0,
+                              disabledReason: `Used in ${usedIn(row)} place${usedIn(row) === 1 ? "" : "s"}`,
+                              confirm: {
+                                title: `Delete "${row.name}" permanently?`,
+                                description:
+                                  "Nothing uses this item, so it is removed completely. This cannot be undone.",
+                              },
+                              onSelect: () => permanentDeleteMutation.mutate(row.id),
+                            },
+                            {
+                              label: "Force delete",
+                              destructive: true,
+                              confirm: {
+                                title: `Force delete "${row.name}"?`,
+                                description:
+                                  usedIn(row) > 0
+                                    ? `It disappears from the catalog and every picker. Everything that already uses it (${describeUsage(row.usage)}) keeps it and is not changed. This cannot be undone from the admin panel.`
+                                    : "It disappears from the catalog and every picker. This cannot be undone from the admin panel.",
+                              },
+                              onSelect: () => forceDeleteMutation.mutate(row.id),
+                            },
+                          ]}
+                        />
                       </TableCell>
                     </TableRow>
                   ))
@@ -405,6 +479,7 @@ const AdminSupplyItems = () => {
               </TableBody>
             </Table>
           )}
+          <AdminPager pagination={listQuery.pagination} onPageChange={listQuery.setPage} noun="supply items" />
         </CardContent>
       </Card>
 
