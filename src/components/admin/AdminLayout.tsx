@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import {
   Bell,
   CalendarCheck,
@@ -25,7 +25,7 @@ import {
   Boxes,
   type LucideIcon,
 } from "lucide-react";
-import { adminLogout, getAdminUser } from "@/lib/adminAuth";
+import { endAdminSession, useAdminSession } from "@/lib/adminAuth";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import ThemeToggle from "@/components/ThemeToggle";
@@ -144,9 +144,8 @@ const SidebarContent = ({ onNavigate }: { onNavigate?: () => void }) => {
 };
 
 const AdminLayout = () => {
-  const navigate = useNavigate();
   const { pathname } = useLocation();
-  const user = getAdminUser();
+  const user = useAdminSession()?.user;
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const current = allNavItems.find((item) => isActivePath(pathname, item.path));
@@ -157,11 +156,6 @@ const AdminLayout = () => {
       document.title = "Katmitra - Catering Management Platform";
     };
   }, [current]);
-
-  const logout = () => {
-    adminLogout();
-    navigate("/admin/login");
-  };
 
   const initial = (user?.name || user?.email || "A").trim().charAt(0).toUpperCase();
 
@@ -203,7 +197,7 @@ const AdminLayout = () => {
             <span className="hidden max-w-[200px] truncate text-sm md:block" title={user?.email}>
               {user?.name || user?.email}
             </span>
-            <Button variant="ghost" size="sm" onClick={logout} className="gap-2">
+            <Button variant="ghost" size="sm" onClick={() => endAdminSession()} className="gap-2">
               <LogOut className="h-4 w-4" aria-hidden />
               <span className="hidden sm:inline">Logout</span>
               <span className="sr-only sm:hidden">Logout</span>

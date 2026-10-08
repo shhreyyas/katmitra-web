@@ -1,21 +1,10 @@
-import { adminLogout, getAdminToken } from "@/lib/adminAuth";
+import { endAdminSession, getAdminToken } from "@/lib/adminAuth";
 
-/** Set before redirecting so the login page can explain why the admin was signed out. */
-export const ADMIN_SESSION_NOTICE_KEY = "katmitra_admin_session_notice";
+const SESSION_ENDED_CODES = new Set(["SESSION_DISPLACED", "UNAUTHORIZED"]);
 
+// Clearing the session is enough: AdminProtectedRoute sees it end and redirects to the login page.
 const handleSessionEnded = (code?: string) => {
-  adminLogout();
-  try {
-    sessionStorage.setItem(
-      ADMIN_SESSION_NOTICE_KEY,
-      code === "SESSION_DISPLACED" ? "displaced" : "expired",
-    );
-  } catch {
-    // sessionStorage unavailable — the redirect still happens
-  }
-  if (window.location.pathname !== "/admin/login") {
-    window.location.assign("/admin/login");
-  }
+  endAdminSession(code === "SESSION_DISPLACED" ? "displaced" : "expired");
 };
 
 export const getApiBaseUrl = () => {
@@ -71,7 +60,7 @@ export async function adminFetch<T>(
     throw new AdminApiError("Invalid server response", res.status);
   }
 
-  if (res.status === 401 || json?.error?.code === "SESSION_DISPLACED") {
+  if (res.status === 401 || SESSION_ENDED_CODES.has(json?.error?.code ?? "")) {
     handleSessionEnded(json?.error?.code);
     throw new AdminApiError(
       "Your session has ended. Please sign in again.",
