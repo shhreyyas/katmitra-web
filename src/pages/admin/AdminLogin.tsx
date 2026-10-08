@@ -5,8 +5,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { adminLogin, isAdminAuthenticated } from "@/lib/adminAuth";
-import { ADMIN_SESSION_NOTICE_KEY } from "@/lib/adminApi";
+import {
+  ADMIN_IDLE_TIMEOUT_MS,
+  ADMIN_SESSION_NOTICE_KEY,
+  adminLogin,
+  useAdminSession,
+} from "@/lib/adminAuth";
 import mainLogo from "@/assets/main-logo.jpg";
 
 const readSessionNotice = () => {
@@ -14,6 +18,9 @@ const readSessionNotice = () => {
     const reason = sessionStorage.getItem(ADMIN_SESSION_NOTICE_KEY);
     if (reason === "displaced") {
       return "You were signed out because this account signed in on another device.";
+    }
+    if (reason === "idle") {
+      return `You were signed out after ${ADMIN_IDLE_TIMEOUT_MS / 60000} minutes of inactivity.`;
     }
     if (reason === "expired") return "Your session expired. Please sign in again.";
   } catch {
@@ -24,6 +31,7 @@ const readSessionNotice = () => {
 
 const AdminLogin = () => {
   const navigate = useNavigate();
+  const session = useAdminSession();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -40,7 +48,7 @@ const AdminLogin = () => {
     }
   }, []);
 
-  if (isAdminAuthenticated()) return <Navigate to="/admin/dashboard" replace />;
+  if (session) return <Navigate to="/admin/dashboard" replace />;
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
