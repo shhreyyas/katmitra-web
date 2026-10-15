@@ -24,3 +24,7 @@ dist-ssr
 *.sw?
 
 .env
+
+# Private keys must never be committed
+1234
+1234.pub
