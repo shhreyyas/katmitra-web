@@ -90,7 +90,8 @@ const emptyForm = (): FormState => ({
 const rowToForm = (row: SupplyItemRow): FormState => ({
   scope: row.is_global ? "global" : "business",
   business_id: row.business_id ?? "",
-  en: row.name_i18n?.en ?? row.name ?? "",
+  // Items typed in Gujarati or Hindi in the app may have no English name yet.
+  en: row.name_i18n ? (row.name_i18n.en ?? "") : (row.name ?? ""),
   hi: row.name_i18n?.hi ?? "",
   gu: row.name_i18n?.gu ?? "",
   type: row.type,
@@ -415,9 +416,16 @@ const AdminSupplyItems = () => {
                         {row.is_global ? (
                           <Badge>Global</Badge>
                         ) : (
-                          <Badge variant="secondary">
-                            {row.business_name ?? "Business"}
-                          </Badge>
+                          <div className="flex flex-wrap gap-1">
+                            <Badge variant="secondary">
+                              {row.business_name ?? "Business"}
+                            </Badge>
+                            {row.is_catalog_copy && (
+                              <Badge variant="outline" title="This business's own version of a catalog item">
+                                Catalog copy
+                              </Badge>
+                            )}
+                          </div>
                         )}
                       </TableCell>
                       <TableCell>

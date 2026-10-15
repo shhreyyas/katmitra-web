@@ -849,6 +849,7 @@ export type SupplyItemRow = {
   business_id: string | null;
   business_name: string | null;
   is_global: boolean;
+  is_catalog_copy?: boolean;
   unit_options: string[];
   default_unit: string;
   available_count: number | null;
@@ -969,6 +970,7 @@ export type MenuItemRow = {
   business_id: string | null;
   business_name: string | null;
   is_global: boolean;
+  is_catalog_copy?: boolean;
   ingredients: MenuItemIngredient[];
   image_url: string | null;
   created_at: string;
