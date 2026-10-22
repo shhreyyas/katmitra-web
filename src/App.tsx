@@ -12,6 +12,7 @@ import FAQs from "./pages/FAQs";
 import Download from "./pages/Download";
 import Support from "./pages/Support";
 import TermsAndConditions from "./pages/TermsAndConditions";
+import DataDeletion from "./pages/DataDeletion";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import NotFound from "./pages/NotFound";
 import AdminLogin from "./pages/admin/AdminLogin";
@@ -171,6 +172,7 @@ const AppRoutes = () => (
       <Route path="/support" element={<Support />} />
       <Route path="/privacy-policy" element={<PrivacyPolicy />} />
       <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+      <Route path="/data-deletion" element={<DataDeletion />} />
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route element={<AdminProtectedRoute />}>
         <Route element={<AdminLayout />}>
